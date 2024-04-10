@@ -1,0 +1,16 @@
+import { Module } from '@nestjs/common';
+import { CatsController } from './cats/cats.controller';
+import { ScrapperService } from './scrapper/scrapper.service';
+import { ScheduleModule } from '@nestjs/schedule';
+import { ScrapperModule } from './scrapper/scrapper.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule } from '@nestjs/config';
+import { CatsModule } from './cats/cats.module';
+import { TickersModule } from './tickers/tickers.module';
+
+@Module({
+  imports: [ConfigModule.forRoot(), MongooseModule.forRoot(process.env.MONGODB_URI), ScrapperModule,CatsModule,TickersModule],
+  controllers: [],
+  providers: [],
+})
+export class AppModule {}
