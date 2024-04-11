@@ -17,7 +17,7 @@ export class TickersController {
   }
 
 
-    @Get(':name')
+    @Get('/get/:name')
   findOne(@Param('name') name: string) {
     return this.tickerService.findOne(name);
 
@@ -27,6 +27,12 @@ export class TickersController {
   async findAll(): Promise<Ticker[]> {
     return this.tickerService.findAll();
   }
+
+  // @Get('/ciastka')
+  // async getCiastka(): Promise<any> {
+  //   return this.tickerService.getCiastka();
+  // }
+
 
   // @Put(':id') // Update cat endpoint with an ID parameter
   // async update(@Param('id') id: string, @Body() updateCatDto: UpdateCatDto): Promise<Cat> {

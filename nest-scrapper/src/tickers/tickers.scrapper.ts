@@ -7,13 +7,53 @@ import { parseStringDate } from '../utils/date.utils';
 export class TickersScrapper {
   private readonly _logger = new Logger(TickersScrapper.name);
   private readonly _baseUrl = 'https://stooq.pl/q/?s=';
+  private _cookies = null;
+
+  public get cookies() {
+    return this._cookies;
+  }
+  public set cookies(value) {
+    console.log('ustawiam ciastko');
+    this._cookies = value;
+  }
 
   //todo first run all data, next runs only price & date
   async getTickerData(ticker: string) {
-
     this._logger.debug('started full ticker scrapping');
+    //////////////////////////
 
-    const scrap = async (page: Page, validTicker: boolean) => {
+    const browser = await puppeteer.launch({ headless: false });
+    const page = await browser.newPage();
+    await page.goto(this._baseUrl + ticker);
+
+    const element = await page.waitForSelector('button.fc-cta-consent');
+    await element.click();
+
+    try {
+      const validPagePromise = getByText(page, 'Kurs');
+      const invalidPagePromise = getByText(page, 'Czy chodziło Ci o');
+
+      const result = await Promise.race([validPagePromise, invalidPagePromise]);
+
+      const textContent = await getText(result);
+
+      if (textContent.includes('Kurs')) {
+        return await scrap.call(this, page, true);
+      } else {
+        const aElements = await result.$$eval('a', (elements) => elements.map((element) => element.href));
+
+        await page.goto(aElements[0]);
+
+        return await scrap.call(this, page, false);
+      }
+    } catch (error) {
+      this._logger.debug('invalid ticker: ' + error);
+      return null;
+    } finally {
+      await browser.close();
+    }
+
+    async function scrap(page: Page, validTicker: boolean) {
       const priceTd = await getByText(page, 'Kurs', 'td');
       const priceSpan = await getById(priceTd, 'aq_' + ticker);
       const price = await getText(priceSpan);
@@ -30,10 +70,10 @@ export class TickersScrapper {
           .join('_'),
       );
 
-      await browser.close();
+      browser.close();
 
       console.log('NOWADATA:', parseStringDate(dateSpans));
-//todo
+      //todo
       const returnedData = {
         name: validTicker ? ticker : 'ZLYTICKERKOLEZKO',
         price,
@@ -44,58 +84,53 @@ export class TickersScrapper {
       this._logger.debug('returning data: ' + returnedData);
 
       return returnedData;
-    };
+    }
+  }
+
+  async updateTickerData(ticker: string) {
+    this._logger.debug('started partial ticker scrapping');
 
     //////////////////////////
 
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
-    await page.goto(this._baseUrl + ticker);
 
-    const element = await page.waitForSelector('button.fc-cta-consent');
-    await element.click();
+    if (this.cookies) {
+      console.log('som ciastka');
+
+      for (let i = 0; i < this.cookies.length; i++) {
+        await page.setCookie(this.cookies[i]);
+      }
+      console.log('ustawione ciastka');
+
+      await page.goto(this._baseUrl + ticker);
+      console.log('przeszlo na stronke');
+    } else {
+      await page.goto(this._baseUrl + ticker);
+
+      console.log('nie ma ciastek');
+      console.log(this.cookies);
+      const element = await page.waitForSelector('button.fc-cta-consent');
+      await element.click();
+
+      page.cookies().then((cookies) => (this.cookies = cookies));
+    }
 
     try {
-      const validPagePromise = getByText(page, 'Kurs');
-      const invalidPagePromise = getByText(page, 'Czy chodziło Ci o');
-
-      const result = await Promise.race([validPagePromise, invalidPagePromise]);
-
-      const textContent = await getText(result);
-
-      if (textContent.includes('Kurs')) {
-        return await scrap(page, true);
-      } else {
-        const aElements = await result.$$eval('a', (elements) => elements.map((element) => element.href));
-
-        await page.goto(aElements[0]);
-
-        return await scrap(page, false);
-      }
+      return await scrap.call(this, page);
     } catch (error) {
-      this._logger.debug('invalid ticker: ' + error);
+      this._logger.debug('error while scrapping: ' + error);
       return null;
     } finally {
       await browser.close();
     }
-  
 
-  }
-
-  //todo should this func exclude czy chodziło ci o?
-  async updateTickerData(ticker: string) {
-    this._logger.debug('started partial ticker scrapping');
-
-    const scrap = async (page: Page, validTicker: boolean) => {
+    async function scrap(page: Page) {
       const priceTd = await getByText(page, 'Kurs', 'td');
       const priceSpan = await getById(priceTd, 'aq_' + ticker);
       const price = await getText(priceSpan);
 
-      const a = await priceTd.waitForSelector('a');
-      const currency = await getText(a);
-
       const dateTd = await getByText(page, 'Data', 'td');
-
       const dateSpans = await dateTd.$$eval('span', (spans) =>
         spans
           .map((span) => span.textContent)
@@ -103,53 +138,16 @@ export class TickersScrapper {
           .join('_'),
       );
 
-      await browser.close();
+      browser.close();
 
-      console.log('NOWADATA:', parseStringDate(dateSpans));
-//todo
       const returnedData = {
-        // name: validTicker ? ticker : 'ZLYTICKERKOLEZKO',
-        newPrice:Number(price),
-        // currency,
+        newPrice: Number(price),
         newDate: parseStringDate(dateSpans),
       };
 
-      this._logger.debug('returning data: ' + returnedData);
+      this._logger.debug('returning scrapped data: ', returnedData);
 
       return returnedData;
-    };
-
-    //////////////////////////
-
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.goto(this._baseUrl + ticker);
-
-    const element = await page.waitForSelector('button.fc-cta-consent');
-    await element.click();
-
-    try {
-      const validPagePromise = getByText(page, 'Kurs');
-      const invalidPagePromise = getByText(page, 'Czy chodziło Ci o');
-
-      const result = await Promise.race([validPagePromise, invalidPagePromise]);
-
-      const textContent = await getText(result);
-
-      if (textContent.includes('Kurs')) {
-        return await scrap(page, true);
-      } else {
-        const aElements = await result.$$eval('a', (elements) => elements.map((element) => element.href));
-
-        await page.goto(aElements[0]);
-
-        return await scrap(page, false);
-      }
-    } catch (error) {
-      this._logger.debug('invalid ticker: ' + error);
-      return null;
-    } finally {
-      await browser.close();
     }
   }
 }
