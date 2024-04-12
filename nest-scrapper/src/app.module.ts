@@ -7,9 +7,19 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { CatsModule } from './cats/cats.module';
 import { TickersModule } from './tickers/tickers.module';
+import { SchedulerService } from './scheduler/scheduler.service';
+import { SchedulerModule } from './scheduler/scheduler.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), MongooseModule.forRoot(process.env.MONGODB_URI), ScrapperModule,CatsModule,TickersModule],
+  imports: [
+    ScheduleModule.forRoot(),
+    ConfigModule.forRoot(),
+    MongooseModule.forRoot(process.env.MONGODB_URI),
+    ScrapperModule,
+    CatsModule,
+    TickersModule,
+    SchedulerModule
+  ],
   controllers: [],
   providers: [],
 })

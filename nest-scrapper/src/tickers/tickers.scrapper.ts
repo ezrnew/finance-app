@@ -1,8 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import puppeteer, { Page } from 'puppeteer';
-import { getById, getByText, getText } from '../utils/puppeteer.utils';
+import { getById, getByText, getText, setPageCookies } from '../utils/puppeteer.utils';
 import { parseStringDate } from '../utils/date.utils';
 
+//todo
+//1.get all data on initial scrap (stock)
+//1.get all data on initial scrap (stock)
 @Injectable()
 export class TickersScrapper {
   private readonly _logger = new Logger(TickersScrapper.name);
@@ -13,7 +16,7 @@ export class TickersScrapper {
     return this._cookies;
   }
   public set cookies(value) {
-    console.log('ustawiam ciastko');
+    // console.log('ustawiam ciastko');
     this._cookies = value;
   }
 
@@ -89,6 +92,7 @@ export class TickersScrapper {
 
   async updateTickerData(ticker: string) {
     this._logger.debug('started partial ticker scrapping');
+    const url = this._baseUrl + ticker;
 
     //////////////////////////
 
@@ -96,23 +100,13 @@ export class TickersScrapper {
     const page = await browser.newPage();
 
     if (this.cookies) {
-      console.log('som ciastka');
-
-      for (let i = 0; i < this.cookies.length; i++) {
-        await page.setCookie(this.cookies[i]);
-      }
-      console.log('ustawione ciastka');
-
-      await page.goto(this._baseUrl + ticker);
-      console.log('przeszlo na stronke');
+      setPageCookies(page, this.cookies);
+      await page.goto(url);
     } else {
-      await page.goto(this._baseUrl + ticker);
+      await page.goto(url);
 
-      console.log('nie ma ciastek');
-      console.log(this.cookies);
       const element = await page.waitForSelector('button.fc-cta-consent');
       await element.click();
-
       page.cookies().then((cookies) => (this.cookies = cookies));
     }
 

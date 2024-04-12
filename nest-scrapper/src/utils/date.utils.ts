@@ -37,6 +37,67 @@ export const isToday = (date: Date) => {
 };
 
 export const isWeekend = (date: Date) => {
-  const dayOfWeek = date.getDay(); // 0 for Sunday, 1 for Monday, ..., 6 for Saturday
-  return dayOfWeek === 0 || dayOfWeek === 6; // Sunday or Saturday
+  const dayOfWeek = date.getDay(); 
+  return dayOfWeek === 0 || dayOfWeek === 6; 
+};
+
+export type monthNumber =1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
+export const getPolishMonthNameByNumber = (num:monthNumber) => {
+  switch (num) {
+      case 1:
+          return "Styczeń";
+      case 2:
+          return "Luty";
+      case 3:
+          return "Marzec";
+      case 4:
+          return "Kwiecień";
+      case 5:
+          return "Maj";
+      case 6:
+          return "Czerwiec";
+      case 7:
+          return "Lipiec";
+      case 8:
+          return "Sierpień";
+      case 9:
+          return "Wrzesień";
+      case 10:
+          return "Październik";
+      case 11:
+          return "Listopad";
+      case 12:
+          return "Grudzień";
+      default:
+          return "Invalid month number";
+  }
+};
+
+export const getMonthShortNameByNumber = (num:monthNumber) => {
+  switch (num) {
+    case 1:
+      return "jan";
+    case 2:
+      return "feb";
+    case 3:
+      return "mar";
+    case 4:
+      return "apr";
+    case 5:
+      return "may";
+    case 6:
+      return "jun";
+    case 7:
+      return "jul";
+    case 8:
+      return "aug";
+    case 9:
+      return "sep";
+    case 10:
+      return "oct";
+    case 11:
+      return "nov";
+    case 12:
+      return "dec";
+  }
 };
