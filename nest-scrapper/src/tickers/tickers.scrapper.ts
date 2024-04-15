@@ -76,6 +76,7 @@ export class TickersScrapper {
       browser.close();
 
       console.log('NOWADATA:', parseStringDate(dateSpans));
+      console.log("zwracam dane")
       //todo
       const returnedData = {
         name: validTicker ? ticker : 'ZLYTICKERKOLEZKO',
@@ -84,7 +85,7 @@ export class TickersScrapper {
         date: parseStringDate(dateSpans),
       };
 
-      this._logger.debug('returning data: ' + returnedData);
+      this._logger.debug('returning data: ', returnedData);
 
       return returnedData;
     }

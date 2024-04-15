@@ -20,15 +20,18 @@ export class TickersService {
   }
 
   async findOne(name: string) {
-    const ticker = await this.tickerModel.findOne({ name });
+    let ticker = await this.tickerModel.findOne({ name });
 
     console.log("TINKER",ticker)
 
     if (!ticker) {
     this._logger.debug('no ticker found; scrapping...')
     const scrappedTicker = await this.tickerScrapper.getTickerData(name)
-    const newTicker = new this.tickerModel(scrappedTicker)
-    newTicker.save()
+    console.log("ZESKRAPOWANY",scrappedTicker)
+     ticker = new this.tickerModel(scrappedTicker)
+    console.log("Model",ticker)
+    await ticker.save()
+
     // todo co z tym xd
   } else/* if (!isToday(ticker.date))*/ {
     this._logger.debug('ticker found with obsolete data; scrapping...')
@@ -37,15 +40,15 @@ export class TickersService {
 
     ticker.price=scrappedTicker.newPrice
     ticker.date=scrappedTicker.newDate
-    ticker.save()
+    await ticker.save()
 
+    removeMongoProperties(ticker)
   }
 
   
   // const newTicker = {name:ticker.name,price:ticker.price,currency:ticker.currency,date:ticker.date}
   // delete ticker['__v']
   // delete ticker['_id']
-  removeMongoProperties(ticker)
 
     this._logger.debug('returning ticker:',ticker)
     return ticker;

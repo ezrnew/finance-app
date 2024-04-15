@@ -9,6 +9,7 @@ import { CatsModule } from './cats/cats.module';
 import { TickersModule } from './tickers/tickers.module';
 import { SchedulerService } from './scheduler/scheduler.service';
 import { SchedulerModule } from './scheduler/scheduler.module';
+import { BondsModule } from './bonds/bonds.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { SchedulerModule } from './scheduler/scheduler.module';
     ScrapperModule,
     CatsModule,
     TickersModule,
-    SchedulerModule
+    SchedulerModule,
+    BondsModule
   ],
   controllers: [],
   providers: [],

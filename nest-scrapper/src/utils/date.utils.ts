@@ -101,3 +101,9 @@ export const getMonthShortNameByNumber = (num:monthNumber) => {
       return "dec";
   }
 };
+
+export const getMonthNumberBefore = (month:number,num:number)=>{
+
+  return month-num>0 ? month-num : month-num+12
+
+}
