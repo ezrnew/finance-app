@@ -120,10 +120,68 @@ const edoHistoryczne=[
   {id:"EDO0727",firstYear:2.7,margin:1.5},
   {id:"EDO0627",firstYear:2.7,margin:1.5},
   {id:"EDO0527",firstYear:2.7,margin:1.5},
-  // tu sie gnuj zaczyna   https://www.obligacjeskarbowe.pl/listy-emisyjne/?id=edo0427
-  {id:"EDO0427",firstYear:2.7,margin:1.5},
-  {id:"EDO0327",firstYear:2.7,margin:1.5},
-  {id:"EDO0227",firstYear:2.7,margin:1.5},
-  {id:"EDO0127",firstYear:2.7,margin:1.5},
+
+]
+
+//coi(4) historyczne
+
+const coiHistoryczne=[
+  { id: 'COI0428', firstYear: 6.55, margin: 1.25 },
+  { id: 'COI0328', firstYear: 6.55, margin: 1.25 },
+  { id: 'COI0228', firstYear: 6.55, margin: 1.25 },
+  { id: 'COI0128', firstYear: 6.65, margin: 1.25 },
+
+  { id: 'COI1227', firstYear: 6.75, margin: 1.25 },
+  { id: 'COI1127', firstYear: 6.75, margin: 1.25 },
+  { id: 'COI1027', firstYear: 7, margin: 1.25 },
+  { id: 'COI0927', firstYear: 7, margin: 1 },
+  { id: 'COI0827', firstYear: 7, margin: 1 },
+  { id: 'COI0727', firstYear: 7, margin: 1 },
+  { id: 'COI0627', firstYear: 7, margin: 1 },
+  { id: 'COI0527', firstYear: 7, margin: 1 },
+  { id: 'COI0427', firstYear: 7, margin: 1 },
+  { id: 'COI0327', firstYear: 7, margin: 1 },
+  { id: 'COI0227', firstYear: 7, margin: 1 },
+  { id: 'COI0127', firstYear: 7, margin: 1 },
+  
+  { id: 'COI1226', firstYear: 7, margin: 1 },
+  { id: 'COI1126', firstYear: 7, margin: 1 },
+  { id: 'COI1026', firstYear: 7, margin: 1 },
+  { id: 'COI0926', firstYear: 6.50, margin: 1 },
+  { id: 'COI0826', firstYear: 6.50, margin: 1 },
+  { id: 'COI0726', firstYear: 6, margin: 1 },
+  { id: 'COI0626', firstYear: 5.50, margin: 1 },
+  { id: 'COI0526', firstYear: 3.30, margin: 1 },
+  { id: 'COI0426', firstYear: 2.30, margin: 1 },
+  { id: 'COI0326', firstYear: 1.8, margin: 1 },
+  { id: 'COI0226', firstYear: 1.8, margin: 1 },
+  { id: 'COI0126', firstYear: 1.3, margin: 0.75 },
+
+  { id: 'COI1225', firstYear: 1.3, margin: 0.75 },
+  { id: 'COI1125', firstYear: 1.3, margin: 0.75 },
+  { id: 'COI1025', firstYear: 1.3, margin: 0.75 },
+  { id: 'COI0925', firstYear: 1.3, margin: 0.75 },
+  { id: 'COI0825', firstYear: 1.3, margin: 0.75 },
+  { id: 'COI0725', firstYear: 1.3, margin: 0.75 },
+  { id: 'COI0625', firstYear: 1.3, margin: 0.75 },
+  { id: 'COI0525', firstYear: 1.3, margin: 0.75 },
+  { id: 'COI0425', firstYear: 1.3, margin: 0.75 },
+  { id: 'COI0325', firstYear: 1.3, margin: 0.75 },
+  { id: 'COI0225', firstYear: 1.3, margin: 0.75 },
+  { id: 'COI0125', firstYear: 1.3, margin: 0.75 },
+
+  { id: 'COI1224', firstYear: 1.3, margin: 0.75 },
+  { id: 'COI1124', firstYear: 1.3, margin: 0.75 },
+  { id: 'COI1024', firstYear: 1.3, margin: 0.75 },
+  { id: 'COI0924', firstYear: 1.3, margin: 0.75 },
+  { id: 'COI0824', firstYear: 1.3, margin: 0.75 },
+  { id: 'COI0724', firstYear: 1.3, margin: 0.75 },
+  { id: 'COI0624', firstYear: 1.3, margin: 0.75 },
+  { id: 'COI0524', firstYear: 1.3, margin: 0.75 },
+  { id: 'COI0424', firstYear: 2.4, margin: 1.25 },
+  { id: 'COI0324', firstYear: 2.4, margin: 1.25 },
+  { id: 'COI0224', firstYear: 2.4, margin: 1.25 },
+  { id: 'COI0124', firstYear: 2.4, margin: 1.25 }
+
 
 ]

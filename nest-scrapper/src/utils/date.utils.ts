@@ -107,3 +107,9 @@ export const getMonthNumberBefore = (month:number,num:number)=>{
   return month-num>0 ? month-num : month-num+12
 
 }
+
+export const validateOlderMonth = (firstMonth:monthNumber,secondMonth:monthNumber) =>{
+
+  
+
+}
