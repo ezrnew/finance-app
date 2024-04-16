@@ -185,3 +185,44 @@ const coiHistoryczne=[
 
 
 ]
+//(6)
+const rosHistoryczne = [
+  { id: 'ROS0430', firstYear: 6.75, margin: 1.75 },
+  { id: 'ROS0330', firstYear: 6.75, margin: 1.75 },
+  { id: 'ROS0230', firstYear: 6.75, margin: 1.75 },
+  { id: 'ROS0130', firstYear: 6.85, margin: 1.75 },
+
+  { id: 'ROS1229', firstYear: 6.95, margin: 1.75 },
+  { id: 'ROS1129', firstYear: 6.95, margin: 1.75 },
+  { id: 'ROS1029', firstYear: 7.20, margin: 1.75 },
+  { id: 'ROS0929', firstYear: 7.20, margin: 1.50 },
+  { id: 'ROS0829', firstYear: 7.20, margin: 1.50 },
+  { id: 'ROS0729', firstYear: 7.20, margin: 1.50 },
+  { id: 'ROS0629', firstYear: 7.20, margin: 1.50 },
+  { id: 'ROS0529', firstYear: 7.20, margin: 1.50 },
+  { id: 'ROS0429', firstYear: 7.20, margin: 1.50 },
+  { id: 'ROS0329', firstYear: 7.20, margin: 1.50 },
+  { id: 'ROS0229', firstYear: 7.20, margin: 1.50 },
+  { id: 'ROS0129', firstYear: 7.20, margin: 1.50 },
+]
+
+//(12)
+const rodHistoryczne = [
+  { id: 'ROD0436', firstYear: 7.05, margin: 2 },
+  { id: 'ROD0336', firstYear: 7.05, margin: 2 },
+  { id: 'ROD0236', firstYear: 7.05, margin: 2 },
+  { id: 'ROD0136', firstYear: 7.15, margin: 2 },
+
+  { id: 'ROD1235', firstYear: 7.25, margin: 2 },
+  { id: 'ROD1135', firstYear: 7.25, margin: 2 },
+  { id: 'ROD1035', firstYear: 7.50, margin: 2 },
+  { id: 'ROD0935', firstYear: 7.50, margin: 1.75 },
+  { id: 'ROD0835', firstYear: 7.50, margin: 1.75 },
+  { id: 'ROD0735', firstYear: 7.50, margin: 1.75 },
+  { id: 'ROD0635', firstYear: 7.50, margin: 1.75 },
+  { id: 'ROD0535', firstYear: 7.50, margin: 1.75 },
+  { id: 'ROD0435', firstYear: 7.50, margin: 1.75 },
+  { id: 'ROD0335', firstYear: 7.50, margin: 1.75 },
+  { id: 'ROD0235', firstYear: 7.50, margin: 1.75 },
+  { id: 'ROD0135', firstYear: 7.50, margin: 1.75 },
+]

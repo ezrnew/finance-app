@@ -1,12 +1,22 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { CPIService } from '../general/cpi/cpi.service';
-import { getMonthNumberBefore, getMonthShortNameByNumber, monthNumber, validateOlderMonth } from '../utils/date.utils';
+import {
+  getMonthNumberBefore,
+  getMonthShortNameByNumber,
+  monthNumber,
+  validateOlderMonth,
+} from '../utils/date.utils';
 import { Model } from 'mongoose';
 import { Cpi } from '../general/cpi/schemas/cpi.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Coi, Edo } from './schemas/bonds.polishTreasury';
-import { addPercentageRate, calculateCummulatedRate, calculateYearRateByDaysPassed } from '../utils/math.utils';
+import {
+  addPercentageRate,
+  calculateCummulatedRate,
+  calculateYearRateByDaysPassed,
+} from '../utils/math.utils';
+import { BondFactory, CoiFactory, EdoFactory } from './polishTreasury.factory';
 
 //stalokuponowe
 //oprocentowane stopa refer
@@ -14,35 +24,36 @@ import { addPercentageRate, calculateCummulatedRate, calculateYearRateByDaysPass
 @Injectable()
 export class PolishTreasury {
   //   constructor(private readonly cpiService: CPIService) {}
-  constructor(@InjectModel(Cpi.name) private cpiModel: Model<Cpi>,
-  @InjectModel(Edo.name) private edoModel: Model<Edo>,
-  @InjectModel(Coi.name) private coiModel: Model<Coi>,
-) {}
+  constructor(
+    @InjectModel(Cpi.name) private cpiModel: Model<Cpi>,
+    private readonly bondFactoryCreator: BondFactory,
+    // private readonly coiFactory: CoiFactory,
+    // // @InjectModel(Edo.name) private edoModel: Model<Edo>,
+    // // @InjectModel(Coi.name) private coiModel: Model<Coi>,
+  ) {}
 
   private readonly logger = new Logger(PolishTreasury.name);
-  private readonly bondTypes = {
-    fixed:[
-      {id:'OTS',length:3},//todo hardcode this in months in handler
-      {id:'TOS', length:3}
-    ],
-    reference:[
-      {id:'ROR', length:1},
-      {id:'DOR', length:2}
-    ],
-    cpi:[
-      {id:'COI', length:4},
-      {id:'ROS', length:6},
-      {id:'EDO', length:10},
-      {id:'ROD', length:12},
-    ]
+  // private readonly bondTypes = {
+  //   fixed: [
+  //     { id: 'OTS', length: 3 }, //todo hardcode this in months in handler
+  //     { id: 'TOS', length: 3 },
+  //   ],
+  //   reference: [
+  //     { id: 'ROR', length: 1 },
+  //     { id: 'DOR', length: 2 },
+  //   ],
+  //   cpi: [
+  //     { id: 'COI', length: 4 },
+  //     { id: 'ROS', length: 6 },
+  //     { id: 'EDO', length: 10 },
+  //     { id: 'ROD', length: 12 },
+  //   ],
+  // } as const;
 
-
-  } as const
-
-  async handleBond(bondString: string,day?:number) {
+  async handleBond(bondString: string, day?: number) {
     //todo validate dayOfMonth
-    const dayOfMonth = day || 1
-    console.log("dobry dzien",dayOfMonth)
+    const dayOfMonth = day || 1;
+    console.log('dobry dzien', dayOfMonth);
 
     const result = this.validateBond(bondString);
     if (!result) return false;
@@ -50,153 +61,164 @@ export class PolishTreasury {
     const { type, month, year } = result;
     console.log('RESULT', type, month, year);
 
+    const bondFactory = this.bondFactoryCreator.getBondFactory(type);
 
-    const {kind,lengthInYears} = this.getBondData(type)
-    
-    if(kind === "cpi"){
-      return await this.calculateCpiIndexed(bondString,lengthInYears,dayOfMonth,month,year)
+    // const { kind, lengthInYears } = this.getBondData(type);
+    const globalType = bondFactory.getGlobalType();
+
+    if (globalType === 'cpi') {
+      return await this.calculateCpiIndexed(
+        bondString,
+        bondFactory.getLengthInMonths() / 12,
+        bondFactory.getModel(),
+        dayOfMonth,
+        month,
+        year,
+      );
     }
 
-    if(kind === "reference"){
+    if (globalType === 'reference') {
       //todo implement
-      return 2137
+      return 2137;
     }
-    if(kind === "fixed"){
+    if (globalType === 'fixed') {
       // todo implement
-      return 2137
+      return 2137;
     }
-
-
 
     //todo type SOLID
   }
 
-
-
-
-
-  private async calculateCpiIndexed(bondString:string,lengthInYears:number,dayOfMonth:number,month: number, endYear: number) {
-
+  private async calculateCpiIndexed(
+    bondString: string,
+    lengthInYears: number,
+    dbModel: Model<Edo | Coi>,
+    dayOfMonth: number,
+    month: number,
+    endYear: number,
+  ) {
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear() - 2000;
     const currentMonth = currentDate.getMonth() + 1;
     const currentDayOfMonth = currentDate.getDate();
 
-    const startDate = new Date(endYear+2000-lengthInYears,month-1,dayOfMonth)
-    const endDate = new Date(endYear+2000,month-1,dayOfMonth)
-    console.log("STARTDATE",startDate.toLocaleDateString())
-
+    const startDate = new Date(endYear + 2000 - lengthInYears, month - 1, dayOfMonth);
+    const endDate = new Date(endYear + 2000, month - 1, dayOfMonth);
+    console.log('STARTDATE', startDate.toLocaleDateString());
 
     //todo add validation before getRate function
     //cannot evaluate bonds starting in future
-    if(currentDate<startDate){
-      console.log("futura ")
-      return false
+    if (currentDate < startDate) {
+      console.log('futura ');
+      return false;
     }
 
-    
     // let monthShortName = getMonthShortNameByNumber(month as monthNumber)
-    const cpiMonth = getMonthShortNameByNumber(getMonthNumberBefore(month,2) as monthNumber)
+    const cpiMonth = getMonthShortNameByNumber(getMonthNumberBefore(month, 2) as monthNumber);
     // console.log("CPI",cpiMonth)
-    
-    let query:any = {}
-    let endYearFull = endYear+2000
+
+    let query: any = {};
+    let endYearFull = endYear + 2000;
     //todo are dates 100% correct?
     if (endDate > currentDate) {
-      query.year = { $gt: endYearFull - lengthInYears };
+      query.year = { $gt: endYearFull-1 - lengthInYears };
     } else {
-      query.year = { $gte: endYearFull+1 - lengthInYears, $lt: endYearFull };
+      query.year = { $gte: endYearFull + 1 - lengthInYears, $lt: endYearFull };
     }
 
     /* EDO VALUES */
-    const edoValues = await this.edoModel.findOne({ id: bondString.toUpperCase()})
+    const bondData = await dbModel.findOne({ id: bondString.toUpperCase() });
 
-    if (!edoValues){
-      this.logger.warn("cant get data for "+bondString)
-      return false
+    if (!bondData) {
+      this.logger.warn('cant get data for ' + bondString);
+      return false;
     }
-    const {firstYear,margin} = edoValues
-    console.log("EDO VALS",firstYear,margin)
+    const { firstYear, margin } = bondData;
+    console.log('BOND VALS', firstYear, margin);
     /* EDO VALUES */
 
+    const cpiArrayQuery = await this.cpiModel.find(query);
+    console.log('CPIPLS', cpiArrayQuery);
+    const cpiArrayUnfiltered = [];
+    cpiArrayQuery.forEach((item) => {
+      cpiArrayUnfiltered.push(item[cpiMonth]);
+    });
 
+    const cpiArray = cpiArrayUnfiltered.filter((n) => n);
 
-    const cpiArrayQuery = await this.cpiModel.find(query)
-    console.log("CPIPLS",cpiArrayQuery)
-    const cpiArrayUnfiltered = []
-    cpiArrayQuery.forEach(item =>{
-      cpiArrayUnfiltered.push(item[cpiMonth])
-    })
+    console.log('CPI ARRAY', cpiArray);
 
-    
-    const cpiArray =cpiArrayUnfiltered.filter(n=>n)
-    
-    console.log("CPI ARRAY",cpiArray)
-
-    //
-    if(cpiArray.length===0){
-        //NO DATA FOR CPI,RETURN CURRENT NON-FULL YEAR
-        return calculateYearRateByDaysPassed(100,firstYear,new Date(endYear+2000-lengthInYears,month-1,dayOfMonth))
-      }
-    
-    const lastCpi = {year:cpiArrayQuery[cpiArrayQuery.length-1].year, month:cpiArrayQuery[cpiArrayQuery.length-1][cpiMonth]}
-    console.log("OSTATNI WYNIK CPI",lastCpi)
-    
-
-
-    const cpiPlusMargin = cpiArray.map(item => item<0 ? 0+margin : item+margin)
-
-
-
-
-  //PREPARE DATA
-  console.log("curr month i monthliczony",currentMonth,month-2)
-
-  
-  // if(validateOlderMonth(currentMonth,month-2)){
-  //   console.log("obecny jest starszy niż EDO")
-  // }
-  // if(month)
-let lastRate
-//zarówno w przypadku jak znana jak i nieznana popuje bo muszę wyliczyć niecały rok za ostatnią
-    if(endDate > currentDate/* && lastCpi.month!=null*/){
-      console.log("jezeli rok wiekszy")
-      lastRate =cpiPlusMargin.pop()
-    // console.log("popek",popek)
+    //todo check if days<365
+    if (cpiArray.length === 0  ) {
+      //NO DATA FOR CPI,RETURN CURRENT NON-FULL YEAR
+      // console.log("returning single year")
+      return calculateYearRateByDaysPassed(
+        100,
+        firstYear,
+        new Date(endYear + 2000 - lengthInYears, month - 1, dayOfMonth),
+      );
     }
 
+    const n = (cpiMonth === "jan" || cpiMonth ==="feb") ? 2 : 1
+    const lastCpi = {
+      year: cpiArrayQuery[cpiArrayQuery.length - n].year,
+      month: cpiArrayQuery[cpiArrayQuery.length - n][cpiMonth],
+    };
+    console.log('OSTATNI WYNIK CPI', lastCpi);
 
-    console.log("CPI PLUS MARG",cpiPlusMargin)
+    const cpiPlusMargin = cpiArray.map((item) => (item < 0 ? 0 + margin : item + margin));
+
+    //PREPARE DATA
+    console.log('curr month i monthliczony', currentMonth, month - 2);
+
+    // if(validateOlderMonth(currentMonth,month-2)){
+    //   console.log("obecny jest starszy niż EDO")
+    // }
+    // if(month)
+    let lastRate;
+    //zarówno w przypadku jak znana jak i nieznana popuje bo muszę wyliczyć niecały rok za ostatnią
+    if (endDate > currentDate /* && lastCpi.month!=null*/) {
+      console.log('jezeli rok wiekszy');
+      lastRate = cpiPlusMargin.pop();
+      // console.log("popek",popek)
+    }
+
+    console.log('CPI PLUS MARG after eventual pop()', cpiPlusMargin);
 
     //CALCULATE
-    let years = lengthInYears
-    
-    let returnRate = 100
+    let years = lengthInYears;
 
-    console.log("lastRate",lastRate)
-    
-    returnRate = addPercentageRate(returnRate,firstYear)
-    years = years-1
-    console.log("after first year:",returnRate)
+    let returnRate = 100;
 
-    returnRate = calculateCummulatedRate(returnRate,cpiPlusMargin.length,cpiPlusMargin)
-    years= years-cpiPlusMargin.length
+    console.log('lastRate', lastRate);
 
-    if(endDate > currentDate){
-      returnRate=calculateYearRateByDaysPassed(returnRate,lastRate,new Date(endYear+2000-years,month-1,dayOfMonth))
+    returnRate = addPercentageRate(returnRate, firstYear);
+    years = years - 1;
+    console.log('after first year:', returnRate);
+
+    console.log("cummulated rate:",returnRate,cpiPlusMargin.length,cpiPlusMargin)
+
+    //?
+    if(cpiPlusMargin.length>0){
+
+      returnRate = calculateCummulatedRate(returnRate, cpiPlusMargin.length, cpiPlusMargin);
+      years = years - cpiPlusMargin.length;
     }
 
-    console.log("pozostalo lat:",years)
+    if (endDate > currentDate) {
+      returnRate = calculateYearRateByDaysPassed(
+        returnRate,
+        lastRate,
+        new Date(endYear + 2000 - years, month - 1, dayOfMonth),
+      );
+    }
 
-    console.log("return rate:",returnRate)
+    console.log('pozostalo lat:', years);
 
-    return 3
+    console.log('return rate:', returnRate);
 
-
+    return 3;
   }
-
-
-
 
   private validateBond(bondString: string) {
     if (bondString.length != 7) {
@@ -204,6 +226,7 @@ let lastRate
       return false;
     }
 
+    //todo extract to factory
     const availableTypes = ['ROR', 'DOR', 'TOS', 'COI', 'EDO', 'ROS', 'ROD'];
 
     const type = bondString.slice(0, 3).toUpperCase();
@@ -217,31 +240,28 @@ let lastRate
       isNaN(year) ||
       year < 20 //todo currently no support for older ones
     ) {
-      console.log('invalid type',month,year);
+      console.log('invalid type', month, year);
       return false;
     }
 
     return { type, month, year };
   }
 
-  private getBondData(type:string){
+  // private getBondData(type: string) {
+  //   let bondData: { id: string; length: number };
+  //   let bondRate: 'fixed' | 'reference' | 'cpi';
 
-    let bondData: {id:string,length:number};
-    let bondRate:  'fixed' | 'reference' | 'cpi';
+  //   for (const key in this.bondTypes) {
+  //     if (Object.prototype.hasOwnProperty.call(this.bondTypes, key)) {
+  //       const array = this.bondTypes[key];
+  //       bondData = array.find((item) => item.id === type);
+  //       if (bondData) {
+  //         bondRate = key as typeof bondRate;
+  //         break;
+  //       }
+  //     }
+  //   }
 
-    for (const key in this.bondTypes) {
-      if (Object.prototype.hasOwnProperty.call(this.bondTypes, key)) {
-        const array = this.bondTypes[key];
-        bondData = array.find(item => item.id === type);
-        if (bondData) {
-          bondRate = key as typeof bondRate;
-          break;
-        }
-      }
-    }
-
-
-    return {kind:bondRate, lengthInYears:bondData.length}
-  }
-
+  //   return { kind: bondRate, lengthInYears: bondData.length };
+  // }
 }

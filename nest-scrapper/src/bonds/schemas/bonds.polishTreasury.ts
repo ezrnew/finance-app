@@ -36,4 +36,35 @@ export class Coi {
 export const CoiSchema = SchemaFactory.createForClass(Coi);
 
 
-// other PT schemas
+export type RosDocument = HydratedDocument<Ros>;
+
+@Schema({collection:"bonds_PLtr_ros"})
+export class Ros {
+  @Prop()
+  id: string;
+
+  @Prop()
+  firstYear: number;
+
+  @Prop()
+  margin: number;
+}
+
+export const RosSchema = SchemaFactory.createForClass(Ros);
+
+
+export type RodDocument = HydratedDocument<Rod>;
+
+@Schema({collection:"bonds_PLtr_rod"})
+export class Rod {
+  @Prop()
+  id: string;
+
+  @Prop()
+  firstYear: number;
+
+  @Prop()
+  margin: number;
+}
+
+export const RodSchema = SchemaFactory.createForClass(Rod);
