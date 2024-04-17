@@ -14,7 +14,7 @@ interface PolishTreasuryFactory {
 }
 
 @Injectable()
-export class EdoFactory implements PolishTreasuryFactory {
+export class EdoConcrete implements PolishTreasuryFactory {
   constructor(@InjectModel(Edo.name) private edoModel: Model<Edo>) {}
 
   getModel(): Model<Edo> {
@@ -31,7 +31,7 @@ export class EdoFactory implements PolishTreasuryFactory {
 }
 
 @Injectable()
-export class CoiFactory implements PolishTreasuryFactory {
+export class CoiConcrete implements PolishTreasuryFactory {
   constructor(@InjectModel(Coi.name) private coiModel: Model<Coi>) {}
 
   getModel(): Model<Coi> {
@@ -47,7 +47,7 @@ export class CoiFactory implements PolishTreasuryFactory {
 }
 
 @Injectable()
-export class RosFactory implements PolishTreasuryFactory {
+export class RosConcrete implements PolishTreasuryFactory {
   constructor(@InjectModel(Ros.name) private rosModel: Model<Ros>) {}
 
   getModel(): Model<Ros> {
@@ -63,7 +63,7 @@ export class RosFactory implements PolishTreasuryFactory {
 }
 
 @Injectable()
-export class RodFactory implements PolishTreasuryFactory {
+export class RodConcrete implements PolishTreasuryFactory {
   constructor(@InjectModel(Rod.name) private rodModel: Model<Rod>) {}
 
   getModel(): Model<Rod> {
@@ -79,7 +79,7 @@ export class RodFactory implements PolishTreasuryFactory {
 }
 
 @Injectable()
-export class OtsFactory implements PolishTreasuryFactory {
+export class OtsConcrete implements PolishTreasuryFactory {
   constructor(@InjectModel(Ots.name) private otsModel: Model<Ots>) {}
 
   getModel(): Model<Ots> {
@@ -95,7 +95,7 @@ export class OtsFactory implements PolishTreasuryFactory {
 }
 
 @Injectable()
-export class TosFactory implements PolishTreasuryFactory {
+export class TosConcrete implements PolishTreasuryFactory {
   constructor(@InjectModel(Tos.name) private tosModel: Model<Tos>) {}
 
   getModel(): Model<Tos> {
@@ -113,12 +113,12 @@ export class TosFactory implements PolishTreasuryFactory {
 @Injectable()
 export class BondFactory {
   constructor(
-    private readonly edoFactory: EdoFactory,
-    private readonly coiFactory: CoiFactory,
-    private readonly rosFactory: RosFactory,
-    private readonly rodFactory: RodFactory,
-    private readonly otsFactory: OtsFactory,
-    private readonly tosFactory: TosFactory,
+    private readonly edoFactory: EdoConcrete,
+    private readonly coiFactory: CoiConcrete,
+    private readonly rosFactory: RosConcrete,
+    private readonly rodFactory: RodConcrete,
+    private readonly otsFactory: OtsConcrete,
+    private readonly tosFactory: TosConcrete,
   ) {}
 
   getBondFactory(bondType: string): PolishTreasuryFactory {

@@ -146,3 +146,25 @@ export function subtractMonthsFromDate(date: Date, months: number): Date {
   newDate.setMonth(date.getMonth() - months);
   return newDate;
 }
+
+
+
+export function isValidDayOfMonth(year: number, month: number, day: number): boolean {
+  if (month < 1 || month > 12) {
+      return false; 
+  }
+
+  if (month === 2) {
+      if ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0) {
+          return day >= 1 && day <= 29;
+      } else {
+          return day >= 1 && day <= 28; 
+      }
+  }
+
+  if ([4, 6, 9, 11].includes(month)) {
+      return day >= 1 && day <= 30;
+  }
+
+  return day >= 1 && day <= 31;
+}

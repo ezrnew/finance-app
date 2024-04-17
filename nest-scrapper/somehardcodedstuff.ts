@@ -1,4 +1,6 @@
-// inflacja pl
+// data to populate initial db 
+
+
 const inflacjapl = [
   {"year":2000,"jan":10.1,"feb":10.4,"mar":10.3,"apr":9.8,"may":10,"jun":10.2,"jul":11.6,"aug":10.7,"sep":10.3,"oct":9.9,"nov":9.3,"dec":8.5},
   {"year":2001,"jan":7.4,"feb":6.6,"mar":6.2,"apr":6.6,"may":6.9,"jun":6.2,"jul":5.2,"aug":5.1,"sep":4.3,"oct":4,"nov":3.6,"dec":3.6},

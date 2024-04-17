@@ -1,63 +1,36 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
-import { CPIService } from '../general/cpi/cpi.service';
-import {
-  getMonthNumberBefore,
-  getMonthShortNameByNumber,
-  monthNumber,
-  isDifferenceLessThanAYear,
-  isDateBeforeOtherDateIgnoringYear,
-  differenceInDays,
-} from '../utils/date.utils';
+import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Cpi } from '../general/cpi/schemas/cpi.schema';
-import { InjectModel } from '@nestjs/mongoose';
-import { Coi, Edo, Ots, Rod, Ros, Tos } from './schemas/bonds.polishTreasury';
+import {
+  differenceInDays,
+  getMonthNumberBefore,
+  getMonthShortNameByNumber,
+  isDateBeforeOtherDateIgnoringYear,
+  isDifferenceLessThanAYear,
+  isValidDayOfMonth,
+  monthNumber,
+} from '../utils/date.utils';
 import {
   addPercentageRate,
   calculateConstantRate,
   calculateCummulatedRate,
   calculateYearRateByDaysPassed,
 } from '../utils/math.utils';
-import { BondFactory, CoiFactory, EdoFactory } from './polishTreasury.factory';
-
-//stalokuponowe
-//oprocentowane stopa refer
-//indeksowane inflacja
+import { BondFactory } from './polishTreasury.factory';
+import { Coi, Edo, Ots, Rod, Ros, Tos } from './schemas/bonds.polishTreasury';
 @Injectable()
 export class PolishTreasury {
-  //   constructor(private readonly cpiService: CPIService) {}
   constructor(
     @InjectModel(Cpi.name) private cpiModel: Model<Cpi>,
     private readonly bondFactoryCreator: BondFactory,
-    // private readonly coiFactory: CoiFactory,
-    // // @InjectModel(Edo.name) private edoModel: Model<Edo>,
-    // // @InjectModel(Coi.name) private coiModel: Model<Coi>,
   ) {}
 
   private readonly logger = new Logger(PolishTreasury.name);
-  // private readonly bondTypes = {
-  //   fixed: [
-  //     { id: 'OTS', length: 3 }, //todo hardcode this in months in handler
-  //     { id: 'TOS', length: 3 },
-  //   ],
-  //   reference: [
-  //     { id: 'ROR', length: 1 },
-  //     { id: 'DOR', length: 2 },
-  //   ],
-  //   cpi: [
-  //     { id: 'COI', length: 4 },
-  //     { id: 'ROS', length: 6 },
-  //     { id: 'EDO', length: 10 },
-  //     { id: 'ROD', length: 12 },
-  //   ],
-  // } as const;
 
   async handleBond(bondString: string, day?: number, hasIke?: boolean) {
-    //todo validate dayOfMonth
     const dayOfMonth = day || 1;
-    const ike = hasIke || false;
-    // console.log('dobry dzien', dayOfMonth);
+    const ike = hasIke || false; //todo
 
     const result = this.validateBond(bondString);
     if (!result) return false;
@@ -67,7 +40,10 @@ export class PolishTreasury {
 
     const bondFactory = this.bondFactoryCreator.getBondFactory(type);
 
-    // const { kind, lengthInYears } = this.getBondData(type);
+    if (!isValidDayOfMonth(year - Math.floor(bondFactory.getLengthInMonths() / 12), month, dayOfMonth))
+      return false;
+    // this.logger.warn("invalid day of month:"+dayOfMonth+"_"+month+"_"+(2000+year-(Math.floor(bondFactory.getLengthInMonths()/12)))
+
     const globalType = bondFactory.getGlobalType();
 
     if (globalType === 'cpi') {
@@ -84,7 +60,7 @@ export class PolishTreasury {
 
     if (globalType === 'reference') {
       //todo implement
-      return 2137;
+      return 0;
     }
     if (globalType === 'fixed') {
       return await this.calculateFixed(
@@ -119,9 +95,7 @@ export class PolishTreasury {
     }
 
     const bondRate = bondData.rate;
-
     const daysToEnd = differenceInDays(endDate, currentDate);
-
     let rate = 100;
 
     if (daysToEnd <= 0) return rate + (rate * ((bondRate * lengthInMonths) / 12)) / 100;
@@ -130,7 +104,6 @@ export class PolishTreasury {
     startDate.setMonth(endDate.getMonth() - lengthInMonths);
 
     const daysSinceStart = differenceInDays(currentDate, startDate);
-
     const daysPercentage = daysSinceStart / (daysSinceStart + daysToEnd);
 
     return rate + daysPercentage * ((bondRate * lengthInMonths) / 12);
@@ -201,19 +174,12 @@ export class PolishTreasury {
 
     if (cpiArray.length === 0) {
       //NO DATA FOR CPI,RETURN CURRENT NON-FULL YEAR
-      // console.log("returning single year")
       return calculateYearRateByDaysPassed(
         100,
         firstYear,
         new Date(endYear + 2000 - lengthInYears, month - 1, dayOfMonth),
       );
     }
-
-    // const lastCpi = {
-    //   year: cpiArrayQuery[cpiArrayQuery.length - n].year,
-    //   month: cpiArrayQuery[cpiArrayQuery.length - n][cpiMonth],
-    // };
-    // console.log('OSTATNI WYNIK CPI', lastCpi);
 
     let cpiPlusMargin = cpiArray.map((item) => (item < 0 ? 0 + margin : item + margin));
 
@@ -222,15 +188,13 @@ export class PolishTreasury {
         ? cpiPlusMargin.slice(1)
         : cpiPlusMargin;
 
-    //PREPARE DATA
     console.log('curr month i monthliczony', currentMonth, month - 2);
 
     let lastRate;
     //zarówno w przypadku jak znana jak i nieznana popuje bo muszę wyliczyć niecały rok za ostatnią
-    if (endDate > currentDate /* && lastCpi.month!=null*/) {
+    if (endDate > currentDate) {
       console.log('jezeli rok wiekszy');
       lastRate = cpiPlusMargin.pop();
-      // console.log("popek",popek)
     }
 
     console.log('CPI PLUS MARG after eventual pop()', cpiPlusMargin);
@@ -311,22 +275,4 @@ export class PolishTreasury {
 
     return { type, month, year };
   }
-
-  // private getBondData(type: string) {
-  //   let bondData: { id: string; length: number };
-  //   let bondRate: 'fixed' | 'reference' | 'cpi';
-
-  //   for (const key in this.bondTypes) {
-  //     if (Object.prototype.hasOwnProperty.call(this.bondTypes, key)) {
-  //       const array = this.bondTypes[key];
-  //       bondData = array.find((item) => item.id === type);
-  //       if (bondData) {
-  //         bondRate = key as typeof bondRate;
-  //         break;
-  //       }
-  //     }
-  //   }
-
-  //   return { kind: bondRate, lengthInYears: bondData.length };
-  // }
 }
