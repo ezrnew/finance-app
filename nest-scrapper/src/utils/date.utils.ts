@@ -1,5 +1,7 @@
 // type StringDate = `${number}-${number}-${number}`;
 
+import { ConsoleLogger } from "@nestjs/common";
+
 // type StringTime = `${number}:${number}:${number}`;
 
 // type StringDateType = `${StringDate}_${StringTime}`;
@@ -108,8 +110,39 @@ export const getMonthNumberBefore = (month:number,num:number)=>{
 
 }
 
-export const validateOlderMonth = (firstMonth:monthNumber,secondMonth:monthNumber) =>{
+export function isDifferenceLessThanAYear(date1: Date, date2: Date): boolean {
+  const oneYearInMilliseconds: number = 365 * 24 * 60 * 60 * 1000; 
+  const difference: number = Math.abs(date1.getTime() - date2.getTime());
+  return difference < oneYearInMilliseconds;
+}
 
-  
 
+export function isDateBeforeOtherDateIgnoringYear(date1: Date, date2: Date): boolean {
+  const adjustedDate1 = new Date(date1);
+  adjustedDate1.setFullYear(2000); 
+  const adjustedDate2 = new Date(date2);
+  adjustedDate2.setFullYear(2000); 
+
+  return adjustedDate1 < adjustedDate2;
+}
+
+
+
+export const differenceInDays = (date1:Date, date2: Date) => {
+
+  // console.log("daty",date1,date2)
+
+  const differenceMs = date1.getTime() - date2.getTime();
+
+  // console.log("diffms",differenceMs)
+  const differenceDays = Math.floor(differenceMs / (1000 * 60 * 60 * 24));
+
+  return differenceDays
+}
+
+
+export function subtractMonthsFromDate(date: Date, months: number): Date {
+  const newDate = new Date(date);
+  newDate.setMonth(date.getMonth() - months);
+  return newDate;
 }

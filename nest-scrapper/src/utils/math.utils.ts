@@ -12,6 +12,16 @@ export const calculateCummulatedRate = (amount, yearsLeft, cpiArr) => {
     );
 };
 
+export const calculateConstantRate = (amount, cpiArr) => {
+    
+    let newAmount=amount
+    cpiArr.forEach(element => {
+        newAmount+=element
+    });
+
+    return newAmount
+  };
+
 export const calculateYearRateByDaysPassed = (value: number, rate: number, lastYearStartDate: Date) => {
   const currentDate = new Date();
 

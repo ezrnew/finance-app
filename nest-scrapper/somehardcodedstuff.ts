@@ -226,3 +226,33 @@ const rodHistoryczne = [
   { id: 'ROD0235', firstYear: 7.50, margin: 1.75 },
   { id: 'ROD0135', firstYear: 7.50, margin: 1.75 },
 ]
+
+const otsHistoryczne = [
+  { id: 'OTS0724', rate: 3 },
+  { id: 'OTS0624', rate: 3 },
+  { id: 'OTS0524', rate: 3 },
+  { id: 'OTS0424', rate: 3 },
+  { id: 'OTS0324', rate: 3 },
+  { id: 'OTS0224', rate: 3 },
+  { id: 'OTS0124', rate: 3 },
+]
+
+const tosHistoryczne = [
+  { id: 'TOS0427', rate: 6.4 },
+  { id: 'TOS0327', rate: 6.4 },
+  { id: 'TOS0227', rate: 6.4 },
+  { id: 'TOS0127', rate: 6.5 },
+
+  { id: 'TOS1226', rate: 6.6 },
+  { id: 'TOS1126', rate: 6.6 },
+  { id: 'TOS1026', rate: 6.85 },
+  { id: 'TOS0926', rate: 6.85 },
+  { id: 'TOS0826', rate: 6.85 },
+  { id: 'TOS0726', rate: 6.85 },
+  { id: 'TOS0626', rate: 6.85 },
+  { id: 'TOS0526', rate: 6.85 },
+  { id: 'TOS0426', rate: 6.85 },
+  { id: 'TOS0326', rate: 6.85 },
+  { id: 'TOS0226', rate: 6.85 },
+  { id: 'TOS0126', rate: 6.85 },
+]

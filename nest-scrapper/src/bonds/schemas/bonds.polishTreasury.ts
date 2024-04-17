@@ -68,3 +68,34 @@ export class Rod {
 }
 
 export const RodSchema = SchemaFactory.createForClass(Rod);
+
+
+// fixed
+
+export type OtsDocument = HydratedDocument<Ots>;
+
+@Schema({collection:"bonds_PLtr_ots"})
+export class Ots {
+  @Prop()
+  id: string;
+
+  @Prop()
+  rate: number;
+}
+
+export const OtsSchema = SchemaFactory.createForClass(Ots);
+
+
+
+export type TosDocument = HydratedDocument<Tos>;
+
+@Schema({collection:"bonds_PLtr_tos"})
+export class Tos {
+  @Prop()
+  id: string;
+
+  @Prop()
+  rate: number;
+}
+
+export const TosSchema = SchemaFactory.createForClass(Tos);

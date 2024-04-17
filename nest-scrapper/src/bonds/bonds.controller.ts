@@ -7,11 +7,14 @@ export class BondsController {
 
     @Get('PLtr/:bond')
     async calculatePolishTreasury(@Param('bond') bond,
-    @Query('day') dayOfMonth: number,){
+    @Query('day') dayOfMonth: number,
+    @Query('ike') ike: boolean,
+
+){
 
         console.log("calculatingtreasury:",bond)
 
-        const result = await this.polishTreasury.handleBond(bond,dayOfMonth)
+        const result = await this.polishTreasury.handleBond(bond,dayOfMonth,ike)
 
         console.log("rezultat",result)
 
