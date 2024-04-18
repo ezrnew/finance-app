@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
+//todo firsYear -> firstPeriod
+
 export type EdoDocument = HydratedDocument<Edo>;
 
 @Schema({collection:"bonds_PLtr_edo"})

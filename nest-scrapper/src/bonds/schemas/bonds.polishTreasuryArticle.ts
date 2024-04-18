@@ -7,7 +7,7 @@ export type PltrArticleDocument = HydratedDocument<PLtrArticle>;
 export class PLtrArticle {
 
   @Prop()
-  text: number;
+  text: string;
 
 //   @Prop()
 //   date: Date;

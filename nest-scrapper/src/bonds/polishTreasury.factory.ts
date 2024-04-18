@@ -7,6 +7,8 @@ export type bondGlobalType = 'fixed' | 'reference' | 'cpi';
 
 // export type bondCpiType = Edo | Coi | Ros | Rod;
 // export type bondFixedType = Ots | Ots;
+
+//todo capitalization
 interface PolishTreasuryFactory {
   getModel(): Model<Edo | Coi | Ros | Rod | Ots | Ots>;
   getLengthInMonths(): number;

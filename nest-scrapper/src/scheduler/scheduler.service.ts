@@ -18,9 +18,9 @@ export class SchedulerService {
     this.cpiService.updateCPI_Polish();
   }
 
-    @Cron('*/20 * * * * *', { timeZone: 'Europe/Berlin' })
+  @Cron('04 16 * * *', { timeZone: 'Europe/Berlin' })
   checkForEmissionPLtr(): void {
-    this.logger.log('checking for polish treasury emission', new Date());
+    this.logger.log('checking for polish treasury emission');
 
     this.bondsService.updatePLtr();
   }
