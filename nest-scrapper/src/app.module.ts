@@ -10,6 +10,9 @@ import { TickersModule } from './tickers/tickers.module';
 import { SchedulerService } from './scheduler/scheduler.service';
 import { SchedulerModule } from './scheduler/scheduler.module';
 import { BondsModule } from './bonds/bonds.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { CurrenciesModule } from './currencies/currencies.module';
 
 @Module({
   imports: [
@@ -20,7 +23,10 @@ import { BondsModule } from './bonds/bonds.module';
     CatsModule,
     TickersModule,
     SchedulerModule,
-    BondsModule
+    BondsModule,
+    AuthModule,
+    UsersModule,
+    CurrenciesModule
   ],
   controllers: [],
   providers: [],

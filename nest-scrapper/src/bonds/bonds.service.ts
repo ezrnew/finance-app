@@ -26,7 +26,6 @@ export class BondsService {
     const articleText = (await this.polishTreasuryArticleModel.findOne()).text || ""
     const scrappedData = await this.polishTreasuryScrapper.getData(articleText)
 
-
     if(!scrappedData){
       this.logger.log("no new data availabe for PLtr")
       return
