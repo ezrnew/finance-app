@@ -21,11 +21,13 @@ export class PLtrScrapper {
 
     if (currentText === text) {
       //no new data
+      await browser.close();
       return false;
     }
 
     if (!text.includes(newEmissionText)) {
       //new article but no new emission
+      await browser.close();
       return { text };
     }
 
