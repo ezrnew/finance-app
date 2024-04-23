@@ -20,7 +20,7 @@ import { RegisterDto } from './dto/registerDto';
     @HttpCode(HttpStatus.OK)
     @Post('login')
     signIn(@Body() signInDto: SignInDto) {
-        // console.log("SIGN IN DTO",signInDto)
+        console.log("SIGN IN DTO",signInDto)
       return this.authService.signIn(signInDto.username, signInDto.password);
     }
 

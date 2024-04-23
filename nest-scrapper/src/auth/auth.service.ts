@@ -14,6 +14,7 @@ export class AuthService {
   async signIn(username: string, password: string): Promise<{ access_token: string }> {
     const user = await this.usersService.findOne(username);
 
+    console.log("URZYTKOWNIK",user)
     if (!user) throw new NotFoundException();
 
     console.log('USER', user);
@@ -21,10 +22,12 @@ export class AuthService {
     if (!(await bcrypt.compare(password, user.password))) {
       throw new UnauthorizedException();
     }
+    console.log("HASLO DZIALA")
     //? sub
     const payload = { sub: user.username, username: user.username };
     return {
-      access_token: await this.jwtService.signAsync(payload),
+      access_token:"huj"
+      // access_token: await this.jwtService.signAsync(payload),
     };
   }
 
@@ -32,8 +35,8 @@ export class AuthService {
   async register(email: string, username: string, password: string) {
     const existingUser = await this.usersService.findOneUsernameOrEmail(username, email);
     if (existingUser) {
-      if (existingUser.email === email) throw new ConflictException('Account with this email already exists');
-      if (existingUser.username === username) throw new ConflictException('Username taken');
+      if (existingUser.email === email) throw new ConflictException('email');
+      if (existingUser.username === username) throw new ConflictException('username');
     }
 
     this.usersService.create(email, username, await this.encryptPassword(password));
