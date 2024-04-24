@@ -1,7 +1,15 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 
-export const zalogowany = () => {
+export const DashboardPage = () => {
+
+    const navigate = useNavigate();
+
   return (
-    <div>zalogowany</div>
+
+
+
+
+    <button onClick={()=>{navigate('/drugi')}}>zalogowany</button>
   )
 }

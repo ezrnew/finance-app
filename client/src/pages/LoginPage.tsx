@@ -71,7 +71,21 @@ export const LoginPage = () => {
               </Button>
             </div>
             <div className="w-full">
-              <Button variant="outline" className="w-full">
+              <Button
+                type="button"
+                onClick={async () => {
+                  const res = await fetch(
+                    "http://localhost:2137/auth/profile",
+                    {
+                      credentials: "include",
+                      headers: { "Content-Type": "application/json" },
+                    }
+                  );
+                  console.log("RES", await res.json());
+                }}
+                variant="outline"
+                className="w-full"
+              >
                 {" "}
                 <img
                   alt="google logo"

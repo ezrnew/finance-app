@@ -3,6 +3,7 @@ import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterDto } from './dto/registerDto';
 import * as bcrypt from 'bcrypt';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -11,7 +12,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signIn(username: string, password: string): Promise<{ access_token: string }> {
+  async signIn(username: string, password: string,response:Response) {
     const user = await this.usersService.findOne(username);
 
     console.log("URZYTKOWNIK",user)
@@ -25,10 +26,15 @@ export class AuthService {
     console.log("HASLO DZIALA")
     //? sub
     const payload = { sub: user.username, username: user.username };
-    return {
-      access_token:"huj"
-      // access_token: await this.jwtService.signAsync(payload),
-    };
+    console.log('pejload',payload)
+    const jwt = await this.jwtService.signAsync(payload)
+
+    console.log("jwt",jwt)
+    // response.statusCode=200
+    // response.cookie('definitelynotasecrettoken',jwt)
+
+    return jwt
+
   }
 
   //todo class validation not working

@@ -9,7 +9,7 @@ export const httpReqHandler = (basePath: string) => {
         method,
 
         body: JSON.stringify(data?.body),
-        //   credentials: 'include',
+          credentials: 'include',
         headers: data?.headers ?? {
           "Content-Type": "application/json",
         },

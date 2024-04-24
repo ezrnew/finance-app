@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { server } from "@/connection/backend/backendConnectorSingleton";
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 export const RegisterPage = () => {
@@ -23,8 +24,9 @@ export const RegisterPage = () => {
     const result = await server.register(email, username, password);
 
     if (result.success) {
-      //todo some popup with success info
       navigate("/login");
+      //todo customize style
+      toast.success("Your account has been created successfully.")
     }
 
     if (result.error === "email") setEmailError("Email already in use");
