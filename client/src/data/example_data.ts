@@ -10,6 +10,7 @@ export const ASSETS = [
 ]
 
 export const EXAMPLE_PORTFOLIO = {
+    id:1,
 title:"Długoterminowy",
 currency:"PLN",
 totalValue: 17123,

@@ -5,6 +5,7 @@ import { RegisterPage } from "./pages/RegisterPage";
 import { AuthorizedRoute } from "./features/AuthorizedRoute";
 import { PortfolioPage } from "./pages/PortfolioPage";
 import { MainLayout } from "./layout/MainLayout";
+import { ToolsPage } from "./pages/ToolsPage";
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,17 @@ const router = createBrowserRouter([
       <MainLayout>
 
         <PortfolioPage />
+      </MainLayout>
+      // </AuthorizedRoute>
+    ),
+  },
+  {
+    path: "/tools",
+    element: (
+      // <AuthorizedRoute>
+      <MainLayout>
+
+        <ToolsPage />
       </MainLayout>
       // </AuthorizedRoute>
     ),

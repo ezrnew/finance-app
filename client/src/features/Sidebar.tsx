@@ -1,14 +1,32 @@
-import { faChalkboard, faDashboard } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { LucidePieChart } from 'lucide-react'
-import React from 'react'
+import { cn } from "@/lib/utils";
+import { faChalkboard, faLineChart } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link } from "react-router-dom";
 
 export const Sidebar = () => {
   return (
-    <div className='w-16 h-full bg-neutral-100 border border-r py-2 space-y-4  '>
-      
+    <div className="w-16 h-full bg-neutral-100 border border-r py-4 space-y-3  ">
       {/* <LucidePieChart className='size-10'/> */}
-<FontAwesomeIcon className='w-full size-7' icon={faChalkboard}/>
+      <div className="flex">
+        <Link className="mx-auto " to={"/dashboard"}>
+          <FontAwesomeIcon
+            className={cn("w-full size-8 ", activeLink("/dashboard"))}
+            icon={faChalkboard}
+          ></FontAwesomeIcon>
+        </Link>
+      </div>
+      <div className="flex">
+        <Link className="mx-auto" to={"/tools"}>
+          <FontAwesomeIcon
+            className={cn("w-full size-8 ", activeLink("/tools"))}
+            icon={faLineChart}
+          />
+        </Link>
+      </div>
     </div>
-  )
+  );
+};
+
+function activeLink(pathname: string) {
+  return location.pathname === pathname ? "text-blue-400" : "";
 }

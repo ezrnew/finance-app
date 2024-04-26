@@ -5,6 +5,8 @@ export  const currencyToIntlZone = {
 
 } 
 
+export type CurrencyType = keyof typeof currencyToIntlZone; 
+
 export function formatCurrency(zone:string,amount:number,currency:string){
 
     
