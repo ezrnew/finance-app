@@ -1,9 +1,10 @@
 import { Toaster } from "react-hot-toast";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { DashboardPage } from "./pages/DashboardPage";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { AuthorizedRoute } from "./features/AuthorizedRoute";
+import { PortfolioPage } from "./pages/PortfolioPage";
+import { MainLayout } from "./layout/MainLayout";
 
 const router = createBrowserRouter([
   {
@@ -17,10 +18,19 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: (
-      <AuthorizedRoute>
-        <DashboardPage />
-      </AuthorizedRoute>
+      // <AuthorizedRoute>
+      <MainLayout>
+
+        <PortfolioPage />
+      </MainLayout>
+      // </AuthorizedRoute>
     ),
+  },
+
+  // 404
+  {
+    path: "/",
+    element: <Navigate to='/login'/>,
   },
   
 ]);
