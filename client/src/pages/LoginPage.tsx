@@ -24,7 +24,7 @@ export const LoginPage = () => {
       return;
     }
 
-    navigate("/dashboard");
+    navigate("/portfolio");
   };
 
   return (

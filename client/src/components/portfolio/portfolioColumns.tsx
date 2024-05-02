@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { PortfolioTableItem } from "./portfolioTable";
+import { PortfolioTableItem } from "./PortfolioTable";
 import {
   CurrencyType,
   currencyToIntlZone,

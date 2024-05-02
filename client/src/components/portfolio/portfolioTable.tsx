@@ -35,7 +35,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getPortfolioColumns } from "./portfolioColumns";
+import { getPortfolioColumns } from "./PortfolioColumns";
 import { CurrencyType } from "@/utils/formatters";
 
 export interface PortfolioTableItem {
@@ -62,8 +62,7 @@ export function PortfolioTable({
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  console.log("DATA",data)
-
+  console.log("DATA", data);
 
   const table = useReactTable({
     data,
@@ -85,7 +84,7 @@ export function PortfolioTable({
   });
 
   return (
-    <div className="  max-w-screen-xl w-full mx-auto p-6">
+    <div className="   w-full mx-auto p-6 ">
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter assets..."
@@ -146,7 +145,7 @@ export function PortfolioTable({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                // className="bg-purple-50"
+                  // className="bg-purple-50"
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
@@ -173,7 +172,6 @@ export function PortfolioTable({
           </TableBody>
         </Table>
       </div>
-
     </div>
   );
 }

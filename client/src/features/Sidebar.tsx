@@ -8,9 +8,9 @@ export const Sidebar = () => {
     <div className="w-16 h-full bg-neutral-100 border border-r py-4 space-y-3  ">
       {/* <LucidePieChart className='size-10'/> */}
       <div className="flex">
-        <Link className="mx-auto " to={"/dashboard"}>
+        <Link className="mx-auto " to={"/portfolio"}>
           <FontAwesomeIcon
-            className={cn("w-full size-8 ", activeLink("/dashboard"))}
+            className={cn("w-full size-8 ", activeLink("/portfolio"))}
             icon={faChalkboard}
           ></FontAwesomeIcon>
         </Link>
@@ -28,5 +28,5 @@ export const Sidebar = () => {
 };
 
 function activeLink(pathname: string) {
-  return location.pathname === pathname ? "text-blue-400" : "";
+  return  location.pathname.startsWith(pathname) ? "text-blue-400" : "";
 }
