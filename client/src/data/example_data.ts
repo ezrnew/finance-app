@@ -10,13 +10,13 @@ export const ASSETS = [
 ]
 
 export const PORTFOLIOS = [
-  {id:1,title:"Długoterminowy"},
-  {id:2,title:"Inny"},
+  {id:'1',title:"Długoterminowy"},
+  {id:'2',title:"Inny"},
 ]
 
 
 export const EXAMPLE_PORTFOLIO = {
-    id:1,
+    id:'1',
 title:"Długoterminowy",
 currency:"PLN",
 totalValue: 17123,
@@ -29,8 +29,9 @@ accounts:[
             {
                 title: "EDO2137",
                 type: "bonds",
-                quantity: "80",
+                quantity: 80,
                 value: 9021,
+                originalCurrency:"PLN",
                 buyDate: Date.now(),
               },
             ]
@@ -43,8 +44,9 @@ accounts:[
                 title: "VANGUARD FTSE ALL-WORLD UCITS ETF",
                 type: "shares",
                 ticker: "VWRA.UK",
-                quantity: "15",
+                quantity: 15,
                 value:8102,
+                originalCurrency:"USD",
                 buyDate: Date.now(),
 
               },

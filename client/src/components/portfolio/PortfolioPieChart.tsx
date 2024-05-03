@@ -85,7 +85,7 @@ function renderLegend(legendItems: Payload[] | undefined) {
   return (
     <div className="flex space-x-2 text-base justify-center text-gray-700">
       {legendItems.map((item) => (
-        <div key={item.id} className="border p-1 pr-3  flex rounded-md ">
+        <div key={item.value} className="border p-1 pr-3  flex rounded-md ">
           <div
             style={{ background: item.color }}
             className="size-4 mx-2 rounded my-auto"

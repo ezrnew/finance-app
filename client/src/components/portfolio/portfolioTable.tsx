@@ -62,7 +62,7 @@ export function PortfolioTable({
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  console.log("DATA", data);
+  // console.log("DATA", data);
 
   const table = useReactTable({
     data,

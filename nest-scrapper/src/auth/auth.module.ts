@@ -3,12 +3,17 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule } from '@nestjs/config';
 
+// console.log("GIGATAJNYSEKRETWCHUJ",process.env.JWT_SECRET)
 
 @Module({
   imports: [
+    ConfigModule,
     UsersModule,
-    JwtModule.register({ global: true, secret: `${process.env.JWT_SECRET}`, signOptions: { expiresIn: '1h' } }), //?
+    //todo FIX JWT
+    JwtModule.register({ global: true, secret: '123', signOptions: { expiresIn: '1h' } }), //?
+    // JwtModule.register({ global: true, secret: process.env.JWT_SECRET, signOptions: { expiresIn: '1h' } }), //?
   ],
   controllers: [AuthController],
   providers: [AuthService],

@@ -6,7 +6,10 @@ import { AuthorizedRoute } from "./features/AuthorizedRoute";
 import { PortfolioPage } from "./pages/PortfolioPage";
 import { MainLayout } from "./layout/MainLayout";
 import { ToolsPage } from "./pages/ToolsPage";
-import { BuyModal } from "./features/BuyModal";
+import { BuyAssetModal } from "./features/BuyAssetModal";
+import { SellAssetModal } from "./features/SellAssetModal";
+import { Provider } from "react-redux";
+import { store } from "./store/store";
 
 
 function getRouter(location:Location<any>){
@@ -36,7 +39,7 @@ function getRouter(location:Location<any>){
       path: "buy", 
       element: (
   
-          <BuyModal />
+          <BuyAssetModal />
 
       ),
     },
@@ -73,6 +76,8 @@ function App() {
 
   return (
     <>
+    <Provider store={store}>
+
       <Toaster />
       {/* <RouterProvider router={getRouter(location)} /> */}
 
@@ -81,24 +86,28 @@ function App() {
 
       <Route path="/login" element={<LoginPage />}/>
       <Route path="/register" element={<RegisterPage />}/>
+      <Route path="/tools" element={<MainLayout><ToolsPage/></MainLayout>}/>
 
         <Route path="/portfolio" element={
-        
+         
         <MainLayout>
 
         <PortfolioPage />
         </MainLayout>
         
         }>
-          <Route path="/portfolio/buy" element={<BuyModal />} />
+             {/* <Route path="/portfolio/buy" element={<BuyAssetModal />} /> */}
+          {/* <Route path="/portfolio/buy" element={<BuyAssetModal />} /> */}
         </Route>
       </Routes>
       {background && (
         <Routes>
-          <Route path="/portfolio/buy" element={<BuyModal />} />
+          <Route path="/portfolio/buy" element={<BuyAssetModal />} />
+          <Route path="/portfolio/sell" element={<SellAssetModal />} />
         </Routes>
       )}
 
+</Provider>
 
     </>
   );

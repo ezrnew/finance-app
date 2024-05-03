@@ -1,4 +1,5 @@
 import { PortfolioPieChart } from "@/components/portfolio/PortfolioPieChart";
+import { PortfolioSidebar } from "@/components/portfolio/PortfolioSidebar";
 import { PortfolioTable } from "@/components/portfolio/PortfolioTable";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,7 +11,8 @@ import {
 } from "@/components/ui/card";
 import { ModalWrapper } from "@/components/ui/modal-wrapper";
 import { EXAMPLE_PORTFOLIO, PORTFOLIOS } from "@/data/example_data";
-import { BuyModal } from "@/features/BuyModal";
+import { BuyAssetModal } from "@/features/BuyAssetModal";
+import { useActions, useTypedSelector } from "@/hooks/use-redux";
 import {
   CurrencyType,
   currencyToIntlZone,
@@ -25,21 +27,38 @@ export const PortfolioPage = () => {
   const assets = getFlattenAssets(data.accounts);
   let location = useLocation();
 
+  const [portfolioId,setPortfolioId] = useState<string>('')
+  const [portfolioData,setPortfolioData] = useState()
+
+  // useTypedSelector(state => state.portfolio)
+
+  const {setAvailablePortfolios,setCurrentPortfolioId,setCurrency,setCategories,setAccounts} = useActions()
+
+
   const [portfolios, setPortfolios] = useState<any[]>([])
   //todo create routes
 
 
 
   useEffect(() => {
-    setPortfolios(PORTFOLIOS)
-  
+    setPortfolios(PORTFOLIOS)//fetch
   }, [])
+
+
+  useEffect(() => {
+    setCurrentPortfolioId(data.id)
+    setCurrency(data.currency)
+    setCategories(data.categories)
+    setAccounts(data.accounts)
+  }, [portfolioId])
   
 
   return (
     <div className="flex-grow bg-white flex flex-col  ">
       <div className="flex w-full h-full">
-        <div className="max-w-60 xl:w-full w-52 bg-neutral-50 hidden md:block p-4 ">
+        
+        <PortfolioSidebar portfolios={PORTFOLIOS} setPortfolioId={setPortfolioId} />
+        {/* <div className="max-w-60 xl:w-full w-52 bg-neutral-50 hidden md:block p-4 ">
           <div className="flex justify-between">
             <p className="text-lg font-semibold my-auto">Portfolios</p>
             <Button variant="ghost" size="icon">
@@ -50,9 +69,9 @@ export const PortfolioPage = () => {
           <div className="h-[1px]  my-1 w-full bg-gray-200" />
 
           <ul className="flex flex-col py-2 font-semibold">
-            {portfolios.map(item => <li    key={item.id}>{item.title}</li>)}
+            {portfolios.map(item => <li onClick={()=>{setPortfolioId(item.id)}}    key={item.id}>{item.title}</li>)}
           </ul>
-        </div>
+        </div> */}
 
 <div className="h-full w-full shadow-lg">
 
@@ -60,9 +79,16 @@ export const PortfolioPage = () => {
           <div className="flex justify-between p-6 ">
             <span>{data.title}</span>
             <div className="flex space-x-2 md:space-x-4">
-              <Link to='buy' state={{background:location}}>ajjjjjjjj</Link>
-              <Button onClick={()=>{}}>Buy</Button>
-              <Button>Sell</Button>
+              <Button asChild >
+              <Link to='buy' state={{background:location}}>
+
+              Buy
+              </Link>
+              </Button>
+              <Button asChild><Link to='sell' state={{background:location}}>
+
+Sell
+</Link></Button>
               <div className="w-[1px] my-auto h-4/5 bg-gray-200" />
               <Button>Manage</Button>
               <Button>History</Button>
@@ -102,7 +128,7 @@ export const PortfolioPage = () => {
   );
 };
 
-function getFlattenAssets(data: any) {
+export function getFlattenAssets(data: any) {
   const result: any = [];
 
   data.forEach((account: any) => {
@@ -115,22 +141,3 @@ function getFlattenAssets(data: any) {
   return result;
 }
 
-type PortfolioCardProps = {
-  title: string;
-  subtitle: string;
-  body: string;
-};
-
-const PortfolioCard = ({ title, subtitle, body }: PortfolioCardProps) => {
-  return (
-    <Card className="border-none">
-      <CardHeader>
-        <CardDescription>{title}</CardDescription>
-        <CardTitle>{subtitle}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p>{body}</p>
-      </CardContent>
-    </Card>
-  );
-};

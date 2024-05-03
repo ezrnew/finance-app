@@ -18,32 +18,39 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
  
-const frameworks = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-]
- 
-export function InputDropdown() {
+// const frameworks = [
+//   {
+//     value: "next.js",
+//     label: "Next.js",
+//   },
+//   {
+//     value: "sveltekit",
+//     label: "SvelteKit",
+//   },
+//   {
+//     value: "nuxt.js",
+//     label: "Nuxt.js",
+//   },
+//   {
+//     value: "remix",
+//     label: "Remix",
+//   },
+//   {
+//     value: "astro",
+//     label: "Astro",
+//   },
+// ]
+
+interface Props{
+    data:string[]
+    value:string
+    setValue: React.Dispatch<React.SetStateAction<string>>
+    placeholder?:string
+    label?:string
+}
+ //todo optional search if items.length>n
+export function InputDropdown({data,value,setValue,label,placeholder}:Props) {
   const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState("")
  
   return (
 <Popover open={open} onOpenChange={setOpen}>
@@ -57,28 +64,28 @@ export function InputDropdown() {
           className="w-[200px] justify-between dark:text-white"
         >
           {value
-            ? frameworks.find((framework) => framework.value === value)?.label
-            : "Select Asset"}
+            ? data.find((item) => item === value)
+            : label ||""}
           {/* <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50 hidden lg:block" /> */}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder="Search Asset..." />
+          <CommandInput placeholder={placeholder ||""} />
           <CommandList>
             <CommandEmpty>No framework found.</CommandEmpty>
             <CommandGroup>
-              {frameworks.map((framework) => (
+              {data.map((item) => (
                 <CommandItem
-                  key={framework.value}
-                  value={framework.value}
+                  key={item}
+                  value={item}
                   onSelect={(currentValue) => {
                     setValue(currentValue === value ? "" : currentValue);
                     setOpen(false);
                   }}
                 >
          
-                  {framework.label}
+                  {item}
                 </CommandItem>
               ))}
             </CommandGroup>

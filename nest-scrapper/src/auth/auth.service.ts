@@ -12,7 +12,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signIn(username: string, password: string,response:Response) {
+  async signIn(username: string, pass: string,response:Response) {
     const user = await this.usersService.findOne(username);
 
     console.log("URZYTKOWNIK",user)
@@ -20,16 +20,17 @@ export class AuthService {
 
     console.log('USER', user);
 
-    if (!(await bcrypt.compare(password, user.password))) {
+    if (!(await bcrypt.compare(pass, user.password))) {
       throw new UnauthorizedException();
     }
+
     console.log("HASLO DZIALA")
     //? sub
     const payload = { sub: user.username, username: user.username };
     console.log('pejload',payload)
     const jwt = await this.jwtService.signAsync(payload)
 
-    console.log("jwt",jwt)
+    console.log("JWTTTTTTTTTTTTTTTTTT",jwt)
     // response.statusCode=200
     // response.cookie('definitelynotasecrettoken',jwt)
 

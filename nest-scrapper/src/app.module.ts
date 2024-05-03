@@ -13,6 +13,10 @@ import { BondsModule } from './bonds/bonds.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { CurrenciesModule } from './currencies/currencies.module';
+import { AssetsModule } from './assets/assets.module';
+import { PortfoliosModule } from './portfolios/portfolios.module';
+
+
 
 @Module({
   imports: [
@@ -26,7 +30,9 @@ import { CurrenciesModule } from './currencies/currencies.module';
     BondsModule,
     AuthModule,
     UsersModule,
-    CurrenciesModule
+    CurrenciesModule,
+    AssetsModule,
+    PortfoliosModule
   ],
   controllers: [],
   providers: [],

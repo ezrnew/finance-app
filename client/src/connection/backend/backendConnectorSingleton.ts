@@ -20,24 +20,6 @@ export class BackendConnectorSingleton {
 
     return false
 
-    // const res = await fetch('http://localhost:2137/auth/login', {
-    //     method: "POST",
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify({
-    //       username,
-    //       password
-    //     })
-    //   });
-
-    //   if (res.ok) {
-    //     // Parse the response body as JSON
-    //     const data = await res.json();
-    //     console.log(data); 
-
-    //   }
-// console.log("RES",res)
   }
 
   async register(email:string,username: string, password: string) {
@@ -56,6 +38,25 @@ export class BackendConnectorSingleton {
 
 
   }
+
+  async getAllAssetNames(){
+    const res = await this.httpRequest("/assets")
+
+    if(res?.ok){
+      return res.json()
+  }
+}
+
+async createNewPortfolio(name:string){
+  const res = await this.httpRequest("/portfolios/create",'POST',{body:{name}})
+
+  if(res?.ok){
+    return true
+}
+return false
+}
+
+
 }
 
 export const server = new BackendConnectorSingleton("http://localhost:2137");

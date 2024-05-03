@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, ObjectId } from 'mongoose';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -34,17 +34,20 @@ export class User {
   @Prop()
   password: string;
   @Prop()
-  portfolios: { 
+  portfolios: ObjectId[]
+
+
+
     // id: string;
-    name:string
-    currency:any//todo
-    freeCash:number
-    assets: { 
-      bonds: BondItem[]
-      shares: ShareItem[];
-    };
-    totalValue: number;
-  }[];
+
+    // name:string
+    // currency:any//todo
+    // freeCash:number
+    // assets: { 
+    //   bonds: BondItem[]
+    //   shares: ShareItem[];
+    // };
+    // totalValue: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
