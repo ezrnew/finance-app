@@ -16,8 +16,8 @@ import {
 
       const token = request.cookies['jt']
 
-      console.log("tokenisko",token)
-      console.log("huj",process.env.JWT_SECRET)
+      // console.log("tokenisko",token)
+      // console.log("huj",process.env.JWT_SECRET)
       // const token = this.extractTokenFromHeader(request);
       if (!token) {
         throw new UnauthorizedException();
@@ -27,11 +27,12 @@ import {
         const payload = await this.jwtService.verifyAsync(
           token,
           {
+            //todo FIX JWT
             secret: '123'
             // secret: `${process.env.JWT_SECRET}`
           }
         );
-        console.log("przeszlose",payload)
+        // console.log("przeszlose",payload)
 
         // 💡 We're assigning the payload to the request object here
         // so that we can access it in our route handlers

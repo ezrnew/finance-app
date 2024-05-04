@@ -47,8 +47,48 @@ export class BackendConnectorSingleton {
   }
 }
 
+async getAllPortfolios(){
+  const res = await this.httpRequest("/portfolios")
+
+  if(res?.ok){
+    return res.json()
+}
+return false
+}
+
+async getPortfolioById(id:string){
+  const res = await this.httpRequest(`/portfolios/${id}`)
+
+  if(res?.ok){
+    return res.json()
+}
+return false
+}
+
+
 async createNewPortfolio(name:string){
   const res = await this.httpRequest("/portfolios/create",'POST',{body:{name}})
+
+  if(res?.ok){
+    return true
+}
+return false
+}
+
+
+
+
+async addNewAccount(portfolioId:string,name:string){
+  const res = await this.httpRequest("/portfolios/addAccount",'POST',{body:{portfolioId,name}})
+
+  if(res?.ok){
+    return true
+}
+return false
+}
+
+async addNewCategory(portfolioId:string,name:string){
+  const res = await this.httpRequest("/portfolios/addCategory",'POST',{body:{portfolioId,name}})
 
   if(res?.ok){
     return true

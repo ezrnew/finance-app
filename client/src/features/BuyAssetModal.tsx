@@ -11,7 +11,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const BuyAssetModal = () => {
-  const { categories, accounts } = useTypedSelector((state) => state.portfolio);
+  const {currentPortfolio } = useTypedSelector((state) => state.portfolio);
 
   const navigate = useNavigate();
 
@@ -45,8 +45,8 @@ export const BuyAssetModal = () => {
     fetchAssets();
   }, []);
 
-  const categoryNames = categories.map((item) => item.category);
-  const accountNames = accounts.map((item) => item.title);
+  const categoryNames = currentPortfolio?.categories.map((item) => item.category);
+  const accountNames = currentPortfolio?.accounts.map((item) => item.title);
 
   const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -68,7 +68,7 @@ export const BuyAssetModal = () => {
       return false;
     }
 
-    const acc = accounts.find((item) => item.title === account);
+    const acc = currentPortfolio?.accounts.find((item) => item.title === account);
     if (!acc) {
       setError("account doesnt exist!");
       return false;
@@ -125,7 +125,7 @@ export const BuyAssetModal = () => {
             <span>Category</span>
 
             <InputDropdown
-              data={categoryNames}
+              data={categoryNames ||[]}
               value={category}
               setValue={setCategory}
               placeholder="Search Categories..."
@@ -136,7 +136,7 @@ export const BuyAssetModal = () => {
             <span>Account</span>
 
             <InputDropdown
-              data={accountNames}
+              data={accountNames ||[]}
               value={account}
               setValue={setAccount}
               placeholder="Search Accounts..."

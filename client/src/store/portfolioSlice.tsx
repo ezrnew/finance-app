@@ -1,22 +1,31 @@
+import { CurrencyType } from "@/utils/formatters";
+import { ls } from "@/utils/localStorage";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+
+export interface Portfolio {
+  title: string;
+  currency: CurrencyType;
+  totalValue: number;
+  categories: { category: string; value: number }[];
+  accounts: { title: string; cash: number; assets: any[] }[];
+}
 interface State {
 
-    availablePortfolios:{id:string,title:string}[]
+    availablePortfolios:{_id:string,title:string}[]
 
     currentPortfolioId:string
-    currency:string
-    categories:{category:string,value:number}[]
-    accounts:{title:string,cash:number,assets:any[]}[]
+    currentPortfolio:Portfolio | null
+    // currency:string
+    // categories:{category:string,value:number}[]
+    // accounts:{title:string,cash:number,assets:any[]}[]
 }
 
 const initialState: State = {
     availablePortfolios:[],
 
-    currentPortfolioId:"1",
-    currency:'',
-    categories:[],
-    accounts:[]
+    currentPortfolioId:ls.getPortfolioId() ||'',
+    currentPortfolio:null
 
 };
 
@@ -24,22 +33,21 @@ const portfolioSlice = createSlice({
   name: "portfolio",
   initialState,
   reducers: {
-        setAvailablePortfolios: (state, action: PayloadAction<{id:string,title:string}[]>) => {
+        setAvailablePortfolios: (state, action: PayloadAction<{_id:string,title:string}[]>) => {
       state.availablePortfolios = action.payload;
     },
     setCurrentPortfolioId: (state, action: PayloadAction<string>) => {
         state.currentPortfolioId = action.payload;
       },
-      setCurrency: (state, action: PayloadAction<string>) => {
-        state.currency = action.payload;
+      setCurrentPortfolio: (state, action: PayloadAction<Portfolio | null>) => {
+        state.currentPortfolio = action.payload;
       },
-      setCategories: (state, action: PayloadAction<{category:string,value:number}[]>) => {
-        state.categories = action.payload;
-      },
-      setAccounts: (state, action: PayloadAction<{title:string,cash:number,assets:any[]}[]>) => {
-        state.accounts = action.payload;
-      },
-    
+      // setCategories: (state, action: PayloadAction<{category:string,value:number}[]>) => {
+      //   state.categories = action.payload;
+      // },
+      // setAccounts: (state, action: PayloadAction<{title:string,cash:number,assets:any[]}[]>) => {
+      //   state.accounts = action.payload;
+      // },
     
 
   },

@@ -1,35 +1,80 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from '../ui/button'
 import { CircleCheck, PlusCircle, XCircle } from 'lucide-react'
 import { Input } from '../ui/input'
 import { server } from '@/connection/backend/backendConnectorSingleton'
+import { toast } from '@/utils/toasts'
+import { useActions, useTypedSelector } from '@/hooks/use-redux'
+import { ls } from '@/utils/localStorage'
 
-interface Props{
-   portfolios:{id:string,title:string}[] 
-   setPortfolioId:React.Dispatch<React.SetStateAction<string>>
-}
+// interface Props{
+//   //  portfolios:{id:string,title:string}[] 
+//    setPortfolioId:React.Dispatch<React.SetStateAction<string>>
+// }
 
-export const PortfolioSidebar = ({portfolios,setPortfolioId}:Props) => {
+export const PortfolioSidebar = () => {
+
+  const {availablePortfolios,currentPortfolioId} = useTypedSelector(state =>state.portfolio)
+  const {setAvailablePortfolios,setCurrentPortfolioId,setCurrentPortfolio} = useActions()
+
 
     const [newPortfolioName, setNewPortfolioName] = useState('')
     const [isCreatingNew, setIsCreatingNew] = useState(false)
     const [newPortfolioError, setNewPortfolioError] = useState('')
+    const [_,refetch] = useState(false)
+
+    useEffect(() => {
+
+
+      const fetchAllPortfolios = async()=>{//todo fetch only titles & ids
+        console.log("feczuje")
+        const portfolios = await server.getAllPortfolios()
+        console.log("portf",portfolios)
+
+        setAvailablePortfolios(portfolios) 
+      } 
+
+     fetchAllPortfolios()
+
+      // setAvailablePortfolios('PORTFOLIOS')//fetch
+    }, [_])
+
+    
+    useEffect(() => {
+
+
+      const getPortfolioData = async()=>{
+        console.log("feczuje")
+        const portfolio = await server.getPortfolioById(currentPortfolioId)
+        console.log("pppppppp",portfolio)
+
+        setCurrentPortfolio(portfolio) 
+      } 
+
+      getPortfolioData()
+    }, [currentPortfolioId])
+
 
 
     const submitNewPortfolio = async(e:React.FormEvent<HTMLFormElement>) =>{
         e.preventDefault()
 
-        const existingPortfolio = portfolios.find(item => item.title.toUpperCase()===newPortfolioName.toUpperCase())
+        const existingPortfolio = availablePortfolios.find(item => item.title.toUpperCase()===newPortfolioName.toUpperCase())
 
         if(existingPortfolio){setNewPortfolioError('Portfolio with this name already exists!');return}
 
         const result = await server.createNewPortfolio(newPortfolioName)
+
+        if(!result) {setNewPortfolioError("cannot create portfolio");return}
+
+        setIsCreatingNew(false)
+        setNewPortfolioName('')
+        toast.portfolioCreated()
+        
+        refetch(item=>!item)
         
     }
 
-
-
-    console.log('tworze se nowy',isCreatingNew)
 
   return (
     <div className="max-w-60 xl:w-full w-52 bg-neutral-50 hidden md:block p-4 ">
@@ -67,7 +112,7 @@ export const PortfolioSidebar = ({portfolios,setPortfolioId}:Props) => {
 <div className="h-[1px]  my-1 w-full bg-gray-200" />
 
 <ul className="flex flex-col py-2 font-semibold">
-  {portfolios.map(item => <li onClick={()=>{setPortfolioId(item.id)}}    key={item.id}>{item.title}</li>)}
+  {availablePortfolios.map(item => <li onClick={()=>{setCurrentPortfolioId(item._id);ls.setPortfolioId(item._id)}}    key={item._id}>{item.title}</li>)}
 </ul>
 </div>
   )
