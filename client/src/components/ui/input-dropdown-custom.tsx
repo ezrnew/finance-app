@@ -20,15 +20,22 @@ import {
  
 
 interface Props{
-    data:string[]
-    value:string
-    setValue: React.Dispatch<React.SetStateAction<string>>
+    data:{name:string,type:string,quantity?:number}[]
+    value:{name:string,type:string,quantity?:number}
+    setValue: React.Dispatch<React.SetStateAction<{
+      name: string;
+      type: string,
+      quantity?:number
+  } | null>>
     placeholder?:string
     label?:string
 }
  //todo optional search if items.length>n
-export function InputDropdown({data,value,setValue,label,placeholder}:Props) {
+export function InputDropdownCustom({data,value,setValue,label,placeholder}:Props) {
   const [open, setOpen] = React.useState(false)
+
+
+  console.log("VAL",value)
  
   return (
 <Popover open={open} onOpenChange={setOpen}>
@@ -41,10 +48,9 @@ export function InputDropdown({data,value,setValue,label,placeholder}:Props) {
           aria-label="Select Asset"
           className="w-[200px] justify-between dark:text-white"
         >
-          {value
-            ? data.find((item) => item === value)
-            : label ||""}
-          {/* <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50 hidden lg:block" /> */}
+{value
+  ? value.name
+  :  ""}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
@@ -56,15 +62,18 @@ export function InputDropdown({data,value,setValue,label,placeholder}:Props) {
               {data.map((item) => (
                 <CommandItem
                 className="cursor-pointer"
-                  key={item}
-                  value={item}
+                  key={item.name}
+                  value={item.name}
                   onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue);
+                    console.log("curr", currentValue);
+                    console.log("item.value", item.name);
+                    setValue(currentValue === item.name ? item : null);
+
                     setOpen(false);
                   }}
                 >
          
-                  {item}
+                  {item.name}
                 </CommandItem>
               ))}
             </CommandGroup>

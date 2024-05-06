@@ -24,10 +24,10 @@ export const getPortfolioColumns = (
 ): ColumnDef<PortfolioTableItem>[] => {
   return [
     {
-      accessorKey: "title",
+      accessorKey: "name",
       enableHiding: false,
       header: "Asset",
-      cell: ({ row }) => <div className="">{row.getValue("title")}</div>,
+      cell: ({ row }) => <div className="">{row.getValue("name")}</div>,
     },
     {
       accessorKey: "type",
@@ -41,7 +41,9 @@ export const getPortfolioColumns = (
       accessorKey: "value",
       header: () => <div className="">Value</div>,
       cell: ({ row }) => {
-        const amount = parseFloat(row.getValue("value"));
+        const item = row.original;
+
+        const amount = parseFloat(item.price*item.quantity);
 
         return (
           <div className=" font-medium">

@@ -101,12 +101,12 @@ export const PortfolioPage = () => {
   );
 };
 
-export function getFlattenAssets(data: any) {
+export function getFlattenAssets(accounts: { title: string; cash: number; assets: any[] }[]) {
   const result: any = [];
 
-  data.forEach((account: any) => {
+  accounts.forEach((account) => {
     const { title, assets } = account;
-    assets.forEach((asset: any) => {
+    assets.forEach((asset) => {
       result.push({ ...asset, account: title });
     });
   });

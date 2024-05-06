@@ -16,13 +16,10 @@ import {
 
       const token = request.cookies['jt']
 
-      // console.log("tokenisko",token)
-      // console.log("huj",process.env.JWT_SECRET)
-      // const token = this.extractTokenFromHeader(request);
+
       if (!token) {
         throw new UnauthorizedException();
       }
-      console.log("przedtry")
       try {
         const payload = await this.jwtService.verifyAsync(
           token,

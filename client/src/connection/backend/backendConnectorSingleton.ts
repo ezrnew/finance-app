@@ -8,95 +8,137 @@ export class BackendConnectorSingleton {
   }
 
   async login(username: string, password: string) {
-    const res = await this.httpRequest("/auth/login", "POST", { body: { username, password } });
+    const res = await this.httpRequest("/auth/login", "POST", {
+      body: { username, password },
+    });
 
-    if(res?.ok){
-        const data = await res.json();
-        console.log(data)
-        //todo set jwt
-        return true
+    if (res?.ok) {
+      const data = await res.json();
+      console.log(data);
+      //todo set jwt
+      return true;
     }
 
-
-    return false
-
+    return false;
   }
 
-  async register(email:string,username: string, password: string) {
-    const res = await this.httpRequest("/auth/register", "POST", { body: {email, username, password } });
+  async register(email: string, username: string, password: string) {
+    const res = await this.httpRequest("/auth/register", "POST", {
+      body: { email, username, password },
+    });
 
-    console.log("response",res)
-    if(res?.ok){
-  
-        return {success:true,error:''}
+    console.log("response", res);
+    if (res?.ok) {
+      return { success: true, error: "" };
     }
 
     const error = await res?.json();
-    
+
     //todo types
-    return {success:false,error:error.message as string}
-
-
+    return { success: false, error: error.message as string };
   }
 
-  async getAllAssetNames(){
-    const res = await this.httpRequest("/assets")
+  async getAllAssetNames() {
+    const res = await this.httpRequest("/assets");
 
-    if(res?.ok){
-      return res.json()
+    if (res?.ok) {
+      return res.json();
+    }
   }
-}
 
-async getAllPortfolios(){
-  const res = await this.httpRequest("/portfolios")
+  async getAllPortfolios() {
+    const res = await this.httpRequest("/portfolios");
 
-  if(res?.ok){
-    return res.json()
-}
-return false
-}
+    if (res?.ok) {
+      return res.json();
+    }
+    return false;
+  }
 
-async getPortfolioById(id:string){
-  const res = await this.httpRequest(`/portfolios/${id}`)
+  async getPortfolioById(id: string) {
+    const res = await this.httpRequest(`/portfolios/${id}`);
 
-  if(res?.ok){
-    return res.json()
-}
-return false
-}
+    if (res?.ok) {
+      return res.json();
+    }
+    return false;
+  }
+
+  async createNewPortfolio(name: string) {
+    const res = await this.httpRequest("/portfolios/create", "POST", {
+      body: { name },
+    });
+
+    if (res?.ok) {
+      return true;
+    }
+    return false;
+  }
+
+  async addNewAccount(portfolioId: string, name: string) {
+    const res = await this.httpRequest("/portfolios/addAccount", "POST", {
+      body: { portfolioId, name },
+    });
+
+    if (res?.ok) {
+      return true;
+    }
+    return false;
+  }
+
+  async addNewCategory(portfolioId: string, name: string) {
+    const res = await this.httpRequest("/portfolios/addCategory", "POST", {
+      body: { portfolioId, name },
+    });
+
+    if (res?.ok) {
+      return true;
+    }
+    return false;
+  }
+
+  async buyAsset(
+    portfolioId: string,
+    category: string,
+    account: string,
+    asset: { name: string; type: string },
+    date: Date,
+    currency: string,
+    currencyRate: number,
+    price: number,
+    quantity: number,
+    paymentAdded: boolean
+  ) {
+
+    console.log("WYSYLAM SE POSTA Z ASSET",asset)
+    const res = await this.httpRequest("/portfolios/buyAsset", "POST", {
+      body: { portfolioId, category,account,asset,date,currency,currencyRate,price,quantity,paymentAdded },
+    });
+
+    if (res?.ok) {
+      return true;
+    }
+    return false;
+  }
 
 
-async createNewPortfolio(name:string){
-  const res = await this.httpRequest("/portfolios/create",'POST',{body:{name}})
+  async sellAsset(
+    portfolioId: string,
+    assetId:string,
+    category: string,
+    account: string,
+    quantityToSell:number
 
-  if(res?.ok){
-    return true
-}
-return false
-}
+  ) {
+    const res = await this.httpRequest("/portfolios/sellAsset", "POST", {
+      body: { portfolioId, category,account,assetId,quantityToSell },
+    });
 
-
-
-
-async addNewAccount(portfolioId:string,name:string){
-  const res = await this.httpRequest("/portfolios/addAccount",'POST',{body:{portfolioId,name}})
-
-  if(res?.ok){
-    return true
-}
-return false
-}
-
-async addNewCategory(portfolioId:string,name:string){
-  const res = await this.httpRequest("/portfolios/addCategory",'POST',{body:{portfolioId,name}})
-
-  if(res?.ok){
-    return true
-}
-return false
-}
-
-
+    if (res?.ok) {
+      return true;
+    }
+    return false;
+  }
 }
 
 export const server = new BackendConnectorSingleton("http://localhost:2137");

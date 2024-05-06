@@ -4,6 +4,8 @@ import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { PortfoliosService } from './portfolios.service';
 import { AddAccountDto } from './dto/add-account.dto';
 import { AddCategoryDto } from './dto/add-category.dto';
+import { BuyAssetDto } from './dto/buyAssetDto';
+import { SellAssetDto } from './dto/sell-asset-dto';
 
 @Controller('portfolios')
 export class PortfoliosController {
@@ -12,46 +14,53 @@ export class PortfoliosController {
   @UseGuards(AuthGuard)
   @Get()
   async getAll(@Request() req) {
-    console.log('rdasddaeq', req.user);
     return this.portfoliosService.getAll(req.user.username);
   }
 
   @UseGuards(AuthGuard)
   @Get(':id')
-  async getById(@Request() req,@Param() params: {id:string}) {
+  async getById(@Request() req, @Param() params: { id: string }) {
+    if (!params.id) throw new BadRequestException();
 
-    console.log("ajdik",params.id)
-    if (!params.id) throw new BadRequestException()
-
-
-
-    console.log('rdasddaeq', req.user);
-    return this.portfoliosService.getById(req.user.username,params.id);
+    return this.portfoliosService.getById(req.user.username, params.id);
   }
-
 
   @UseGuards(AuthGuard)
   @Post('create')
   async create(@Request() req, @Body() createPortfolioDto: CreatePortfolioDto) {
-    console.log('rdasddaeq', req.user);
     await this.portfoliosService.create(req.user.username, createPortfolioDto);
   }
 
-
-
   @UseGuards(AuthGuard)
   @Post('addAccount')
-  async addAccount(@Request() req,@Body() addAccountDto:AddAccountDto) {
-    console.log('rdasddaeq', req.user);
-    await this.portfoliosService.addAccount(req.user.username,addAccountDto.portfolioId,addAccountDto.name);
+  async addAccount(@Request() req, @Body() addAccountDto: AddAccountDto) {
+    await this.portfoliosService.addAccount(req.user.username, addAccountDto.portfolioId, addAccountDto.name);
   }
 
   @UseGuards(AuthGuard)
   @Post('addCategory')
-  async addCategory(@Request() req,@Body() addCategoryDto:AddCategoryDto) {
-    console.log('rdasddaeq', req.user);
-    await this.portfoliosService.addCategory(req.user.username,addCategoryDto.portfolioId,addCategoryDto.name);
-
+  async addCategory(@Request() req, @Body() addCategoryDto: AddCategoryDto) {
+    await this.portfoliosService.addCategory(
+      req.user.username,
+      addCategoryDto.portfolioId,
+      addCategoryDto.name,
+    );
   }
 
+  @UseGuards(AuthGuard)
+  @Post('buyAsset')
+  async buyAsset(@Request() req, @Body() buyAssetDto: BuyAssetDto) {
+
+    const result = await this.portfoliosService.buyAsset(req.user.username, buyAssetDto);
+
+    if (!result) throw new BadRequestException();
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('sellAsset')
+  async sellAsset(@Request() req, @Body() sellAssetDto: SellAssetDto) {
+    const result = await this.portfoliosService.sellAsset(req.user.username, sellAssetDto);
+
+    if (!result) throw new BadRequestException();
+  }
 }

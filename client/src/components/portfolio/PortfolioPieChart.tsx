@@ -23,11 +23,13 @@ interface Props {
   currency: CurrencyType;
 }
 
+
 export const PortfolioPieChart = ({
   totalValueLabel,
   data,
   currency,
 }: Props) => {
+  console.log("DATA",data)
   return (
     // <div className="mx-auto">
     <ResponsiveContainer height={400}>
@@ -42,6 +44,8 @@ export const PortfolioPieChart = ({
           innerRadius={90}
           cornerRadius={4}
           paddingAngle={1}
+          startAngle={-270}
+          endAngle={90}
           // outerRadius={90}
           // fill="#8884d8"
           label={(data) => renderCustomizedLabel(data)}
@@ -53,9 +57,12 @@ export const PortfolioPieChart = ({
             fill="#374151"
           />
 
-          {data.map((_: any, index: any) => (
-            <Cell key={index} fill={colors[index % colors.length]} />
-          ))}
+          {data.map((item: { category: string; value: number }, index: number) => 
+            {
+  
+             return <Cell key={index} fill={colors[index % colors.length]} />
+            }
+          )}
         </Pie>
         {/* //todo */}
         <Tooltip
@@ -69,6 +76,7 @@ export const PortfolioPieChart = ({
         />
         <Legend
           content={(item) => {
+            console.log("KONTENCIK",item)
             return renderLegend(item.payload);
           }}
         />
@@ -81,7 +89,7 @@ export const PortfolioPieChart = ({
 function renderLegend(legendItems: Payload[] | undefined) {
   if (legendItems === undefined) return <div />;
 
-  // console.log("itemmm", legendItems);
+  console.log("itemmm", legendItems);
   return (
     <div className="flex space-x-2 text-base justify-center text-gray-700">
       {legendItems.map((item) => (
@@ -91,7 +99,7 @@ function renderLegend(legendItems: Payload[] | undefined) {
             className="size-4 mx-2 rounded my-auto"
           />
 
-          <span>{item.value}</span>
+          <span>{item.payload?.category}</span>
         </div>
       ))}
     </div>
@@ -123,6 +131,8 @@ const renderCustomizedLabel = ({
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
   const x = cx + radius * Math.cos((-midAngle * Math.PI) / 180);
   const y = cy + radius * Math.sin((-midAngle * Math.PI) / 180);
+
+  if(percent===0) return
 
   return (
     <text

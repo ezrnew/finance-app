@@ -10,6 +10,11 @@ export interface Portfolio {
   categories: { category: string; value: number }[];
   accounts: { title: string; cash: number; assets: any[] }[];
 }
+
+
+
+
+
 interface State {
 
     availablePortfolios:{_id:string,title:string}[]

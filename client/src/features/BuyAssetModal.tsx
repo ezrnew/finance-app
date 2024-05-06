@@ -3,6 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Datepicker } from "@/components/ui/datepicker";
 import { Input } from "@/components/ui/input";
 import { InputDropdown } from "@/components/ui/input-dropdown";
+import { InputDropdownCustom } from "@/components/ui/input-dropdown-custom";
 import { ModalWrapper } from "@/components/ui/modal-wrapper";
 import { server } from "@/connection/backend/backendConnectorSingleton";
 import { useTypedSelector } from "@/hooks/use-redux";
@@ -11,13 +12,13 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const BuyAssetModal = () => {
-  const {currentPortfolio } = useTypedSelector((state) => state.portfolio);
+  const {currentPortfolio,currentPortfolioId } = useTypedSelector((state) => state.portfolio);
 
   const navigate = useNavigate();
 
-  const [availableAssets, setAvailableAssets] = useState<string[]>([]);
+  const [availableAssets, setAvailableAssets] = useState<{name:string,type:string}[]>([]);
 
-  const [asset, setAsset] = useState("");
+  const [asset, setAsset] = useState<{name:string,type:string} | null>(null);
   const [category, setCategory] = useState("");
   const [account, setAccount] = useState("");
 
@@ -28,7 +29,7 @@ export const BuyAssetModal = () => {
   const [price, setPrice] = useState<number>(0);
   const [quantity, setQuantity] = useState<number>(0);
 
-  const [addPayment, setAddPayment] = useState(false);
+  const [paymentAdded, setPaymentAdded] = useState(false);
 
   const [error, setError] = useState("");
 
@@ -36,9 +37,20 @@ export const BuyAssetModal = () => {
     const fetchAssets = async () => {
       const data = await server.getAllAssetNames();
 
-      const mergedArray = data.bonds_pltr.concat(data.tickers); //todo iterate over keys when there are more categories further
 
-      setAvailableAssets(mergedArray);
+      const transformedData:any = [];//todo format data on backend!!
+
+      for (const [type, values] of Object.entries(data)) {
+        values.forEach(value => {
+          transformedData.push({ type, name:value });
+        });
+      }
+      
+      console.log("titi",transformedData);
+
+      setAvailableAssets(transformedData);
+
+
       console.log("dejta", data);
     };
 
@@ -51,7 +63,16 @@ export const BuyAssetModal = () => {
   const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
+    
+    console.log("huj",asset)
     const result = validateData();
+    if(!result) return;
+
+    //@ts-ignore asset&date are already validated
+    server.buyAsset(currentPortfolioId,category,account,asset,date,currency,currencyRate,price,quantity,paymentAdded)
+
+
+
   };
 
   function validateData() {
@@ -76,12 +97,15 @@ export const BuyAssetModal = () => {
 
     console.log("prajs i kesz", price * quantity, acc.cash);
     const canAfford = price * quantity <= acc.cash;
-    if (!canAfford && !addPayment) {
+    if (!canAfford && !paymentAdded) {
       setError(
         "You dont have enought cash on selected account. Did you mean to include 'Add Payment to account' option?"
       );
       return false;
     }
+
+    if(!asset) return false;
+    if(!date) return false;
 
 
     return true;
@@ -113,7 +137,7 @@ export const BuyAssetModal = () => {
           <div className="flex items-center space-x-2 ">
             <span>Asset</span>
 
-            <InputDropdown
+            <InputDropdownCustom
               data={availableAssets || []}
               value={asset}
               setValue={setAsset}
@@ -164,27 +188,27 @@ export const BuyAssetModal = () => {
           {/* //todo popup info "at buy time" */}
           <div className="flex items-center space-x-2 ">
             <span>Currency Rate</span>
-            <Input type="number" />
+            <Input  value={currencyRate} onChange={(e)=>{setCurrencyRate(Number(e.target.value))}} type="number" />
           </div>
 
           <div className="flex items-center space-x-2 ">
             <span>Unit Price</span>
 
-            <Input />
+            <Input value={price} onChange={(e)=>{setPrice(Number(e.target.value))}}  type="number" />
           </div>
           <div className="flex items-center space-x-2 ">
             <span>Quantity</span>
 
-            <Input />
+            <Input value={quantity} onChange={(e)=>{setQuantity(Number(e.target.value))}} />
           </div>
 
           <div className="flex items-center space-x-2 ">
             {/* //todo shadcn style checkbox */}
             <input
               type="checkbox"
-              checked={addPayment}
+              checked={paymentAdded}
               onChange={() => {
-                setAddPayment((item) => !item);
+                setPaymentAdded((item) => !item);
               }}
               id="checkbox-payment"
             />
