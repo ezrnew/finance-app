@@ -15,14 +15,13 @@ import {
 } from "recharts";
 import { Payload } from "recharts/types/component/DefaultLegendContent";
 
-const colors = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+const colors = ["#0088FE", "#00C49F", "#0088FE"];
 
 interface Props {
   totalValueLabel: string;
   data: { category: string; value: number }[];
   currency: CurrencyType;
 }
-
 
 export const PortfolioPieChart = ({
   totalValueLabel,
@@ -35,6 +34,7 @@ export const PortfolioPieChart = ({
       <PieChart>
         <Pie
           style={{ outline: "none" }}
+          // data={(()=>{const newData =data.filter(item => item.category!=="cash");newData.push(data[0]);return newData})()}
           data={data}
           dataKey="value"
           nameKey="category"
@@ -55,11 +55,21 @@ export const PortfolioPieChart = ({
             position="center"
             fill="#374151"
           />
+{     ( ()=>{
 
-          {data.map((item: { category: string; value: number }, index: number) => 
-            {
-  
-             return <Cell key={index} fill={colors[index % colors.length]} />
+console.log("ciasto data",data.filter(item=>item.category!=='cash'));
+return <div/>
+})()}
+          {
+      
+          data.map(
+            (item: { category: string; value: number }, index: number) => {
+              console.log("items",item,colors[index % colors.length])
+
+
+              return <Cell key={index} fill={item.category==="cash"?'#FFBB28': colors[index % colors.length]} />;
+              
+              
             }
           )}
         </Pie>
@@ -87,18 +97,31 @@ export const PortfolioPieChart = ({
 function renderLegend(legendItems: Payload[] | undefined) {
   if (legendItems === undefined) return <div />;
 
-  return (
-    <div className="flex space-x-2 text-base justify-center text-gray-700">
-      {legendItems.map((item) => (
-        <div key={item.value} className="border p-1 pr-3  flex rounded-md ">
-          <div
-            style={{ background: item.color }}
-            className="size-4 mx-2 rounded my-auto"
-          />
+  console.log("LEGEND ITEMS", legendItems);
 
-          <span>{item.payload?.category}</span>
-        </div>
-      ))}
+  return (
+    <div className="flex space-x-2 text-base justify-center text-gray-700 items-center h-full">
+      {legendItems
+        .filter((item) => item.value !== "cash")
+        .map((item) => (
+          <div key={item.value} className="border p-1 pr-3  flex rounded-md ">
+            <div
+              style={{ background: item.color }}
+              className="size-4 mx-2 rounded my-auto"
+            />
+
+            <span>{item.payload?.category}</span>
+          </div>
+        ))}
+      <div className="w-[1px] h-6 bg-gray-300"></div>
+
+      <div className="border p-1 pr-3  flex rounded-md ">
+        <div
+          style={{ background: "#FFBB28" }}
+          className="size-4 mx-2 rounded my-auto"
+        />
+        <span>cash</span>
+      </div>
     </div>
   );
 }
@@ -117,7 +140,7 @@ const renderCustomizedLabel = ({
   const x = cx + radius * Math.cos((-midAngle * Math.PI) / 180);
   const y = cy + radius * Math.sin((-midAngle * Math.PI) / 180);
 
-  if(percent===0) return
+  if (percent === 0) return;
 
   return (
     <text

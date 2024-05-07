@@ -315,9 +315,7 @@ return portf
 
 
       }
-      // console.log("nowa kaska",portfolio.accounts[accountIndex].cash,sellAssetDto.quantityToSell*sellItem.price)
-      
-      // console.log("kategorie",portfolio.categories)
+
 
       console.log( portfolio.accounts[accountIndex])
       portfolio.categories[categoryIndex].value-=sellAssetDto.quantityToSell*sellItem.price
@@ -326,7 +324,7 @@ return portf
       
       portfolio.categories[cashCategoryIndex].value+=sellAssetDto.quantityToSell*sellItem.price
 
-      portfolio.accounts[accountIndex].cash+=sellAssetDto.quantityToSell*sellItem.price//+portfolio.accounts[accountIndex].cash
+      portfolio.accounts[accountIndex].cash+=sellAssetDto.quantityToSell*sellItem.price
       
 
 
