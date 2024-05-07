@@ -29,7 +29,6 @@ export const PortfolioPieChart = ({
   data,
   currency,
 }: Props) => {
-  console.log("DATA",data)
   return (
     // <div className="mx-auto">
     <ResponsiveContainer height={400}>
@@ -76,7 +75,6 @@ export const PortfolioPieChart = ({
         />
         <Legend
           content={(item) => {
-            console.log("KONTENCIK",item)
             return renderLegend(item.payload);
           }}
         />
@@ -89,7 +87,6 @@ export const PortfolioPieChart = ({
 function renderLegend(legendItems: Payload[] | undefined) {
   if (legendItems === undefined) return <div />;
 
-  console.log("itemmm", legendItems);
   return (
     <div className="flex space-x-2 text-base justify-center text-gray-700">
       {legendItems.map((item) => (
@@ -105,18 +102,6 @@ function renderLegend(legendItems: Payload[] | undefined) {
     </div>
   );
 }
-
-//todo  data of each asset 
-// function renderTooltip(legendItems:any) {
-
-//   console.log("itemmm", legendItems);
-
-//   if (legendItems === undefined) return <div />;
-
-//   return (
-// <div className="size-4 border">xddd</div>
-//   );
-// }
 
 const renderCustomizedLabel = ({
   // @ts-ignore

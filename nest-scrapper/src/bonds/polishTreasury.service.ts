@@ -20,13 +20,13 @@ import {
 import { BondFactory } from './polishTreasury.factory';
 import { Coi, Edo, Ots, Rod, Ros, Tos } from './schemas/bonds.polishTreasury';
 @Injectable()
-export class PolishTreasury {
+export class PolishTreasuryService {
   constructor(
     @InjectModel(Cpi.name) private cpiModel: Model<Cpi>,
     private readonly bondFactoryCreator: BondFactory,
   ) {}
 
-  private readonly logger = new Logger(PolishTreasury.name);
+  private readonly logger = new Logger(PolishTreasuryService.name);
 
   async handleBond(bondString: string, day?: number, hasIke?: boolean) {
     const dayOfMonth = day || 1;
@@ -139,11 +139,11 @@ export class PolishTreasury {
 
       //czy
       if (isDateBeforeOtherDateIgnoringYear(currentDate, startDate)) {
-        console.log('date older', currentDate.toLocaleDateString(), startDate.toLocaleDateString());
+        // console.log('date older', currentDate.toLocaleDateString(), startDate.toLocaleDateString());
         unfinishedYear = unfinishedYear + 1;
       }
 
-      console.log('nieskonczona, rok', unfinishedYear);
+      // console.log('nieskonczona, rok', unfinishedYear);
 
       query.year = { $gt: unfinishedYear };
     } else {
@@ -158,11 +158,11 @@ export class PolishTreasury {
       return false;
     }
     const { firstYear, margin } = bondData;
-    console.log('BOND VALS', firstYear, margin);
+    // console.log('BOND VALS', firstYear, margin);
     /* EDO VALUES */
 
     const cpiArrayQuery = await this.cpiModel.find(query);
-    console.log('CPIPLS', cpiArrayQuery);
+    // console.log('CPIPLS', cpiArrayQuery);
     const cpiArrayUnfiltered = [];
     cpiArrayQuery.forEach((item) => {
       cpiArrayUnfiltered.push(item[cpiMonth]);
@@ -170,7 +170,7 @@ export class PolishTreasury {
 
     const cpiArray = cpiArrayUnfiltered.filter((n) => n);
 
-    console.log('CPI ARRAY', cpiArray);
+    // console.log('CPI ARRAY', cpiArray);
 
     if (cpiArray.length === 0) {
       //NO DATA FOR CPI,RETURN CURRENT NON-FULL YEAR
@@ -188,16 +188,16 @@ export class PolishTreasury {
         ? cpiPlusMargin.slice(1)
         : cpiPlusMargin;
 
-    console.log('curr month i monthliczony', currentMonth, month - 2);
+    // console.log('curr month i monthliczony', currentMonth, month - 2);
 
     let lastRate;
     //zarówno w przypadku jak znana jak i nieznana popuje bo muszę wyliczyć niecały rok za ostatnią
     if (endDate > currentDate) {
-      console.log('jezeli rok wiekszy');
+      // console.log('jezeli rok wiekszy');
       lastRate = cpiPlusMargin.pop();
     }
 
-    console.log('CPI PLUS MARG after eventual pop()', cpiPlusMargin);
+    // console.log('CPI PLUS MARG after eventual pop()', cpiPlusMargin);
 
     //CALCULATE
 
@@ -206,21 +206,21 @@ export class PolishTreasury {
     let returnRate = 100;
 
     if (isDifferenceLessThanAYear(startDate, currentDate)) {
-      console.log('obl krótsza niżrok');
+      // console.log('obl krótsza niżrok');
       return calculateYearRateByDaysPassed(
         returnRate,
         firstYear,
         new Date(endYear + 2000 - years, month - 1, dayOfMonth),
       );
     }
-
-    console.log('lastRate', lastRate);
+// 
+    // console.log('lastRate', lastRate);
 
     returnRate = addPercentageRate(returnRate, firstYear);
     years = years - 1;
-    console.log('after first year:', returnRate);
+    // console.log('after first year:', returnRate);
 
-    console.log('cummulated rate:', returnRate, cpiPlusMargin.length, cpiPlusMargin);
+    // console.log('cummulated rate:', returnRate, cpiPlusMargin.length, cpiPlusMargin);
 
     //?
     if (cpiPlusMargin.length > 0) {
@@ -242,11 +242,11 @@ export class PolishTreasury {
       );
     }
 
-    console.log('pozostalo lat:', years);
+    // console.log('pozostalo lat:', years);
 
     console.log('return rate:', returnRate);
 
-    return 3;
+    return (returnRate/100);
   }
 
   private validateBond(bondString: string) {

@@ -32,18 +32,35 @@ export class TickersService {
     console.log("Model",ticker)
     await ticker.save()
 
-    // todo co z tym xd
-  } else/* if (!isToday(ticker.date))*/ {
-    this._logger.debug('ticker found with obsolete data; scrapping...')
-    const scrappedTicker = await this.tickerScrapper.updateTickerData(name)
 
 
-    ticker.price=scrappedTicker.newPrice
-    ticker.date=scrappedTicker.newDate
-    await ticker.save()
+  } 
+  
+console.log("TICKEEEEEER",ticker)
+// @ts-ignore
+  const dateString = ticker.createdAt;
+  const dateObject = new Date(dateString);
+  const difference = Math.abs(Date.now() - dateObject.getTime());
 
-    removeMongoProperties(ticker)
-  }
+  // Convert milliseconds to hours
+  var differenceInHours = difference / (1000 * 60 * 60);
+  console.log("dif in hours",differenceInHours)
+  // Check if the difference is more than 24 hours
+
+  
+   if (differenceInHours>24) {
+
+     this._logger.debug('ticker found with obsolete data; scrapping...')
+     const scrappedTicker = await this.tickerScrapper.updateTickerData(name)
+     
+     
+     ticker.price=scrappedTicker.newPrice
+     ticker.date=scrappedTicker.newDate
+     await ticker.save()
+     
+     removeMongoProperties(ticker)
+    }
+  
 
   
   // const newTicker = {name:ticker.name,price:ticker.price,currency:ticker.currency,date:ticker.date}

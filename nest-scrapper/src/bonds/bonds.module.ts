@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { PolishTreasury } from './polishTreasury.service';
+import { PolishTreasuryService } from './polishTreasury.service';
 import { BondsController } from './bonds.controller';
 import { CpiModule } from '../general/cpi/cpi.module';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -39,7 +39,7 @@ import { PLtrScrapper } from './bonds.PLtr.scrapper';
   ],
   controllers: [BondsController],
   providers: [
-    PolishTreasury,
+    PolishTreasuryService,
     BondFactory,
     EdoConcrete,
     CoiConcrete,
@@ -50,6 +50,6 @@ import { PLtrScrapper } from './bonds.PLtr.scrapper';
     BondsService,
     PLtrScrapper
   ],
-  exports: [BondsService,PLtrScrapper],
+  exports: [BondsService,PLtrScrapper,PolishTreasuryService],
 })
 export class BondsModule {}

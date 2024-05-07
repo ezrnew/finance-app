@@ -2,17 +2,118 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { Portfolio } from './schemas/portfolio.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Document, Model, Types } from 'mongoose';
 import { User } from '../users/schemas/user.schema';
 import { BuyAssetDto } from './dto/buyAssetDto';
 import { SellAssetDto } from './dto/sell-asset-dto';
+import { PolishTreasuryService } from '../bonds/polishTreasury.service';
+import { TickersService } from '../tickers/tickers.service';
 
 @Injectable()
 export class PortfoliosService {
   constructor(
     @InjectModel(Portfolio.name) private portfolioModel: Model<Portfolio>,
     @InjectModel(User.name) private userModel: Model<User>,
+    private bonds_pltrService:PolishTreasuryService,
+    private tickerService:TickersService
+
+
   ) {}
+
+
+  private  reeavluateCategoriesAndTotalValue(portf:Document<unknown, {}, Portfolio> & Portfolio & {
+    _id: Types.ObjectId;
+}) {
+
+  // const portf = {...portfolio}
+
+  portf.categories.forEach(category => category.value=0)
+  portf.totalValue=0
+  
+  portf.accounts.forEach(account =>{
+
+    account.assets.forEach(asset =>{
+
+      const index = portf.categories.findIndex(category => category.category===asset.category)
+      if(index)
+      portf.categories[index].value+=asset.price*asset.quantity
+    })
+
+  })
+
+  portf.categories.forEach(category => portf.totalValue+=category.value )
+
+
+
+return portf
+  }
+
+
+
+  async reevaluateAssets(username, portfolioId: string) {
+
+    const userOwnsPortfolio = await this.userModel.findOne({ username,portfolios:portfolioId});
+    if(!userOwnsPortfolio) throw new UnauthorizedException()
+
+      const portfolio = await this.portfolioModel.findById(portfolioId)
+
+
+      const assets = getFlattenAssets(portfolio.accounts)
+
+      async function calculate() {
+        const promises = portfolio.accounts.map(async (account) => {
+            await Promise.all(account.assets.map(async (asset) => {
+              console.log("ASSETPRICE",asset)
+                asset.price = await handleAssetUpdate.call(this, asset);
+            }));
+        });
+        await Promise.all(promises);
+
+
+
+        
+        return 1;
+    }
+
+      const res = await calculate.call(this)
+      const reevaluatedPortfolio = this.reeavluateCategoriesAndTotalValue(portfolio)
+      
+      // console.log("po update",portfolio.accounts[0].assets)
+
+
+     async function handleAssetUpdate(asset:any){ //todo create handleMany func to avoid multiple db requests
+        if(asset.type==='bonds_pltr') return asset.buyPrice*(await this.bonds_pltrService.handleBond(asset.name))
+        if(asset.type==='tickers'){
+          const tickerResult =(await this.tickerService.findOne(asset.name)).price
+          console.log("TICKER RESULT:",tickerResult)
+          return asset.price=tickerResult
+
+        }
+          
+        return 1
+      }
+
+      // const bonds_pltr = assets.filter(item => item.type==='bonds_pltr')
+
+      // bonds_pltr.forEach(async(item) =>{
+      //   console.log("ITEMEKS",item)
+      //   const rezultatObl= await this.bonds_pltrService.handleBond(item.name) //todo include day/ike
+      //   console.log("REZULTTAAAA",rezultatObl)
+      //   item.price = rezultatObl
+      // })
+
+      
+      
+      console.log("portfolio", reevaluatedPortfolio.accounts[0].assets[1])
+      
+      await this.portfolioModel.findByIdAndUpdate(portfolioId,reevaluatedPortfolio)
+
+
+
+
+    return 3
+  }
+
 
   async create(username, createPortfolioDto: CreatePortfolioDto) {
     //todo validate if name taken server-side
@@ -41,8 +142,6 @@ export class PortfoliosService {
 
     const portfolios = await this.portfolioModel.find({'_id':{$in:userPortfolios}})
 
-    console.log("portfeliska",portfolios)
-
     return portfolios
 
 
@@ -60,21 +159,12 @@ export class PortfoliosService {
 
       return this.portfolioModel.findById(id)
 
-
-    // const portfolios = await this.portfolioModel.find({'_id':{$in:userPortfolios}})
-
-    // console.log("portfeliska",portfolios)
-
-    // return portfolios
-
   }
 
 
   async addAccount(username:string,portfolioId:string,name:string) {
     //todo validate if name taken server-side
 
-    console.log("username",username)
-    console.log("idk",portfolioId)
 
     const userOwnsPortfolio = await this.userModel.findOne({ username,portfolios:portfolioId});//todo move to another validating func
     if(!userOwnsPortfolio) throw new UnauthorizedException()
@@ -82,15 +172,8 @@ export class PortfoliosService {
       const portfolio = await this.portfolioModel.findById(portfolioId)
 
       portfolio.accounts.push({title:name,cash:0,assets:[]})
-      console.log("puszlem se ",portfolio.accounts)
+      // console.log("puszlem se ",portfolio.accounts)
       return portfolio.save()
-
-
-    // const portfolios = await this.portfolioModel.find({'_id':{$in:userPortfolios}})
-
-    // console.log("portfeliska",portfolios)
-
-    // return portfolios
 
   }
 
@@ -108,9 +191,6 @@ export class PortfoliosService {
   async buyAsset(username:string,buyAssetDto:BuyAssetDto) {
 
 
-    console.log("NAZWAAAAAAAAAAAAAAAAA",buyAssetDto.asset.name)
-
-
   const userOwnsPortfolio = await this.userModel.findOne({ username,portfolios:buyAssetDto.portfolioId});
   if(!userOwnsPortfolio) throw new UnauthorizedException()
 
@@ -118,7 +198,7 @@ export class PortfoliosService {
 
 
     const totalPrice= buyAssetDto.price*buyAssetDto.quantity
-    console.log("totalp",totalPrice)
+    // console.log("totalp",totalPrice)
 
     portfolio.totalValue+=totalPrice
 
@@ -145,8 +225,6 @@ export class PortfoliosService {
 
     console.log("NAZWAAAAAAAAAAAAAAAAA",buyAssetDto.asset.name)
 
-
-    // if(buyAssetDto.asset.type==="bonds_pltr"){
       portfolioAccount.assets.push({
         id:crypto.randomUUID(),
         name:buyAssetDto.asset.name,
@@ -156,13 +234,29 @@ export class PortfoliosService {
         date: buyAssetDto.date,
         currency:buyAssetDto.currency,
         currencyRate:buyAssetDto.currencyRate, //?potrzebne?
+        buyPrice:buyAssetDto.price,
         price:buyAssetDto.price,
         quantity:buyAssetDto.quantity
 
 
       })
 
-      // console.log("portfolioAcc",portfolioAccount)
+      console.log('takie cos puszninente',{
+        id:crypto.randomUUID(),
+        name:buyAssetDto.asset.name,
+        type:buyAssetDto.asset.type,
+        category:buyAssetDto.category,
+      
+        date: buyAssetDto.date,
+        currency:buyAssetDto.currency,
+        currencyRate:buyAssetDto.currencyRate, //?potrzebne?
+        buyPrice:buyAssetDto.price,
+        price:buyAssetDto.price,
+        quantity:buyAssetDto.quantity
+
+
+      })
+
 
       const selectedIndex2 = portfolio.accounts.findIndex(item =>item.title===buyAssetDto.account)
 
@@ -170,25 +264,6 @@ export class PortfoliosService {
 
 
       return portfolio.save()
-
-
-    // }
-
-
-// if(buyAssetDto.asset.type==="ticker"){
-//     portfolioAccount.assets.push({
-//     name:buyAssetDto.asset.value,
-//       type:buyAssetDto.asset.type
-
-//   })
-      
-    // }
-
-
-    // if(){}
-
-    
-
 
 
 
@@ -231,18 +306,18 @@ export class PortfoliosService {
         portfolio.accounts[accountIndex].assets = portfolio.accounts[accountIndex].assets.filter(item => item.id !== sellAssetDto.assetId) 
 
       } else{
-        console.log("els")
+        // console.log("els")
         const sellItemIndex = portfolio.accounts[accountIndex].assets.findIndex(item => item.id===sellAssetDto.assetId)
-        console.log("indeks itemka",sellItemIndex)
-        console.log("xddd",portfolio.accounts[accountIndex].assets[sellItemIndex].quantity)
+        // console.log("indeks itemka",sellItemIndex)
+        // console.log("xddd",portfolio.accounts[accountIndex].assets[sellItemIndex].quantity)
 
         portfolio.accounts[accountIndex].assets[sellItemIndex].quantity=portfolio.accounts[accountIndex].assets[sellItemIndex].quantity -sellAssetDto.quantityToSell
 
 
       }
-      console.log("nowa kaska",portfolio.accounts[accountIndex].cash,sellAssetDto.quantityToSell*sellItem.price)
+      // console.log("nowa kaska",portfolio.accounts[accountIndex].cash,sellAssetDto.quantityToSell*sellItem.price)
       
-      console.log("kategorie",portfolio.categories)
+      // console.log("kategorie",portfolio.categories)
 
       console.log( portfolio.accounts[accountIndex])
       portfolio.categories[categoryIndex].value-=sellAssetDto.quantityToSell*sellItem.price
@@ -268,15 +343,33 @@ export class PortfoliosService {
 
       
       return 3 
-
   
 
-      
-
-
-
-      return 3
   }
+  
 
 
+  // async sellAsset(username:string,sellAssetDto:SellAssetDto) {
+
+
+
+  // }
+
+
+
+
+}
+
+
+ function getFlattenAssets(accounts: { title: string; cash: number; assets: any[] }[]) {
+  const result: any = [];
+
+  accounts.forEach((account) => {
+    const { title, assets } = account;
+    assets.forEach((asset) => {
+      result.push({ ...asset, account: title });
+    });
+  });
+
+  return result;
 }

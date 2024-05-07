@@ -6,6 +6,7 @@ import { AddAccountDto } from './dto/add-account.dto';
 import { AddCategoryDto } from './dto/add-category.dto';
 import { BuyAssetDto } from './dto/buyAssetDto';
 import { SellAssetDto } from './dto/sell-asset-dto';
+import { UpdateAssetsDto } from './dto/update-assets-dto';
 
 @Controller('portfolios')
 export class PortfoliosController {
@@ -62,5 +63,18 @@ export class PortfoliosController {
     const result = await this.portfoliosService.sellAsset(req.user.username, sellAssetDto);
 
     if (!result) throw new BadRequestException();
+  }
+
+
+  @UseGuards(AuthGuard)
+  @Post('reevaluate')
+  async updateAssets(@Request() req, @Body() updateAssetsDto: UpdateAssetsDto) {
+
+    console.log("EWALUACJA",updateAssetsDto)
+
+    const result = await this.portfoliosService.reevaluateAssets(req.user.username, updateAssetsDto.portfolioId);
+
+    if (!result) throw new BadRequestException();
+    return result
   }
 }

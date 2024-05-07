@@ -110,7 +110,6 @@ export class BackendConnectorSingleton {
     paymentAdded: boolean
   ) {
 
-    console.log("WYSYLAM SE POSTA Z ASSET",asset)
     const res = await this.httpRequest("/portfolios/buyAsset", "POST", {
       body: { portfolioId, category,account,asset,date,currency,currencyRate,price,quantity,paymentAdded },
     });
@@ -139,6 +138,24 @@ export class BackendConnectorSingleton {
     }
     return false;
   }
+
+
+  async reevaluateAssets(
+    portfolioId: string,
+  ) {
+    const res = await this.httpRequest("/portfolios/reevaluate", "POST", {
+      body: { portfolioId},
+    });
+
+    if (res?.ok) {
+      return res.json();
+    }
+    return false;
+  }
 }
+
+
+
+
 
 export const server = new BackendConnectorSingleton("http://localhost:2137");

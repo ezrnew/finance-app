@@ -8,5 +8,6 @@ import { TickersService } from './tickers.service';
   imports: [MongooseModule.forFeature([{ name: Ticker.name, schema: TickerSchema }])],
   controllers: [TickersController],
   providers: [TickersService],
+  exports:[TickersService]
 })
 export class TickersModule {}

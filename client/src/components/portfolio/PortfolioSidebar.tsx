@@ -46,9 +46,13 @@ export const PortfolioSidebar = () => {
       const getPortfolioData = async()=>{
         console.log("feczuje")
         const portfolio = await server.getPortfolioById(currentPortfolioId)
-        console.log("pppppppp",portfolio)
+        // console.log("pppppppp",portfolio)
 
         setCurrentPortfolio(portfolio) 
+
+
+        const portfolioWithReevaluatedValues = await server.reevaluateAssets(currentPortfolioId)
+        // setCurrentPortfolio(portfolioWithReevaluatedValues) 
       } 
 
       getPortfolioData()

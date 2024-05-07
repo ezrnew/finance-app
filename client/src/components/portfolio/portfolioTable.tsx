@@ -39,7 +39,7 @@ import { getPortfolioColumns } from "./PortfolioColumns";
 import { CurrencyType } from "@/utils/formatters";
 
 export interface PortfolioTableItem {
-  title: string;
+  name: string;
   type: string;
   value: number;
   quantity: number;
@@ -61,8 +61,6 @@ export function PortfolioTable({
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-
-  // console.log("DATA", data);
 
   const table = useReactTable({
     data,
@@ -88,9 +86,9 @@ export function PortfolioTable({
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter assets..."
-          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("title")?.setFilterValue(event.target.value)
+            table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className=" max-w-[250px]"
         />
