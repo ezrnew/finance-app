@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { Portfolio } from './schemas/portfolio.schema';
 import { InjectModel } from '@nestjs/mongoose';
@@ -8,6 +8,7 @@ import { BuyAssetDto } from './dto/buyAssetDto';
 import { SellAssetDto } from './dto/sell-asset-dto';
 import { PolishTreasuryService } from '../bonds/polishTreasury.service';
 import { TickersService } from '../tickers/tickers.service';
+import { AddOperationDto } from './dto/add-operation.dto';
 
 @Injectable()
 export class PortfoliosService {
@@ -31,6 +32,11 @@ export class PortfoliosService {
   portf.totalValue=0
   
   portf.accounts.forEach(account =>{
+
+    const cashIndex = portf.categories.findIndex(item => item.category==='cash')
+
+    portf.categories[cashIndex].value+=account.cash
+
 
     account.assets.forEach(asset =>{
 
@@ -104,7 +110,7 @@ return portf
 
       
       
-      console.log("portfolio", reevaluatedPortfolio.accounts[0].assets[1])
+      console.log("portfolioxddddddddddd", reevaluatedPortfolio.accounts[0].assets[1])
       
       await this.portfolioModel.findByIdAndUpdate(portfolioId,reevaluatedPortfolio)
 
@@ -171,7 +177,7 @@ return portf
 
       const portfolio = await this.portfolioModel.findById(portfolioId)
 
-      portfolio.accounts.push({title:name,cash:0,assets:[]})
+      portfolio.accounts.push({id:crypto.randomUUID(),title:name,cash:0,assets:[]})
       // console.log("puszlem se ",portfolio.accounts)
       return portfolio.save()
 
@@ -324,6 +330,8 @@ return portf
       
       portfolio.categories[cashCategoryIndex].value+=sellAssetDto.quantityToSell*sellItem.price
 
+      console.log("ustawiam kesz",sellAssetDto.quantityToSell*sellItem.price,sellAssetDto.quantityToSell,sellItem.price)
+
       portfolio.accounts[accountIndex].cash+=sellAssetDto.quantityToSell*sellItem.price
       
 
@@ -351,7 +359,32 @@ return portf
 
 
 
+  
   // }
+
+    async addOperation(username, addOperationDto: AddOperationDto) {
+    //todo validate if name taken server-side
+
+    const userOwnsPortfolio = await this.userModel.findOne({ username,portfolios:addOperationDto.portfolioId});
+    if(!userOwnsPortfolio) throw new UnauthorizedException()
+
+
+      const portfolio = await this.portfolioModel.findById(addOperationDto.portfolioId)
+
+      const accountIndex = portfolio.accounts.findIndex(account => account.id===addOperationDto.accountId)
+
+      portfolio.accounts[accountIndex].cash+=addOperationDto.amount
+
+
+      if(portfolio.accounts[accountIndex].cash<0) throw new BadRequestException()
+
+      return this.portfolioModel.findByIdAndUpdate(addOperationDto.portfolioId,portfolio)
+
+      
+  }
+
+
+
 
 
 

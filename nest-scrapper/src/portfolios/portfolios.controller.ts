@@ -7,6 +7,7 @@ import { AddCategoryDto } from './dto/add-category.dto';
 import { BuyAssetDto } from './dto/buyAssetDto';
 import { SellAssetDto } from './dto/sell-asset-dto';
 import { UpdateAssetsDto } from './dto/update-assets-dto';
+import { AddOperationDto } from './dto/add-operation.dto';
 
 @Controller('portfolios')
 export class PortfoliosController {
@@ -77,4 +78,16 @@ export class PortfoliosController {
     if (!result) throw new BadRequestException();
     return result
   }
+
+  
+  @UseGuards(AuthGuard)
+  @Post('operation')
+  async addOperation(@Request() req, @Body() addOperationDto: AddOperationDto) {
+
+    console.log("OPERATION",addOperationDto)
+
+     await this.portfoliosService.addOperation(req.user.username, addOperationDto);
+  }
+
+
 }

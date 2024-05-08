@@ -38,7 +38,7 @@ export class TickersService {
   
 console.log("TICKEEEEEER",ticker)
 // @ts-ignore
-  const dateString = ticker.createdAt;
+  const dateString = ticker.updatedAt;
   const dateObject = new Date(dateString);
   const difference = Math.abs(Date.now() - dateObject.getTime());
 

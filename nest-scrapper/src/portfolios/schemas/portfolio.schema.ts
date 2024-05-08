@@ -5,9 +5,6 @@ export type PortfolioDocument = HydratedDocument<Portfolio>;
 
 @Schema()
 export class Portfolio {
-  //id?
-//   @Prop({ type: Types.ObjectId, ref: 'users' }) // Define userId field as ObjectId reference to User collection
-//   userId: Types.ObjectId; // Use Types.ObjectId type
 
   @Prop()
   title: string;
@@ -18,7 +15,7 @@ export class Portfolio {
   @Prop()
   categories: { category: string; value: number }[];
   @Prop()
-  accounts: { title: string; cash: number; assets: any[] }[];
+  accounts: {id:string, title: string; cash: number; assets: any[] }[];
 }
 
 export const PortfolioSchema = SchemaFactory.createForClass(Portfolio);

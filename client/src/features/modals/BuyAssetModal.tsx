@@ -17,6 +17,7 @@ export const BuyAssetModal = () => {
   const navigate = useNavigate();
 
   const [availableAssets, setAvailableAssets] = useState<{name:string,type:string}[]>([]);
+  const [_,refetch] = useState(false)
 
   const [asset, setAsset] = useState<{name:string,type:string} | null>(null);
   const [category, setCategory] = useState("");
@@ -41,6 +42,7 @@ export const BuyAssetModal = () => {
       const transformedData:any = [];//todo format data on backend!!
 
       for (const [type, values] of Object.entries(data)) {
+        //@ts-ignore
         values.forEach(value => {
           transformedData.push({ type, name:value });
         });

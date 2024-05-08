@@ -6,10 +6,11 @@ import { AuthorizedRoute } from "./features/AuthorizedRoute";
 import { PortfolioPage } from "./pages/PortfolioPage";
 import { MainLayout } from "./layout/MainLayout";
 import { ToolsPage } from "./pages/ToolsPage";
-import { BuyAssetModal } from "./features/BuyAssetModal";
-import { SellAssetModal } from "./features/SellAssetModal";
+import { BuyAssetModal } from "./features/modals/BuyAssetModal";
+import { SellAssetModal } from "./features/modals/SellAssetModal";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
+import { AddPaymentModal } from "./features/modals/AddPaymentModal";
 
 
 function getRouter(location:Location<any>){
@@ -104,6 +105,7 @@ function App() {
         <Routes>
           <Route path="/portfolio/buy" element={<BuyAssetModal />} />
           <Route path="/portfolio/sell" element={<SellAssetModal />} />
+          <Route path="/portfolio/payment" element={<AddPaymentModal />} />
         </Routes>
       )}
 

@@ -152,6 +152,22 @@ export class BackendConnectorSingleton {
     }
     return false;
   }
+
+
+  async addOperation(
+    portfolioId: string,
+    accountId: string,
+    amount: number,
+  ) {
+    const res = await this.httpRequest("/portfolios/operation", "POST", {
+      body: { portfolioId,accountId,amount},
+    });
+
+    if (res?.ok) {
+      return res.json();
+    }
+    return false;
+  }
 }
 
 

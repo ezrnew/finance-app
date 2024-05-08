@@ -44,7 +44,7 @@ export const PortfolioSidebar = () => {
 
 
       const getPortfolioData = async()=>{
-        console.log("feczuje")
+        console.log("feczujssssssse")
         const portfolio = await server.getPortfolioById(currentPortfolioId)
         // console.log("pppppppp",portfolio)
 

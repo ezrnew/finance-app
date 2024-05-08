@@ -43,7 +43,7 @@ export const getPortfolioColumns = (
       cell: ({ row }) => {
         const item = row.original;
 
-        const amount = parseFloat(item.price*item.quantity);
+        const amount = item.price*item.quantity
 
         return (
           <div className=" font-medium">
