@@ -1,13 +1,17 @@
 import { Injectable, Logger } from '@nestjs/common';
 import puppeteer, { Page } from 'puppeteer';
-import { getById, getByText, getText, setPageCookies } from '../utils/puppeteer.utils';
+import { getById, getByIdAndText, getByText, getText, setPageCookies } from '../utils/puppeteer.utils';
 import { parseStringDate } from '../utils/date.utils';
+import { ScrapperCurrencyAdapter, StooqCurrencyAdapter } from './utils/currency.adapter';
 
 //todo
 //1.get all data on initial scrap (stock)
 //1.get all data on initial scrap (stock)
 @Injectable()
 export class TickersScrapper {
+
+
+  private readonly _currencyAdapter:ScrapperCurrencyAdapter = StooqCurrencyAdapter
   private readonly _logger = new Logger(TickersScrapper.name);
   private readonly _baseUrl = 'https://stooq.pl/q/?s=';
   private _cookies = null;
@@ -16,12 +20,15 @@ export class TickersScrapper {
     return this._cookies;
   }
   public set cookies(value) {
-    // console.log('ustawiam ciastko');
     this._cookies = value;
   }
 
   //todo first run all data, next runs only price & date
   async getTickerData(ticker: string) {
+
+    let correctedTickerName;
+
+
     this._logger.debug('started full ticker scrapping');
     //////////////////////////
 
@@ -44,6 +51,8 @@ export class TickersScrapper {
         return await scrap.call(this, page, true);
       } else {
         const aElements = await result.$$eval('a', (elements) => elements.map((element) => element.href));
+        console.log("hrefik",aElements[0].split("=").pop())
+
 
         await page.goto(aElements[0]);
 
@@ -57,7 +66,10 @@ export class TickersScrapper {
     }
 
     async function scrap(page: Page, validTicker: boolean) {
-      const priceTd = await getByText(page, 'Kurs', 'td');
+      const priceTd = await getByIdAndText(page,'f13', 'Kurs', 'td');
+
+      const tekst = await getText(priceTd)
+
       const priceSpan = await getById(priceTd, 'aq_' + ticker);
       const price = await getText(priceSpan);
 
@@ -77,11 +89,16 @@ export class TickersScrapper {
 
       console.log('NOWADATA:', parseStringDate(dateSpans));
       console.log("zwracam dane")
+      let currencyData = this._currencyAdapter.find(item =>item.symbol===currency)
+
+      if(!currencyData) currencyData = {currency:'USD',symbol:"$",formatter:(item)=>item}
+      
+
       //todo
       const returnedData = {
-        name: validTicker ? ticker : 'ZLYTICKERKOLEZKO',
-        price,
-        currency,
+        name: validTicker ? ticker : (await page.url()).split('=').pop(),
+        price:currencyData.formatter(price),
+        currency:currencyData.currency,
         date: parseStringDate(dateSpans),
       };
 

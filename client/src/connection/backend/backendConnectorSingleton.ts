@@ -168,6 +168,18 @@ export class BackendConnectorSingleton {
     }
     return false;
   }
+
+  async findTicker(ticker: string) {
+    const res = await this.httpRequest(`/tickers/add/${ticker}` )
+
+    if (res?.ok) {
+       return res.json();
+    }
+    return false;
+  }
+
+
+
 }
 
 

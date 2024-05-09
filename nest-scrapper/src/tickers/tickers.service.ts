@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { createTickerDto } from './dto/create-ticker.dto';
@@ -14,23 +14,39 @@ export class TickersService {
 
   constructor(@InjectModel(Ticker.name) private tickerModel: Model<Ticker>) {}
 
-  async create(newTicker: createTickerDto): Promise<Ticker> {
-    const createdTicker = new this.tickerModel(newTicker);
-    return createdTicker.save();
+  // async create(newTicker: createTickerDto): Promise<Ticker> {
+  //   const createdTicker = new this.tickerModel(newTicker);
+  //   return createdTicker.save();
+  // }
+
+  async addNew(name: string) {
+
+    let ticker = await this.tickerModel.findOne({ name });
+    if(ticker) return {new:false,data:ticker}
+    console.log("tiker",ticker)
+    this._logger.debug('no ticker found; scrapping...')
+
+    const scrappedTicker = await this.tickerScrapper.getTickerData(name)
+    console.log("ZESKRAPOWANY",scrappedTicker)
+      
+
+
   }
 
-  async findOne(name: string) {
+
+  async getOne(name: string) {
     let ticker = await this.tickerModel.findOne({ name });
 
     console.log("TINKER",ticker)
 
     if (!ticker) {
-    this._logger.debug('no ticker found; scrapping...')
-    const scrappedTicker = await this.tickerScrapper.getTickerData(name)
-    console.log("ZESKRAPOWANY",scrappedTicker)
-     ticker = new this.tickerModel(scrappedTicker)
-    console.log("Model",ticker)
-    await ticker.save()
+      throw new NotFoundException()
+    // this._logger.debug('no ticker found; scrapping...')
+    // const scrappedTicker = await this.tickerScrapper.getTickerData(name)
+    // console.log("ZESKRAPOWANY",scrappedTicker)
+    //  ticker = new this.tickerModel(scrappedTicker)
+    // console.log("Model",ticker)
+    // await ticker.save()
 
 
 
@@ -40,12 +56,9 @@ console.log("TICKEEEEEER",ticker)
 // @ts-ignore
   const dateString = ticker.updatedAt;
   const dateObject = new Date(dateString);
-  const difference = Math.abs(Date.now() - dateObject.getTime());
+  const differenceInHours = (Math.abs(Date.now() - dateObject.getTime())) / (1000 * 60 * 60);
 
-  // Convert milliseconds to hours
-  var differenceInHours = difference / (1000 * 60 * 60);
-  console.log("dif in hours",differenceInHours)
-  // Check if the difference is more than 24 hours
+  // console.log("dif in hours",differenceInHours)
 
   
    if (differenceInHours>24) {

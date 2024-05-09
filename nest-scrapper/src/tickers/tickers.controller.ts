@@ -9,17 +9,21 @@ export class TickersController {
   constructor(private readonly tickerService: TickersService) {}
 
 
-  @Post()
-  async create(@Body() createTickerDto: createTickerDto) {
+  // @Post()
+  // async create(@Body() createTickerDto: createTickerDto) {
 
-    await this.tickerService.create(createTickerDto);
+  //   await this.tickerService.create(createTickerDto);
+
+  // }
+  @Get('/add/:name')
+  addNew(@Param('name') name: string) {
+    return this.tickerService.addNew(name);
 
   }
 
-
     @Get('/get/:name')
   findOne(@Param('name') name: string) {
-    return this.tickerService.findOne(name);
+    return this.tickerService.getOne(name);
 
   }
 

@@ -97,7 +97,7 @@ return <div/>
 function renderLegend(legendItems: Payload[] | undefined) {
   if (legendItems === undefined) return <div />;
 
-  console.log("LEGEND ITEMS", legendItems);
+  // console.log("LEGEND ITEMS", legendItems);
 
   return (
     <div className="flex space-x-2 text-base justify-center text-gray-700 items-center h-full">
