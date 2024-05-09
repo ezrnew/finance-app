@@ -61,13 +61,13 @@ export const getPortfolioColumns = (
       ),
     },
     {
-      accessorKey: "buyDate",
+      accessorKey: "date",
       header: "Buy Date",
       cell: ({ row }) => (
         <div className="">
           {formatDateShort(
             currencyToIntlZone[currency],
-            row.getValue("buyDate")
+            new Date (row.getValue("date"))
           )}
         </div>
       ),

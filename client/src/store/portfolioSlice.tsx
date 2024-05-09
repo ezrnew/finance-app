@@ -2,12 +2,15 @@ import { CurrencyType } from "@/utils/formatters";
 import { ls } from "@/utils/localStorage";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+export type OperationType = 'sell' | 'buy' | 'withdraw' | 'deposit';
+export type OperationHistoryType = {id:string; accountName: string; type: OperationType; amount: number; date: Date; asset?: string; quantity?:number; buyDate?:Date }
 
 export interface Portfolio {
   title: string;
   currency: CurrencyType;
   totalValue: number;
   categories: { category: string; value: number }[];
+  operationHistory: OperationHistoryType[];
   accounts: {id:string, title: string; cash: number; assets: any[] }[];
 }
 

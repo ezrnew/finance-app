@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { faChalkboard, faLineChart } from "@fortawesome/free-solid-svg-icons";
+import { faChalkboard, faLineChart, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 
@@ -19,7 +19,7 @@ export const Sidebar = () => {
         <Link className="mx-auto" to={"/tools"}>
           <FontAwesomeIcon
             className={cn("w-full size-8 ", activeLink("/tools"))}
-            icon={faLineChart}
+            icon={faMagnifyingGlass}
           />
         </Link>
       </div>

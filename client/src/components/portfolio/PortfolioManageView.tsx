@@ -4,11 +4,11 @@ import React, { useState } from "react";
 import { Input } from "../ui/input";
 import { useActions, useTypedSelector } from "@/hooks/use-redux";
 import { server } from "@/connection/backend/backendConnectorSingleton";
-import { AccountsTable } from "./AccountsTable";
+import { AccountsTable } from "./tables/AccountsTable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
-import { CategoriesTable } from "./CategoriesTable";
-import { accountColumns } from "./AccountColumns";
+import { CategoriesTable } from "./tables/CategoriesTable";
+import { accountColumns } from "./tables/AccountColumns";
 import { useLocation, useNavigate } from "react-router-dom";
 
 interface Props {

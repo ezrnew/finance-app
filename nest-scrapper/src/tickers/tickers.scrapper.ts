@@ -4,9 +4,16 @@ import { getById, getByIdAndText, getByText, getText, setPageCookies } from '../
 import { parseStringDate } from '../utils/date.utils';
 import { ScrapperCurrencyAdapter, StooqCurrencyAdapter } from './utils/currency.adapter';
 
-//todo
-//1.get all data on initial scrap (stock)
-//1.get all data on initial scrap (stock)
+
+
+type TickerType = {
+  name: string,
+  price: number,
+  currency: string,
+  date: Date,
+}
+
+//todo get stock market data
 @Injectable()
 export class TickersScrapper {
 
@@ -24,13 +31,9 @@ export class TickersScrapper {
   }
 
   //todo first run all data, next runs only price & date
-  async getTickerData(ticker: string) {
-
-    let correctedTickerName;
-
+  async getTickerData(ticker: string):Promise<TickerType> {
 
     this._logger.debug('started full ticker scrapping');
-    //////////////////////////
 
     const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
@@ -94,7 +97,6 @@ export class TickersScrapper {
       if(!currencyData) currencyData = {currency:'USD',symbol:"$",formatter:(item)=>item}
       
 
-      //todo
       const returnedData = {
         name: validTicker ? ticker : (await page.url()).split('=').pop(),
         price:currencyData.formatter(price),

@@ -86,7 +86,7 @@ export class PortfoliosController {
 
     console.log("OPERATION",addOperationDto)
 
-     await this.portfoliosService.addOperation(req.user.username, addOperationDto);
+     await this.portfoliosService.addAccountOperation(req.user.username, addOperationDto);
   }
 
 

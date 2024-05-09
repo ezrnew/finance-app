@@ -1,7 +1,7 @@
 import { PortfolioManageView } from "@/components/portfolio/PortfolioManageView";
 import { PortfolioPieChart } from "@/components/portfolio/PortfolioPieChart";
 import { PortfolioSidebar } from "@/components/portfolio/PortfolioSidebar";
-import { PortfolioTable } from "@/components/portfolio/PortfolioTable";
+import { PortfolioTable } from "@/components/portfolio/tables/PortfolioTable";
 import { Button } from "@/components/ui/button";
 import { EXAMPLE_PORTFOLIO } from "@/data/example_data";
 import { useActions, useTypedSelector } from "@/hooks/use-redux";
@@ -57,7 +57,11 @@ export const PortfolioPage = () => {
                   {" "}
                   {isManageView ? "Done" : "Manage"}{" "}
                 </Button>
-                <Button>History</Button>
+                <Button asChild>
+                  <Link to="operations" state={{ background: location }}>
+                    History
+                  </Link>
+                </Button>
               </div>
             </div>
             {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

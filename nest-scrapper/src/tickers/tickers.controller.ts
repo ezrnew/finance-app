@@ -15,9 +15,10 @@ export class TickersController {
   //   await this.tickerService.create(createTickerDto);
 
   // }
+  
   @Get('/add/:name')
-  addNew(@Param('name') name: string) {
-    return this.tickerService.addNew(name);
+  async addNew(@Param('name') name: string) {
+    return await this.tickerService.addNew(name);
 
   }
 

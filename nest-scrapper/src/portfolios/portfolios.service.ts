@@ -130,6 +130,7 @@ return portf
       title: createPortfolioDto.name,
       currency: 'PLN', //todo
       totalValue: 0,
+      operationHistory:[],
       categories: [{category:'cash',value:0},{category:'shares',value:0},{category:'bonds',value:0}],
       accounts: [],
     });
@@ -228,9 +229,6 @@ return portf
 
     if(portfolioAccount.cash<0) return false
 
-
-    console.log("NAZWAAAAAAAAAAAAAAAAA",buyAssetDto.asset.name)
-
       portfolioAccount.assets.push({
         id:crypto.randomUUID(),
         name:buyAssetDto.asset.name,
@@ -247,21 +245,17 @@ return portf
 
       })
 
-      console.log('takie cos puszninente',{
+      portfolio.operationHistory.push({
         id:crypto.randomUUID(),
-        name:buyAssetDto.asset.name,
-        type:buyAssetDto.asset.type,
-        category:buyAssetDto.category,
-      
-        date: buyAssetDto.date,
-        currency:buyAssetDto.currency,
-        currencyRate:buyAssetDto.currencyRate, //?potrzebne?
-        buyPrice:buyAssetDto.price,
-        price:buyAssetDto.price,
-        quantity:buyAssetDto.quantity
-
-
+        accountName:portfolioAccount.title,
+        type:"buy",
+        amount:totalPrice,
+        date: new Date(Date.now()),
+        asset:buyAssetDto.asset.name,
+        quantity:buyAssetDto.quantity,
+        buyDate:buyAssetDto.date
       })
+
 
 
       const selectedIndex2 = portfolio.accounts.findIndex(item =>item.title===buyAssetDto.account)
@@ -304,6 +298,8 @@ return portf
 
       const {...sellItem} = portfolio.accounts[accountIndex].assets.find(item => item.id===sellAssetDto.assetId)
 
+      const sellItemIndex = portfolio.accounts[accountIndex].assets.findIndex(item => item.id===sellAssetDto.assetId)
+
       console.log("itemek do sprzontniencia",sellItem )
 
       sellItem.quantity=sellItem.quantity-sellAssetDto.quantityToSell
@@ -313,7 +309,7 @@ return portf
 
       } else{
         // console.log("els")
-        const sellItemIndex = portfolio.accounts[accountIndex].assets.findIndex(item => item.id===sellAssetDto.assetId)
+        // const sellItemIndex = portfolio.accounts[accountIndex].assets.findIndex(item => item.id===sellAssetDto.assetId)
         // console.log("indeks itemka",sellItemIndex)
         // console.log("xddd",portfolio.accounts[accountIndex].assets[sellItemIndex].quantity)
 
@@ -334,6 +330,16 @@ return portf
 
       portfolio.accounts[accountIndex].cash+=sellAssetDto.quantityToSell*sellItem.price
       
+
+      portfolio.operationHistory.push({
+        id:crypto.randomUUID(),
+        accountName:portfolioAccount.title,
+        type:"sell",
+        amount:sellAssetDto.quantityToSell*sellItem.price,
+        date: new Date(Date.now()),
+        asset:portfolio.accounts[accountIndex].assets[sellItemIndex],
+        quantity:sellAssetDto.quantityToSell,
+      })
 
 
       // console.log("nowe portfolio",portfolio)
@@ -362,7 +368,7 @@ return portf
   
   // }
 
-    async addOperation(username, addOperationDto: AddOperationDto) {
+    async addAccountOperation(username, addOperationDto: AddOperationDto) {
     //todo validate if name taken server-side
 
     const userOwnsPortfolio = await this.userModel.findOne({ username,portfolios:addOperationDto.portfolioId});
@@ -375,6 +381,14 @@ return portf
 
       portfolio.accounts[accountIndex].cash+=addOperationDto.amount
 
+      portfolio.operationHistory.push({
+        id:crypto.randomUUID(),
+        accountName:portfolio.accounts[accountIndex].title,
+        type:(addOperationDto.amount<0) ? 'withdraw' : 'deposit',
+        amount:addOperationDto.amount,
+        date: new Date(Date.now()),
+
+      })
 
       if(portfolio.accounts[accountIndex].cash<0) throw new BadRequestException()
 

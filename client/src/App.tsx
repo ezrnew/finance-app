@@ -11,6 +11,7 @@ import { SellAssetModal } from "./features/modals/SellAssetModal";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
 import { AddPaymentModal } from "./features/modals/AddPaymentModal";
+import { PortfolioOperationsHistoryModal } from "./features/modals/PortfolioOperationsHistoryModal";
 
 
 function getRouter(location:Location<any>){
@@ -106,6 +107,7 @@ function App() {
           <Route path="/portfolio/buy" element={<BuyAssetModal />} />
           <Route path="/portfolio/sell" element={<SellAssetModal />} />
           <Route path="/portfolio/payment" element={<AddPaymentModal />} />
+          <Route path="/portfolio/operations" element={<PortfolioOperationsHistoryModal />} />
         </Routes>
       )}
 

@@ -27,8 +27,29 @@ export class TickersService {
     this._logger.debug('no ticker found; scrapping...')
 
     const scrappedTicker = await this.tickerScrapper.getTickerData(name)
-    console.log("ZESKRAPOWANY",scrappedTicker)
-      
+
+     ticker = await this.tickerModel.findOne({name: scrappedTicker.name });
+
+     if(ticker){
+      ticker.price = scrappedTicker.price
+      ticker.date = scrappedTicker.date
+
+      await ticker.save()
+      return {new:false,data:ticker}
+     }
+
+//todo validate if ticker is correct
+    try {
+    const createdTicker = new this.tickerModel(scrappedTicker)
+    
+    
+    return {new:true,data:createdTicker.save()}
+
+    } catch (error) {
+      this._logger.error("error saving new ticker:",error)
+    }
+
+
 
 
   }
