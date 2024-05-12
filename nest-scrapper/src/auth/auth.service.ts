@@ -5,6 +5,8 @@ import { RegisterDto } from './dto/registerDto';
 import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
 
+//todo create storage for blacklisted JWT's after user manual logout
+//todo include hashed password in JWT to invalidate token after user change password
 @Injectable()
 export class AuthService {
   constructor(

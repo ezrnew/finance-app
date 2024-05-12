@@ -12,62 +12,65 @@ import { Provider } from "react-redux";
 import { store } from "./store/store";
 import { AddPaymentModal } from "./features/modals/AddPaymentModal";
 import { PortfolioOperationsHistoryModal } from "./features/modals/PortfolioOperationsHistoryModal";
+import { cn } from "./lib/utils";
+import { ls } from "./utils/localStorage";
+import { useEffect, useState } from "react";
 
 
-function getRouter(location:Location<any>){
-  const background = location.state && location.state.background;
+// function getRouter(location:Location<any>){
+//   const background = location.state && location.state.background;
 
- return  createBrowserRouter([
-  {
-    path: "/login",
-    element: <LoginPage />,
-  },
-  {
-    path: "/register",
-    element: <RegisterPage />,
-  },
-  {
-    path: "/portfolio", //todo porftolio id in params
-    element: (
-      // <AuthorizedRoute>
-      <MainLayout>
+//  return  createBrowserRouter([
+//   {
+//     path: "/login",
+//     element: <LoginPage />,
+//   },
+//   {
+//     path: "/register",
+//     element: <RegisterPage />,
+//   },
+//   {
+//     path: "/portfolio", //todo porftolio id in params
+//     element: (
+//       // <AuthorizedRoute>
+//       <MainLayout>
 
-        <PortfolioPage />
-      </MainLayout>
-      // </AuthorizedRoute>
-    ),
-    children:[{
+//         <PortfolioPage />
+//       </MainLayout>
+//       // </AuthorizedRoute>
+//     ),
+//     children:[{
       
-      path: "buy", 
-      element: (
+//       path: "buy", 
+//       element: (
   
-          <BuyAssetModal />
+//           <BuyAssetModal />
 
-      ),
-    },
-    ]
-  },
+//       ),
+//     },
+//     ]
+//   },
 
-  {
-    path: "/tools",
-    element: (
-      // <AuthorizedRoute>
-      <MainLayout>
+//   {
+//     path: "/tools",
+//     element: (
+//       // <AuthorizedRoute>
+//       <MainLayout>
 
-        <ToolsPage />
-      </MainLayout>
-      // </AuthorizedRoute>
-    ),
-  },
+//         <ToolsPage />
+//       </MainLayout>
+//       // </AuthorizedRoute>
+//     ),
+//   },
 
-  // 404
-  {
-    path: "/",
-    element: <Navigate to='/login'/>,
-  },
+//   // 404
+//   {
+//     path: "/",
+//     element: <Navigate to='/login'/>,
+//   },
   
-]);
-}
+// ]);
+// }
 
 function App() {
 
@@ -77,7 +80,7 @@ function App() {
 
 
   return (
-    <>
+    <div className={ls.getDarkMode()==="1" ? "dark" : ""}>
     <Provider store={store}>
 
       <Toaster />
@@ -89,6 +92,7 @@ function App() {
       <Route path="/login" element={<LoginPage />}/>
       <Route path="/register" element={<RegisterPage />}/>
       <Route path="/tools" element={<MainLayout><ToolsPage/></MainLayout>}/>
+      <Route path="/" element={<Navigate to='/login'/>}/>
 
         <Route path="/portfolio" element={
          
@@ -113,7 +117,7 @@ function App() {
 
 </Provider>
 
-    </>
+    </div>
   );
 }
 

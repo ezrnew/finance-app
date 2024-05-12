@@ -33,7 +33,7 @@ export const PortfolioPage = () => {
       <div className="flex w-full h-full">
         <PortfolioSidebar />
 
-        <div className="h-full w-full shadow-lg">
+        <div className="h-full w-full shadow-lg overflow-auto">
           <div className="p-4 text-2xl font-semibold flex flex-col flex-grow   max-w-screen-xl mx-auto ">
             <div className="flex justify-between p-6 ">
               <span>{currentPortfolio?.title}</span>

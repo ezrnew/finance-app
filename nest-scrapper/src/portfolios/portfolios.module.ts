@@ -8,13 +8,15 @@ import { PolishTreasuryService } from '../bonds/polishTreasury.service';
 import { TickersService } from '../tickers/tickers.service';
 import { BondsModule } from '../bonds/bonds.module';
 import { TickersModule } from '../tickers/tickers.module';
+import { CurrenciesModule } from '../currencies/currencies.module';
 
 @Module({
   imports:[
     MongooseModule.forFeature([{name:Portfolio.name, schema:PortfolioSchema}]),
     MongooseModule.forFeature([{name:User.name, schema:UserSchema}]),
     BondsModule,
-    TickersModule
+    TickersModule,
+    CurrenciesModule
 
   ],
   providers: [PortfoliosService],

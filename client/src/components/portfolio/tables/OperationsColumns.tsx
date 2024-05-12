@@ -35,7 +35,7 @@ import { CurrencyType, currencyToIntlZone, formatDateShort } from "@/utils/forma
       {formatDateShort(
         currencyToIntlZone[currency],
         new Date (row.getValue("date"))
-      )},
+      )}
       </div>
     },
   ];

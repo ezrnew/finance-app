@@ -9,6 +9,7 @@ import { SellAssetDto } from './dto/sell-asset-dto';
 import { PolishTreasuryService } from '../bonds/polishTreasury.service';
 import { TickersService } from '../tickers/tickers.service';
 import { AddOperationDto } from './dto/add-operation.dto';
+import { CurrenciesService } from '../currencies/currencies.service';
 
 @Injectable()
 export class PortfoliosService {
@@ -16,7 +17,8 @@ export class PortfoliosService {
     @InjectModel(Portfolio.name) private portfolioModel: Model<Portfolio>,
     @InjectModel(User.name) private userModel: Model<User>,
     private bonds_pltrService:PolishTreasuryService,
-    private tickerService:TickersService
+    private tickerService:TickersService,
+    private currenciesService:CurrenciesService,
 
 
   ) {}
@@ -90,9 +92,14 @@ return portf
      async function handleAssetUpdate(asset:any){ //todo create handleMany func to avoid multiple db requests
         if(asset.type==='bonds_pltr') return asset.buyPrice*(await this.bonds_pltrService.handleBond(asset.name))
         if(asset.type==='tickers'){
-          const tickerResult =(await this.tickerService.findOne(asset.name)).price
-          console.log("TICKER RESULT:",tickerResult)
-          return asset.price=tickerResult
+          console.log("ASSETCURRENCY CURRENCY",asset.currency)
+          console.log("PORTFCURRENCY",portfolio.currency)
+          const tickerResult =((await this.tickerService.getOne(asset.name)).price)
+          // console.log("TICKER RESULT:",tickerResult)
+          console.log("ticker result price",tickerResult)
+          const currencyRate = await this.currenciesService.getCurrencyRate(asset.currency,portfolio.currency)
+          console.log("CURRENCY RATEAAAA",)
+          return asset.price=tickerResult*currencyRate
 
         }
           
@@ -240,6 +247,7 @@ return portf
         currencyRate:buyAssetDto.currencyRate, //?potrzebne?
         buyPrice:buyAssetDto.price,
         price:buyAssetDto.price,
+        // originalCurrrencyPrice:buyAssetDto.price,
         quantity:buyAssetDto.quantity
 
 

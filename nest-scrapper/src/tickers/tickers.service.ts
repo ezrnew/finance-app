@@ -20,6 +20,7 @@ export class TickersService {
   // }
 
   async addNew(name: string) {
+    name = name.toLowerCase()
 
     let ticker = await this.tickerModel.findOne({ name });
     if(ticker) return {new:false,data:ticker}
@@ -34,6 +35,7 @@ export class TickersService {
       ticker.price = scrappedTicker.price
       ticker.date = scrappedTicker.date
 
+      console.log("zwracam tikera",ticker)
       await ticker.save()
       return {new:false,data:ticker}
      }
@@ -58,28 +60,17 @@ export class TickersService {
   async getOne(name: string) {
     let ticker = await this.tickerModel.findOne({ name });
 
-    console.log("TINKER",ticker)
+    this._logger.log("Ticker found in db")
 
     if (!ticker) {
       throw new NotFoundException()
-    // this._logger.debug('no ticker found; scrapping...')
-    // const scrappedTicker = await this.tickerScrapper.getTickerData(name)
-    // console.log("ZESKRAPOWANY",scrappedTicker)
-    //  ticker = new this.tickerModel(scrappedTicker)
-    // console.log("Model",ticker)
-    // await ticker.save()
-
-
 
   } 
   
-console.log("TICKEEEEEER",ticker)
 // @ts-ignore
   const dateString = ticker.updatedAt;
   const dateObject = new Date(dateString);
   const differenceInHours = (Math.abs(Date.now() - dateObject.getTime())) / (1000 * 60 * 60);
-
-  // console.log("dif in hours",differenceInHours)
 
   
    if (differenceInHours>24) {
@@ -92,14 +83,10 @@ console.log("TICKEEEEEER",ticker)
      ticker.date=scrappedTicker.newDate
      await ticker.save()
      
+     
      removeMongoProperties(ticker)
     }
   
-
-  
-  // const newTicker = {name:ticker.name,price:ticker.price,currency:ticker.currency,date:ticker.date}
-  // delete ticker['__v']
-  // delete ticker['_id']
 
     this._logger.debug('returning ticker:',ticker)
     return ticker;
@@ -110,9 +97,5 @@ console.log("TICKEEEEEER",ticker)
   }
 
 
-// async getCiastka(){
-//   console.log("ZWRACAM CIASTKA",this.tickerScrapper.cookies)
-//   return this.tickerScrapper.cookies
-// }
 
 }

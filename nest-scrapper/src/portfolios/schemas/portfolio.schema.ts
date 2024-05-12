@@ -15,7 +15,16 @@ export class Portfolio {
   @Prop()
   categories: { category: string; value: number }[];
   @Prop() //todo addPaymentAdded info
-  operationHistory: {id:string; accountName: string; type: OperationType; amount: number; date: Date; asset?: string; quantity?:number; buyDate?:Date }[];
+  operationHistory: {
+    id: string;
+    accountName: string;
+    type: OperationType;
+    amount: number;
+    date: Date;
+    asset?: string;
+    quantity?: number;
+    buyDate?: Date;
+  }[];
   @Prop()
   accounts: { id: string; title: string; cash: number; assets: any[] }[];
 }

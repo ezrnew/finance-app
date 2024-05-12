@@ -69,7 +69,7 @@ export const ToolsPage = () => {
         <div className={cn("flex flex-col h-52 p-6 border rounded-lg my-10",!tickerData && ' invisible')}>
           {tickerData 
           ?<>
-          <p className="text-center text-2xl font-semibold">{tickerData?.name}</p>
+          <p className="text-center text-2xl font-semibold">{tickerData?.name.toUpperCase()}</p>
           <p className="text-xl pb-4 mx-auto">{formatDateFull(currencyToIntlZone[tickerData?.currency],new Date(tickerData?.date))}</p>
           <p className="text-xl">Price:{formatCurrency(currencyToIntlZone[tickerData.currency],tickerData.price,tickerData?.currency)}</p>
           <p className="text-xl">Currency:{tickerData?.currency}</p>

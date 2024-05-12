@@ -1,8 +1,10 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { portfolioReducer } from "./portfolioSlice";
+import { authReducer } from "./authSlice";
 
 const rootReducer = combineReducers({
     portfolio: portfolioReducer,
+    auth: authReducer,
 
   });
 

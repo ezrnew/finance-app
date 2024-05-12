@@ -15,6 +15,7 @@ import { UsersModule } from './users/users.module';
 import { CurrenciesModule } from './currencies/currencies.module';
 import { AssetsModule } from './assets/assets.module';
 import { PortfoliosModule } from './portfolios/portfolios.module';
+import { CurrenciesController } from './currencies/currencies.controller';
 
 
 

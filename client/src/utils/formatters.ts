@@ -1,6 +1,7 @@
 export const currencyToIntlZone = {
   PLN: "pl-PL",
   GBP: "en-GB",
+  USD: "en-US",
 };
 
 export type CurrencyType = keyof typeof currencyToIntlZone;

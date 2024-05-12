@@ -1,4 +1,5 @@
 const portfolioId = 'portfolioId'
+const darkMode = 'darkMode'
 
  class LocalStorage{
 
@@ -7,6 +8,13 @@ const portfolioId = 'portfolioId'
     }
     getPortfolioId(){
         return localStorage.getItem(portfolioId)
+    }
+
+    setDarkMode(bool:'0'|'1'){
+        localStorage.setItem(darkMode,bool)
+    }
+    getDarkMode(){
+        return localStorage.getItem(darkMode)
     }
 
 }

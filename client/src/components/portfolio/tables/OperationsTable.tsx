@@ -90,10 +90,10 @@ export function OperationsTable({
     <div className="   w-full mx-auto p-6 ">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter assets..."
-          value={(table.getColumn("type")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter accounts..."
+          value={(table.getColumn("accountName")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("type")?.setFilterValue(event.target.value)
+            table.getColumn("accountName")?.setFilterValue(event.target.value)
           }
           className=" max-w-[250px]"
         />
