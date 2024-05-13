@@ -36,9 +36,9 @@ export const calculateYearRateByDaysPassed = (value: number, rate: number, lastY
   const percentageOfRate = isLeapYear(currentDate.getFullYear())
     ? differenceDays / 366
     : differenceDays / 365;
-  console.log('percentage of rate', percentageOfRate);
+  // console.log('percentage of rate', percentageOfRate);
   const percentageOfPercentagexd = percentageOfRate * rate;
-  console.log('percentage of drugie', percentageOfPercentagexd);
+  // console.log('percentage of drugie', percentageOfPercentagexd);
   return addPercentageRate(value, percentageOfPercentagexd);
 };
 

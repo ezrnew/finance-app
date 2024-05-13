@@ -24,7 +24,7 @@ export class TickersController {
 
     @Get('/get/:name')
   findOne(@Param('name') name: string) {
-    return this.tickerService.getOne(name);
+    return this.tickerService.calculateOne(name);
 
   }
 

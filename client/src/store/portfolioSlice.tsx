@@ -12,6 +12,9 @@ export interface Portfolio {
   categories: { category: string; value: number }[];
   operationHistory: OperationHistoryType[];
   accounts: {id:string, title: string; cash: number; assets: any[] }[];
+
+  // miscSlice:
+  
 }
 
 
@@ -26,9 +29,9 @@ interface State {
     currentPortfolio:Portfolio | null
     currentAccount:{id:string, title: string; cash: number; assets: any[] } | null
 
-    // currency:string
-    // categories:{category:string,value:number}[]
-    // accounts:{title:string,cash:number,assets:any[]}[]
+
+    //
+    updatePortfolioData:boolean
 }
 
 const initialState: State = {
@@ -36,7 +39,9 @@ const initialState: State = {
 
     currentPortfolioId:ls.getPortfolioId() ||'',
     currentPortfolio:null,
-    currentAccount:null
+    currentAccount:null,
+
+    updatePortfolioData:false
 
 };
 
@@ -56,7 +61,13 @@ const portfolioSlice = createSlice({
       setCurrentAccount: (state, action: PayloadAction<{id:string, title: string; cash: number; assets: any[] }>) => {
         state.currentAccount = action.payload;
       },
-     
+
+      //
+      updatePortfolioData: (state) => {
+        
+        
+        state.updatePortfolioData = !state.updatePortfolioData
+      },
 
   },
 });

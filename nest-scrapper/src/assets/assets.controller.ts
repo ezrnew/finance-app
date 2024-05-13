@@ -7,7 +7,7 @@ export class AssetsController {
     constructor(private readonly assetsService: AssetsService){}
 
     @Get()
-    async getAllNames(): Promise<{bonds_pltr:string[],tickers:string[]}> {
+    async getAllNames(): Promise<any[]> {
         return this.assetsService.findAll();
       }
 }

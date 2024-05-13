@@ -168,3 +168,16 @@ export function isValidDayOfMonth(year: number, month: number, day: number): boo
 
   return day >= 1 && day <= 31;
 }
+
+
+export function IsDateOlderThanXHours(dateString: string, hours: number) {
+
+
+  const dateObject = new Date(dateString);
+  const differenceInHours = (Math.abs(Date.now() - dateObject.getTime())) / (1000 * 60 * 60);
+
+  // console.log('ruznica w godzinach',differenceInHours)
+
+  return   differenceInHours>hours
+
+}

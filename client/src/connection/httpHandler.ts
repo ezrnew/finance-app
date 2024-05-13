@@ -2,7 +2,6 @@ type httpMethod = "GET" | "POST" | "DELETE" | "PUT";
 
 export const httpReqHandler = (basePath: string) => {
   return async (path: string, method: httpMethod = "GET", data?: { body?: any; headers?: any }) => {
-    console.log("DATA", JSON.stringify(data?.body));
 
     try {
       const response = await fetch(basePath + path, {

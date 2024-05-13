@@ -27,6 +27,7 @@ export class PolishTreasuryService {
   ) {}
 
   private readonly logger = new Logger(PolishTreasuryService.name);
+  
 
   async handleBond(bondString: string, day?: number, hasIke?: boolean) {
     const dayOfMonth = day || 1;
@@ -275,4 +276,29 @@ export class PolishTreasuryService {
 
     return { type, month, year };
   }
+
+
+  async calculateMany(bondAssets:any[],currency:string){
+    if(bondAssets.length===0) return[]
+    const bondNames:string[]=bondAssets.map(item =>item.name)
+
+
+    const promises = bondAssets.map(async (item) => {
+
+      console.log("WYNIKaaaaa",await this.handleBond(item.name))
+      const returnRate = await this.handleBond(item.name)
+      if(returnRate) item.price =100+100*returnRate
+
+
+      // item.price = 100* (await this.handleBond(item.name))
+    
+    })
+
+    await Promise.all(promises)
+
+  }
+
+
 }
+
+

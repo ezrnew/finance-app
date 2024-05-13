@@ -17,7 +17,12 @@ export class Ticker {
 
   @Prop()
   date: Date;
-  //todo mongoose date?
+
+  @Prop()
+  createdAt: string;
+  
+  @Prop()
+  updatedAt: string;
 }
 
 export const TickerSchema = SchemaFactory.createForClass(Ticker);

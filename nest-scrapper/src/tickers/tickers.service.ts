@@ -4,15 +4,19 @@ import { Model } from 'mongoose';
 import { createTickerDto } from './dto/create-ticker.dto';
 import { Ticker } from './schemas/ticker.schema';
 import { TickersScrapper } from './tickers.scrapper';
-import { isToday } from '../utils/date.utils';
+import { IsDateOlderThanXHours, isToday } from '../utils/date.utils';
 import { removeMongoProperties } from '../utils/mongoose.utils';
+import { ScrapperCurrencyAdapter, StooqCurrencyAdapter } from './utils/currency.adapter';
+import { CurrencyType } from '../currencies/schema/currencyRate.schema';
+import { CurrenciesService } from '../currencies/currencies.service';
 
 @Injectable()
 export class TickersService {
   private readonly _logger = new Logger(TickersService.name);
   private readonly tickerScrapper = new TickersScrapper();
+  // private readonly currenciesService= new CurrenciesService();
 
-  constructor(@InjectModel(Ticker.name) private tickerModel: Model<Ticker>) {}
+  constructor(@InjectModel(Ticker.name) private tickerModel: Model<Ticker>, private readonly currenciesService:CurrenciesService) {}
 
   // async create(newTicker: createTickerDto): Promise<Ticker> {
   //   const createdTicker = new this.tickerModel(newTicker);
@@ -56,8 +60,61 @@ export class TickersService {
 
   }
 
+  async calculateMany(tickerAssets:any,portfCurrency:CurrencyType){
+    if(tickerAssets.length===0) return []
 
-  async getOne(name: string) {
+    // console.log("TICKER ITEMS",tickerAssets)
+    const tickerNames:string[]=tickerAssets.map(item =>item.name)
+    // console.log("TICKER NAMES",tickerNames)
+
+    let tickers = await this.tickerModel.find({ name: { $in: tickerNames } });
+
+    // console.log("TICKERS DB RESULT",tickers)
+
+    const promises = tickers.map(async (item) => {
+      if (IsDateOlderThanXHours(item.updatedAt, 24)) {
+          const updatedData = await this.tickerScrapper.updateTickerData(item.name);
+          //todo currency? przerzucić to do portf service a tutaj tylko foreach scrap?
+          // console.log("updatedData", updatedData);
+          const currencyRate = await this.currenciesService.getCurrencyRate(item.currency as CurrencyType,portfCurrency)
+          const assetItem =tickerAssets.find(item => item.name ===item)
+
+          assetItem.price = updatedData.newPrice*currencyRate;
+          assetItem.date = updatedData.newDate;
+    
+      }
+  });
+  await Promise.all(promises);
+
+  // console.log("po promisach",tickers)
+
+  return tickerAssets
+
+
+
+    // tickers.forEach(async(item) =>{
+
+    //   if(IsDateOlderThanXHours(item.updatedAt,24)){
+    //     const updatedData = await this.tickerScrapper.updateTickerData(item.name)
+    //     console.log("updatedData",updatedData)
+    //     item.price=updatedData.newPrice
+    //     item.date=updatedData.newDate
+    //     await item.save()
+    //   }
+
+    // })
+
+
+    // console.log("tickeruhy",tickers)
+
+
+
+return 1
+
+  }
+
+
+  async calculateOne(name: string) {
     let ticker = await this.tickerModel.findOne({ name });
 
     this._logger.log("Ticker found in db")

@@ -74,6 +74,7 @@ export class PortfoliosController {
     console.log("EWALUACJA",updateAssetsDto)
 
     const result = await this.portfoliosService.reevaluateAssets(req.user.username, updateAssetsDto.portfolioId);
+    console.log("reZULT",result)
 
     if (!result) throw new BadRequestException();
     return result

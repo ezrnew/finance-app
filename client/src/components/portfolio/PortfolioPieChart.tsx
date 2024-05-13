@@ -57,14 +57,14 @@ export const PortfolioPieChart = ({
           />
 {     ( ()=>{
 
-console.log("ciasto data",data.filter(item=>item.category!=='cash'));
+// console.log("ciasto data",data.filter(item=>item.category!=='cash'));
 return <div/>
 })()}
           {
       
           data.map(
             (item: { category: string; value: number }, index: number) => {
-              console.log("items",item,colors[index % colors.length])
+              // console.log("items",item,colors[index % colors.length])
 
 
               return <Cell key={index} fill={item.category==="cash"?'#FFBB28': colors[index % colors.length]} />;

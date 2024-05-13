@@ -28,8 +28,6 @@ export class PortfoliosService {
     _id: Types.ObjectId;
 }) {
 
-  // const portf = {...portfolio}
-
   portf.categories.forEach(category => category.value=0)
   portf.totalValue=0
   
@@ -55,7 +53,6 @@ export class PortfoliosService {
 
 return portf
   }
-
 
 
   async reevaluateAssets(username, portfolioId: string) {
@@ -94,7 +91,7 @@ return portf
         if(asset.type==='tickers'){
           console.log("ASSETCURRENCY CURRENCY",asset.currency)
           console.log("PORTFCURRENCY",portfolio.currency)
-          const tickerResult =((await this.tickerService.getOne(asset.name)).price)
+          const tickerResult =((await this.tickerService.calculateOne(asset.name)).price)
           // console.log("TICKER RESULT:",tickerResult)
           console.log("ticker result price",tickerResult)
           const currencyRate = await this.currenciesService.getCurrencyRate(asset.currency,portfolio.currency)
@@ -106,25 +103,15 @@ return portf
         return 1
       }
 
-      // const bonds_pltr = assets.filter(item => item.type==='bonds_pltr')
-
-      // bonds_pltr.forEach(async(item) =>{
-      //   console.log("ITEMEKS",item)
-      //   const rezultatObl= await this.bonds_pltrService.handleBond(item.name) //todo include day/ike
-      //   console.log("REZULTTAAAA",rezultatObl)
-      //   item.price = rezultatObl
-      // })
 
       
-      
-      console.log("portfolioxddddddddddd", reevaluatedPortfolio.accounts[0].assets[1])
       
       await this.portfolioModel.findByIdAndUpdate(portfolioId,reevaluatedPortfolio)
 
 
 
 
-    return 3
+    return reevaluatedPortfolio
   }
 
 

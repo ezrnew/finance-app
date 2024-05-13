@@ -6,20 +6,23 @@ import { InputDropdown } from "@/components/ui/input-dropdown";
 import { InputDropdownCustom } from "@/components/ui/input-dropdown-custom";
 import { ModalWrapper } from "@/components/ui/modal-wrapper";
 import { server } from "@/connection/backend/backendConnectorSingleton";
-import { useTypedSelector } from "@/hooks/use-redux";
+import { useActions, useTypedSelector } from "@/hooks/use-redux";
+import { toast } from "@/utils/toasts";
 import { X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+type assetType ={name:string,type:string,currency:string,price:number}
 
 export const BuyAssetModal = () => {
   const {currentPortfolio,currentPortfolioId } = useTypedSelector((state) => state.portfolio);
 
   const navigate = useNavigate();
 
-  const [availableAssets, setAvailableAssets] = useState<{name:string,type:string}[]>([]);
-  const [_,refetch] = useState(false)
+  const [availableAssets, setAvailableAssets] = useState<assetType[]>([]);
+  // const [_,refetch] = useState(false)
 
-  const [asset, setAsset] = useState<{name:string,type:string} | null>(null);
+  const [asset, setAsset] = useState<assetType | null>(null);
   const [category, setCategory] = useState("");
   const [account, setAccount] = useState("");
 
@@ -29,6 +32,8 @@ export const BuyAssetModal = () => {
   const [currencyRate, setCurrencyRate] = useState<number>(0);
   const [price, setPrice] = useState<number>(0);
   const [quantity, setQuantity] = useState<number>(0);
+  
+  const {updatePortfolioData} = useActions()
 
   const [paymentAdded, setPaymentAdded] = useState(false);
 
@@ -38,19 +43,7 @@ export const BuyAssetModal = () => {
     const fetchAssets = async () => {
       const data = await server.getAllAssetNames();
 
-
-      const transformedData:any = [];//todo format data on backend!!
-
-      for (const [type, values] of Object.entries(data)) {
-        //@ts-ignore
-        values.forEach(value => {
-          transformedData.push({ type, name:value });
-        });
-      }
-      
-      console.log("titi",transformedData);
-
-      setAvailableAssets(transformedData);
+      setAvailableAssets(data);
 
 
       console.log("dejta", data);
@@ -59,19 +52,37 @@ export const BuyAssetModal = () => {
     fetchAssets();
   }, []);
 
+
+  useEffect(()=>{
+
+    setCurrency(asset?.currency || "")
+    setPrice(asset?.price || 0)
+    // set(asset?.currency || "")
+
+  },[asset])
+
+
+
   const categoryNames = currentPortfolio?.categories.map((item) => item.category);
   const accountNames = currentPortfolio?.accounts.map((item) => item.title);
 
-  const submitForm = (e: React.FormEvent<HTMLFormElement>) => {
+  const submitForm = async(e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     
     console.log("huj",asset)
-    const result = validateData();
-    if(!result) return;
+    const validationResult = validateData();
+    if(!validationResult) return;
 
     //@ts-ignore asset&date are already validated
-    server.buyAsset(currentPortfolioId,category,account,asset,date,currency,currencyRate,price,quantity,paymentAdded)
+   const result = await server.buyAsset(currentPortfolioId,category,account,asset,date,currency,currencyRate,price,quantity,paymentAdded)
+if(result) {
+  toast.operationSuccessful()
+  updatePortfolioData()
+}else{
+  toast.buyOperationFailure()
+}
+navigate("/portfolio");
 
 
 
@@ -151,7 +162,7 @@ export const BuyAssetModal = () => {
             <span>Category</span>
 
             <InputDropdown
-              data={categoryNames ||[]}
+              data={categoryNames?.filter(item => item!=="cash") ||[]}
               value={category}
               setValue={setCategory}
               placeholder="Search Categories..."

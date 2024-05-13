@@ -39,24 +39,7 @@ export const PortfolioSidebar = () => {
       // setAvailablePortfolios('PORTFOLIOS')//fetch
     }, [_])
 
-    
-    useEffect(() => {
 
-
-      const getPortfolioData = async()=>{
-        console.log("feczujssssssse")
-        const portfolio = await server.getPortfolioById(currentPortfolioId)
-        // console.log("pppppppp",portfolio)
-
-        setCurrentPortfolio(portfolio) 
-
-
-        const portfolioWithReevaluatedValues = await server.reevaluateAssets(currentPortfolioId)
-        // setCurrentPortfolio(portfolioWithReevaluatedValues) 
-      } 
-
-      getPortfolioData()
-    }, [currentPortfolioId])
 
 
 

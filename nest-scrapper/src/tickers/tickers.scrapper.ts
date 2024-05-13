@@ -115,7 +115,10 @@ export class TickersScrapper {
 
   
 
-  async updateTickerData(ticker: string) {
+  async updateTickerData(ticker: string):Promise<{
+    newPrice: number;
+    newDate: Date;
+}> {
     this._logger.debug('started partial ticker scrapping');
     const url = this._baseUrl + ticker;
 
