@@ -22,7 +22,7 @@ export const Sidebar = () => {
   return (
     <div className="w-16 flex flex-col h-full bg-neutral-100 border border-r py-4 space-y-3 justify-between  ">
       {/* <LucidePieChart className='size-10'/> */}
-      <div>
+      <div className="space-y-3 ">
         <div className="flex">
           <Link className="mx-auto " to={"/portfolio"}>
             <FontAwesomeIcon

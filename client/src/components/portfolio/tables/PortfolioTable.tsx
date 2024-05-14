@@ -39,10 +39,14 @@ import { getPortfolioColumns } from "./PortfolioColumns";
 import { CurrencyType } from "@/utils/formatters";
 
 export interface PortfolioTableItem {
+  id:string
   name: string;
   type: string;
   value: number;
+  currency:CurrencyType
   price:number;
+  originalCurrrencyPrice:number
+  originalCurrrencyBuyPrice:number;
   quantity: number;
   buyDate: Date;
   account: string;

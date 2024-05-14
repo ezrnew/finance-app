@@ -16,11 +16,27 @@ export class Toast{
     operationSuccessful(){
         return t.success('Operation successful')
     }
+    operationFailure(){
+        return t.success('Operation cannot be completed')
+    }
     buyOperationFailure(){
         return t.error('Cannot buy asset')
     }
     sellOperationFailure(){
         return t.error('Cannot sell asset')
+    }
+    categoryDeleteSuccess(){
+        return t.success('Category deleted')
+    }
+    categoryDeleteFail(){
+        return t.error('Cannot delete category')
+    }
+
+    cantDeleteCashCategory(){
+        return t.error('Cash category cannot be deleted!')
+    }
+    cantDeleteNonEmptyCategory(){
+        return t.error('Cannot delete category with assets')
     }
 
     updatingPortfolioData(promise:Promise<any>){

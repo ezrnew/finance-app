@@ -164,7 +164,7 @@ export class BackendConnectorSingleton {
     });
 
     if (res?.ok) {
-      return res.json();
+      return true;
     }
     return false;
   }
@@ -174,6 +174,30 @@ export class BackendConnectorSingleton {
 
     if (res?.ok) {
        return res.json();
+    }
+    return false;
+  }
+
+
+
+  async deleteAccount(portfolioId: string,accountId:string) {
+    const res = await this.httpRequest("/portfolios/account", "DELETE", {
+      body: { portfolioId,accountId},
+    });
+
+    if (res?.ok) {
+       return true;
+    }
+    return false;
+  }
+
+  async deleteCategory(portfolioId: string,categoryName:string) {
+    const res = await this.httpRequest("/portfolios/category", "DELETE", {
+      body: { portfolioId,categoryName},
+    });
+
+    if (res?.ok) {
+       return true;
     }
     return false;
   }

@@ -14,9 +14,19 @@ import {
   formatCurrency
 } from "@/utils/formatters";
 import { CategoriesTableItem } from "./CategoriesTable";
+import { toast } from "@/utils/toasts";
+import { server } from "@/connection/backend/backendConnectorSingleton";
 
 
-  export const categoriesColumns:ColumnDef<CategoriesTableItem>[]= [
+interface Props{
+  deleteCategory:(category:string)=>void
+}
+
+export const categoriesColumns=({deleteCategory}:Props):ColumnDef<CategoriesTableItem>[]=>
+  {
+    console.log("delete kategoria",deleteCategory)
+//categoriesColumns:ColumnDef<CategoriesTableItem>[]=
+  return  [
     {
       accessorKey: "category",
       enableHiding: false,
@@ -35,7 +45,7 @@ import { CategoriesTableItem } from "./CategoriesTable";
       enableHiding: false,
       cell: ({ row }) => {
         const item = row.original;
-
+console.log("ITETETETETETE",item)
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -58,11 +68,16 @@ import { CategoriesTableItem } from "./CategoriesTable";
                 <div className="cursor-pointer w-full">Operations</div>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem><div className="cursor-pointer w-full">Add payment</div></DropdownMenuItem>
-              <DropdownMenuItem><div className="cursor-pointer w-full">Delete account</div></DropdownMenuItem>
+              <DropdownMenuItem><div className="cursor-pointer w-full" onClick={()=>{
+                if(item.category==="cash" ) {toast.cantDeleteCashCategory();return}
+                if(item.value!==0 ) {toast.cantDeleteNonEmptyCategory();return}
+
+                  deleteCategory(item.category)
+              }} >Delete category</div></DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         );
       },
     },
   ];
+}

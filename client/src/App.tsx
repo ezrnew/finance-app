@@ -15,6 +15,7 @@ import { PortfolioOperationsHistoryModal } from "./features/modals/PortfolioOper
 import { cn } from "./lib/utils";
 import { ls } from "./utils/localStorage";
 import { useEffect, useState } from "react";
+import { DeleteAccountModal } from "./features/modals/AccountDeleteModal";
 
 
 // function getRouter(location:Location<any>){
@@ -112,6 +113,7 @@ function App() {
           <Route path="/portfolio/sell" element={<SellAssetModal />} />
           <Route path="/portfolio/payment" element={<AddPaymentModal />} />
           <Route path="/portfolio/operations" element={<PortfolioOperationsHistoryModal />} />
+          <Route path="/portfolio/deleteAccount" element={<DeleteAccountModal />} />
         </Routes>
       )}
 

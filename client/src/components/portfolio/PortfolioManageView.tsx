@@ -10,6 +10,8 @@ import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { CategoriesTable } from "./tables/CategoriesTable";
 import { accountColumns } from "./tables/AccountColumns";
 import { useLocation, useNavigate } from "react-router-dom";
+import { categoriesColumns } from "./tables/CategoriesColumns";
+import { toast } from "@/utils/toasts";
 
 interface Props {
   portfolio: Portfolio | null;
@@ -29,11 +31,14 @@ export const PortfolioManageView = ({ portfolio }: Props) => {
   const [newAccountError, setNewAccountError] = useState("");
 
   console.log("konta aeadaddaw", portfolio?.accounts);
-  const { setCurrentPortfolio } = useActions();
+  const { setCurrentPortfolio,refetchPortfolioData: updatePortfolioData } = useActions();
   const navigate = useNavigate();
+  const {refetchPortfolioData} = useActions()
 
   const submitNewCategory = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+
 
     const result = await server.addNewCategory(
       currentPortfolioId,
@@ -56,12 +61,31 @@ export const PortfolioManageView = ({ portfolio }: Props) => {
 
     const portfolio = await server.getPortfolioById(currentPortfolioId);
     setCurrentPortfolio(portfolio);
+
   };
 
   const addPaymentHandler = (name:string) =>{
-
-    console.log("pizza",name)
     navigate('payment',{state:{background:location}})
+
+  }
+
+  const deleteAccountHandler = () =>{
+    navigate('deleteAccount',{state:{background:location}})
+
+  }
+
+  const deleteCategoryHandler = (portfolioId:string) =>{
+
+    return async(category:string) =>{
+      console.log("KATEGORIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",category,portfolioId)
+      const result = await server.deleteCategory(portfolioId,category)
+      if(result){toast.categoryDeleteSuccess();
+
+        refetchPortfolioData()
+
+      }
+        else toast.categoryDeleteFail()
+    }
 
   }
 
@@ -123,7 +147,7 @@ export const PortfolioManageView = ({ portfolio }: Props) => {
         )}
         </div>
 
-        <AccountsTable data={portfolio.accounts} accountColumns={accountColumns({addPaymentHandler})} />
+        <AccountsTable data={portfolio.accounts} accountColumns={accountColumns({addPaymentHandler,deleteAccountHandler})} />
 
         {/* 
         <ul className=" rounded-md space-y-2 pb-4">
@@ -185,8 +209,7 @@ export const PortfolioManageView = ({ portfolio }: Props) => {
           )}
 
         </div>
-
-        <CategoriesTable data={portfolio.categories} />
+        <CategoriesTable data={portfolio.categories} categoryColumns={categoriesColumns({deleteCategory:deleteCategoryHandler(currentPortfolioId)})}  />
 {/* 
         <ul className="border rounded-md">
           {portfolio.categories.map((item) => (

@@ -16,7 +16,7 @@ export const SellAssetModal = () => {
   const navigate = useNavigate();
 
   const { currentPortfolio,currentPortfolioId } = useTypedSelector((state) => state.portfolio);
-  const {updatePortfolioData} = useActions()
+  const {refetchPortfolioData: updatePortfolioData} = useActions()
 
   
   const assets = getFlattenAssets(currentPortfolio?.accounts || []);

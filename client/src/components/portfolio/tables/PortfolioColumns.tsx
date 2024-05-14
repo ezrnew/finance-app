@@ -1,5 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { Tooltip } from "react-tooltip";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -18,6 +19,7 @@ import {
   formatCurrency,
   formatDateShort,
 } from "@/utils/formatters";
+import { cn } from "@/lib/utils";
 
 export const getPortfolioColumns = (
   currency: CurrencyType
@@ -43,7 +45,7 @@ export const getPortfolioColumns = (
       cell: ({ row }) => {
         const item = row.original;
 
-        const amount = item.price*item.quantity
+        const amount = item.price * item.quantity;
 
         return (
           <div className=" font-medium">
@@ -60,6 +62,64 @@ export const getPortfolioColumns = (
         <div className="capitalize">{row.getValue("quantity")}</div>
       ),
     },
+
+    {
+      accessorKey: "originalCurrrencyPrice",
+      header: "Price",
+      cell: ({ row }) => {
+        //? cannot start with number
+        const id = "a" + row.original.id;
+        console.log("ODDDDDD", id);
+        return (
+          <div
+            id={id}
+            className={cn(
+              row.original.originalCurrrencyPrice >
+                row.original.originalCurrrencyBuyPrice && "text-green-500 ",
+              row.original.originalCurrrencyPrice <
+                row.original.originalCurrrencyBuyPrice && "text-red-500"
+            )}
+          >
+            {formatCurrency(
+              currencyToIntlZone[row.original.currency],
+              row.getValue("originalCurrrencyPrice"),
+              row.original.currency
+            )}
+            <Tooltip anchorSelect={"#" + id} place={"bottom"}>
+              <p
+                className={cn(
+                  row.original.originalCurrrencyPrice >
+                    row.original.originalCurrrencyBuyPrice && "text-green-500 ",
+                  row.original.originalCurrrencyPrice <
+                    row.original.originalCurrrencyBuyPrice && "text-red-500"
+                )}
+              >
+                {" "}
+                {(
+                  (row.original.originalCurrrencyPrice /
+                    row.original.originalCurrrencyBuyPrice -
+                    1) *
+                  100
+                ).toFixed(2) + "%"}
+              </p>
+            </Tooltip>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "originalCurrrencyBuyPrice",
+      header: "Buy Price",
+      cell: ({ row }) => (
+        <div className="">
+          {formatCurrency(
+            currencyToIntlZone[row.original.currency],
+            row.getValue("originalCurrrencyBuyPrice"),
+            row.original.currency
+          )}
+        </div>
+      ),
+    },
     {
       accessorKey: "date",
       header: "Buy Date",
@@ -67,7 +127,7 @@ export const getPortfolioColumns = (
         <div className="">
           {formatDateShort(
             currencyToIntlZone[currency],
-            new Date (row.getValue("date"))
+            new Date(row.getValue("date"))
           )}
         </div>
       ),
@@ -94,13 +154,16 @@ export const getPortfolioColumns = (
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-              >
+              <DropdownMenuItem>
                 <div className="cursor-pointer w-full">History</div>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem><div className="cursor-pointer w-full">Buy</div></DropdownMenuItem>
-              <DropdownMenuItem><div className="cursor-pointer w-full">Sell</div></DropdownMenuItem>
+              <DropdownMenuItem>
+                <div className="cursor-pointer w-full">Buy</div>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <div className="cursor-pointer w-full">Sell</div>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         );

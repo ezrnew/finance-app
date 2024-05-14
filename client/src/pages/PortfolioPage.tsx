@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { server } from "@/connection/backend/backendConnectorSingleton";
 import { EXAMPLE_PORTFOLIO } from "@/data/example_data";
 import { useActions, useTypedSelector } from "@/hooks/use-redux";
+import { cn } from "@/lib/utils";
 import {
   CurrencyType,
   currencyToIntlZone,
@@ -123,6 +124,7 @@ export const PortfolioPage = () => {
                   currency={
                     currentPortfolio?.currency || ("PLN" as CurrencyType)
                   }
+                  assets={assets}
                 />
 
                 <PortfolioTable

@@ -5,9 +5,10 @@ import { InputDropdown } from "@/components/ui/input-dropdown";
 import { InputDropdownCustom } from "@/components/ui/input-dropdown-custom";
 import { ModalWrapper } from "@/components/ui/modal-wrapper";
 import { server } from "@/connection/backend/backendConnectorSingleton";
-import { useTypedSelector } from "@/hooks/use-redux";
+import { useActions, useTypedSelector } from "@/hooks/use-redux";
 import { getFlattenAssets } from "@/pages/PortfolioPage";
 import { formatCurrency } from "@/utils/formatters";
+import { toast } from "@/utils/toasts";
 import { X } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +17,7 @@ export const AddPaymentModal = () => {
   const navigate = useNavigate();
 
   const { currentAccount,currentPortfolioId } = useTypedSelector((state) => state.portfolio);
+  const { setCurrentPortfolio,refetchPortfolioData: updatePortfolioData } = useActions();
 
   const [_,refetch] = useState(false)
 
@@ -29,10 +31,15 @@ console.log('KWOTA',amount)
 console.log('KONTOO',currentAccount)
 
 const res = await server.addOperation(currentPortfolioId,currentAccount?.id||"",amount)
+if(res){
 
-console.log("rez",res)
-refetch(item=>!item)
-  }
+  toast.operationSuccessful()  
+  updatePortfolioData()
+  navigate('/portfolio')
+}else{
+  toast.operationFailure()
+}
+}
 
 
 

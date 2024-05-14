@@ -28,6 +28,7 @@ interface State {
     currentPortfolioId:string
     currentPortfolio:Portfolio | null
     currentAccount:{id:string, title: string; cash: number; assets: any[] } | null
+    // currentCategory:string
 
 
     //
@@ -40,7 +41,10 @@ const initialState: State = {
     currentPortfolioId:ls.getPortfolioId() ||'',
     currentPortfolio:null,
     currentAccount:null,
+    // currentCategory:'',
 
+
+    
     updatePortfolioData:false
 
 };
@@ -61,9 +65,12 @@ const portfolioSlice = createSlice({
       setCurrentAccount: (state, action: PayloadAction<{id:string, title: string; cash: number; assets: any[] }>) => {
         state.currentAccount = action.payload;
       },
+      // setCurrentCategory: (state, action: PayloadAction<string>) => {
+      //   state.currentCategory = action.payload;
+      // },
 
       //
-      updatePortfolioData: (state) => {
+      refetchPortfolioData: (state) => {
         
         
         state.updatePortfolioData = !state.updatePortfolioData

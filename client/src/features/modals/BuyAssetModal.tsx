@@ -33,7 +33,7 @@ export const BuyAssetModal = () => {
   const [price, setPrice] = useState<number>(0);
   const [quantity, setQuantity] = useState<number>(0);
   
-  const {updatePortfolioData} = useActions()
+  const {refetchPortfolioData: updatePortfolioData} = useActions()
 
   const [paymentAdded, setPaymentAdded] = useState(false);
 

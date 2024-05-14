@@ -21,13 +21,18 @@ interface Props {
   totalValueLabel: string;
   data: { category: string; value: number }[];
   currency: CurrencyType;
+  assets:any[]
 }
 
 export const PortfolioPieChart = ({
   totalValueLabel,
   data,
   currency,
+  assets
 }: Props) => {
+
+  console.log("ASETY",assets)
+
   return (
     // <div className="mx-auto">
     <ResponsiveContainer height={400}>
@@ -74,14 +79,14 @@ return <div/>
           )}
         </Pie>
         {/* //todo */}
-        <Tooltip
-          formatter={(value) =>
-            formatCurrency(
-              currencyToIntlZone[currency],
-              Number(value),
-              currency
-            )
-          }
+        <Tooltip content={<CustomTooltip currency={currency} assets={assets}  />}
+          // formatter={(value) =>
+          //   formatCurrency(
+          //     currencyToIntlZone[currency],
+          //     Number(value),
+          //     currency
+          //   )
+          // }
         />
         <Legend
           content={(item) => {
@@ -155,3 +160,52 @@ const renderCustomizedLabel = ({
     </text>
   );
 };
+
+
+type TooltipProps={
+  currency:CurrencyType,
+  assets:any[],
+  active:boolean,
+  payload:any[]
+}
+
+const CustomTooltip = ({ currency,assets,active, payload }:TooltipProps) =>{
+  console.log("asety",assets)
+  if (!active || !payload || !payload.length) return null
+
+
+  return <div className="bg-white border border-gray-400 p-4 rounded-md flex flex-col text-xl">
+    <p>{payload[0].name}: {
+    
+    
+    
+    formatCurrency(
+      currencyToIntlZone[currency],
+      payload[0].value,
+      currency
+    )
+    
+    }</p>
+
+
+    {assets?<>
+                    <div className="h-[1px] mx-auto w-4/5 my-1 bg-gray-300" />
+                    <ul>
+
+{assets.filter(item =>item.category===payload[0].name).map(item =><li key={item.id}>{item.name}: {
+
+formatCurrency(
+  currencyToIntlZone[currency],
+  item.price*item.quantity,
+  currency
+)
+
+}</li>)}
+
+</ul>
+    </>
+ : null}
+
+  </div>
+}
+

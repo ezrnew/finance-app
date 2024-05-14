@@ -35,8 +35,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { accountColumns } from "./AccountColumns"
-import { categoriesColumns } from "./CategoriesColumns"
 
 export type CategoriesTableItem = {
   category: string,
@@ -44,7 +42,7 @@ export type CategoriesTableItem = {
 }
 
 
-export function CategoriesTable({data}:{  data: CategoriesTableItem[];
+export function CategoriesTable({data,categoryColumns}:{  data: CategoriesTableItem[];categoryColumns:ColumnDef<CategoriesTableItem>[]
 }) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -56,7 +54,7 @@ export function CategoriesTable({data}:{  data: CategoriesTableItem[];
 
   const table = useReactTable({
     data,
-    columns:categoriesColumns,
+    columns:categoryColumns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -153,7 +151,7 @@ export function CategoriesTable({data}:{  data: CategoriesTableItem[];
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={accountColumns.length}
+                  colSpan={columns.length}
                   className="h-24 text-center"
                 >
                   No results.

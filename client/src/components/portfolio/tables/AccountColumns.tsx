@@ -24,9 +24,9 @@ import { portfolioActions } from "@/store/portfolioSlice";
 
 interface Props{
   addPaymentHandler:(accountName:string)=>void
+  deleteAccountHandler:()=>void
 }
-
-export const accountColumns=({addPaymentHandler}:Props):ColumnDef<AccountsTableItem>[]=>
+export const accountColumns=({addPaymentHandler,deleteAccountHandler}:Props):ColumnDef<AccountsTableItem>[]=>
 {
   return [
     {
@@ -78,7 +78,7 @@ console.log("item",item)
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem><div onClick={()=>{store.dispatch(portfolioActions.setCurrentAccount(item));addPaymentHandler(item.title)}} className="cursor-pointer w-full">Add payment</div></DropdownMenuItem>
-              <DropdownMenuItem><div className="cursor-pointer w-full">Delete account</div></DropdownMenuItem>
+              <DropdownMenuItem><div onClick={()=>{store.dispatch(portfolioActions.setCurrentAccount(item));deleteAccountHandler()}} className="cursor-pointer w-full">Delete account</div></DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         );
