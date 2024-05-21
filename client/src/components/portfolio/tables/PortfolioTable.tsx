@@ -39,14 +39,14 @@ import { getPortfolioColumns } from "./PortfolioColumns";
 import { CurrencyType } from "@/utils/formatters";
 
 export interface PortfolioTableItem {
-  id:string
+  id: string;
   name: string;
   type: string;
   value: number;
-  currency:CurrencyType
-  price:number;
-  originalCurrrencyPrice:number
-  originalCurrrencyBuyPrice:number;
+  currency: CurrencyType;
+  price: number;
+  originalCurrrencyPrice: number;
+  originalCurrrencyBuyPrice: number;
   quantity: number;
   buyDate: Date;
   account: string;
@@ -61,7 +61,7 @@ export function PortfolioTable({
 }) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+    [],
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -86,10 +86,8 @@ export function PortfolioTable({
     },
   });
 
-
-
   return (
-    <div className="   w-full mx-auto p-6 ">
+    <div className="   w-full mx-auto xl:p-6 ">
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter assets..."
@@ -138,7 +136,7 @@ export function PortfolioTable({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -150,7 +148,7 @@ export function PortfolioTable({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                className={row.index%2===1?'bg-slate-50':''}
+                  className={row.index % 2 === 1 ? "bg-slate-50" : ""}
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
@@ -158,7 +156,7 @@ export function PortfolioTable({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

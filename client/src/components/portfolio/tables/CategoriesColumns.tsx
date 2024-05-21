@@ -10,42 +10,39 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  formatCurrency
-} from "@/utils/formatters";
-import { CategoriesTableItem } from "./CategoriesTable";
+import { formatCurrency } from "@/utils/formatters";
 import { toast } from "@/utils/toasts";
-import { server } from "@/connection/backend/backendConnectorSingleton";
+import { CategoriesTableItem } from "./CategoriesTable";
 
-
-interface Props{
-  deleteCategory:(category:string)=>void
+interface Props {
+  deleteCategory: (category: string) => void;
 }
 
-export const categoriesColumns=({deleteCategory}:Props):ColumnDef<CategoriesTableItem>[]=>
-  {
-    console.log("delete kategoria",deleteCategory)
-//categoriesColumns:ColumnDef<CategoriesTableItem>[]=
-  return  [
+export const categoriesColumns = ({
+  deleteCategory,
+}: Props): ColumnDef<CategoriesTableItem>[] => {
+  return [
     {
       accessorKey: "category",
       enableHiding: false,
       header: "Category",
       cell: ({ row }) => <div className="">{row.getValue("category")}</div>,
     },
-{
-          accessorKey: "value",
+    {
+      accessorKey: "value",
       header: "Total value",
-      cell: ({ row }) => <div className="">{formatCurrency('PL-pl',row.getValue("value"),'PLN')}</div>,
+      cell: ({ row }) => (
+        <div className="">
+          {formatCurrency("PL-pl", row.getValue("value"), "PLN")}
+        </div>
+      ),
     },
-//TODO tooltip with asssets preview
 
     {
       id: "actions",
       enableHiding: false,
       cell: ({ row }) => {
         const item = row.original;
-console.log("ITETETETETETE",item)
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -57,27 +54,37 @@ console.log("ITETETETETETE",item)
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-<DropdownMenuItem>
+              <DropdownMenuItem>
+                <div className="cursor-pointer w-full">Assets</div>
+              </DropdownMenuItem>
 
-              <div className="cursor-pointer w-full">Assets</div>
-</DropdownMenuItem>
-
-
-              <DropdownMenuItem
-              >
+              <DropdownMenuItem>
                 <div className="cursor-pointer w-full">Operations</div>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem><div className="cursor-pointer w-full" onClick={()=>{
-                if(item.category==="cash" ) {toast.cantDeleteCashCategory();return}
-                if(item.value!==0 ) {toast.cantDeleteNonEmptyCategory();return}
+              <DropdownMenuItem>
+                <div
+                  className="cursor-pointer w-full"
+                  onClick={() => {
+                    if (item.category === "cash") {
+                      toast.cantDeleteCashCategory();
+                      return;
+                    }
+                    if (item.value !== 0) {
+                      toast.cantDeleteNonEmptyCategory();
+                      return;
+                    }
 
-                  deleteCategory(item.category)
-              }} >Delete category</div></DropdownMenuItem>
+                    deleteCategory(item.category);
+                  }}
+                >
+                  Delete category
+                </div>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         );
       },
     },
   ];
-}
+};

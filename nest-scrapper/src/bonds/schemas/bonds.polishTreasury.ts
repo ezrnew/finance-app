@@ -1,11 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
-//todo firsYear -> firstPeriod
-
 export type EdoDocument = HydratedDocument<Edo>;
 
-@Schema({collection:"bonds_PLtr_edo"})
+@Schema({ collection: 'bonds_PLtr_edo' })
 export class Edo {
   @Prop()
   id: string;
@@ -19,11 +17,9 @@ export class Edo {
 
 export const EdoSchema = SchemaFactory.createForClass(Edo);
 
-
-
 export type CoiDocument = HydratedDocument<Coi>;
 
-@Schema({collection:"bonds_PLtr_coi"})
+@Schema({ collection: 'bonds_PLtr_coi' })
 export class Coi {
   @Prop()
   id: string;
@@ -37,10 +33,9 @@ export class Coi {
 
 export const CoiSchema = SchemaFactory.createForClass(Coi);
 
-
 export type RosDocument = HydratedDocument<Ros>;
 
-@Schema({collection:"bonds_PLtr_ros"})
+@Schema({ collection: 'bonds_PLtr_ros' })
 export class Ros {
   @Prop()
   id: string;
@@ -54,10 +49,9 @@ export class Ros {
 
 export const RosSchema = SchemaFactory.createForClass(Ros);
 
-
 export type RodDocument = HydratedDocument<Rod>;
 
-@Schema({collection:"bonds_PLtr_rod"})
+@Schema({ collection: 'bonds_PLtr_rod' })
 export class Rod {
   @Prop()
   id: string;
@@ -71,12 +65,11 @@ export class Rod {
 
 export const RodSchema = SchemaFactory.createForClass(Rod);
 
-
 // fixed
 
 export type OtsDocument = HydratedDocument<Ots>;
 
-@Schema({collection:"bonds_PLtr_ots"})
+@Schema({ collection: 'bonds_PLtr_ots' })
 export class Ots {
   @Prop()
   id: string;
@@ -87,11 +80,9 @@ export class Ots {
 
 export const OtsSchema = SchemaFactory.createForClass(Ots);
 
-
-
 export type TosDocument = HydratedDocument<Tos>;
 
-@Schema({collection:"bonds_PLtr_tos"})
+@Schema({ collection: 'bonds_PLtr_tos' })
 export class Tos {
   @Prop()
   id: string;

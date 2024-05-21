@@ -1,4 +1,14 @@
-import { BadRequestException, Body, Controller, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '../auth/auth.guard';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { PortfoliosService } from './portfolios.service';
@@ -8,6 +18,8 @@ import { BuyAssetDto } from './dto/buyAssetDto';
 import { SellAssetDto } from './dto/sell-asset-dto';
 import { UpdateAssetsDto } from './dto/update-assets-dto';
 import { AddOperationDto } from './dto/add-operation.dto';
+import { DeleteAccountDto } from './dto/delete-account.dto';
+import { DeleteCategoryDto } from './dto/delete-category.dto';
 
 @Controller('portfolios')
 export class PortfoliosController {
@@ -52,7 +64,6 @@ export class PortfoliosController {
   @UseGuards(AuthGuard)
   @Post('buyAsset')
   async buyAsset(@Request() req, @Body() buyAssetDto: BuyAssetDto) {
-
     const result = await this.portfoliosService.buyAsset(req.user.username, buyAssetDto);
 
     if (!result) throw new BadRequestException();
@@ -66,29 +77,33 @@ export class PortfoliosController {
     if (!result) throw new BadRequestException();
   }
 
-
   @UseGuards(AuthGuard)
   @Post('reevaluate')
   async updateAssets(@Request() req, @Body() updateAssetsDto: UpdateAssetsDto) {
-
-    console.log("EWALUACJA",updateAssetsDto)
-
-    const result = await this.portfoliosService.reevaluateAssets(req.user.username, updateAssetsDto.portfolioId);
-    console.log("reZULT",result)
+    const result = await this.portfoliosService.reevaluateAssets(
+      req.user.username,
+      updateAssetsDto.portfolioId,
+    );
 
     if (!result) throw new BadRequestException();
-    return result
+    return result;
   }
 
-  
   @UseGuards(AuthGuard)
   @Post('operation')
   async addOperation(@Request() req, @Body() addOperationDto: AddOperationDto) {
-
-    console.log("OPERATION",addOperationDto)
-
-     await this.portfoliosService.addAccountOperation(req.user.username, addOperationDto);
+    await this.portfoliosService.addAccountOperation(req.user.username, addOperationDto);
   }
 
+  @UseGuards(AuthGuard)
+  @Delete('account')
+  async deleteAccount(@Request() req, @Body() deleteAccountDto: DeleteAccountDto) {
+    await this.portfoliosService.deleteAccount(req.user.username, deleteAccountDto);
+  }
 
+  @UseGuards(AuthGuard)
+  @Delete('category')
+  async deleteCategory(@Request() req, @Body() deleteCategoryDto: DeleteCategoryDto) {
+    await this.portfoliosService.deleteCategory(req.user.username, deleteCategoryDto);
+  }
 }

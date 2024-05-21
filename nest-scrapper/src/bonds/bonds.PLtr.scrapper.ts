@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import puppeteer, { ElementHandle, Page, Puppeteer } from 'puppeteer';
 import { getText } from '../utils/puppeteer.utils';
-
-//todo cleanup
 @Injectable()
 export class PLtrScrapper {
   async getData(currentText: string) {
@@ -20,18 +18,15 @@ export class PLtrScrapper {
     const text = await getText(titleElement);
 
     if (currentText === text) {
-      //no new data
       await browser.close();
       return false;
     }
 
     if (!text.includes(newEmissionText)) {
-      //new article but no new emission
       await browser.close();
       return { text };
     }
 
-    //todo jak w ten zajebany link kliknac poza viewportem
     const cookieButton = await page.waitForSelector('a.cookie__accept');
     await cookieButton.click();
 

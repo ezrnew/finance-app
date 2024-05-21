@@ -14,145 +14,94 @@ import { CurrenciesService } from '../currencies/currencies.service';
 export class TickersService {
   private readonly _logger = new Logger(TickersService.name);
   private readonly tickerScrapper = new TickersScrapper();
-  // private readonly currenciesService= new CurrenciesService();
 
-  constructor(@InjectModel(Ticker.name) private tickerModel: Model<Ticker>, private readonly currenciesService:CurrenciesService) {}
-
-  // async create(newTicker: createTickerDto): Promise<Ticker> {
-  //   const createdTicker = new this.tickerModel(newTicker);
-  //   return createdTicker.save();
-  // }
+  constructor(
+    @InjectModel(Ticker.name) private tickerModel: Model<Ticker>,
+    private readonly currenciesService: CurrenciesService,
+  ) {}
 
   async addNew(name: string) {
-    name = name.toLowerCase()
+    name = name.toLowerCase();
 
     let ticker = await this.tickerModel.findOne({ name });
-    if(ticker) return {new:false,data:ticker}
-    console.log("tiker",ticker)
-    this._logger.debug('no ticker found; scrapping...')
+    if (ticker) return { new: false, data: ticker };
+    this._logger.debug('no ticker found; scrapping...');
 
-    const scrappedTicker = await this.tickerScrapper.getTickerData(name)
+    const scrappedTicker = await this.tickerScrapper.getTickerData(name);
 
-     ticker = await this.tickerModel.findOne({name: scrappedTicker.name });
+    ticker = await this.tickerModel.findOne({ name: scrappedTicker.name });
 
-     if(ticker){
-      ticker.price = scrappedTicker.price
-      ticker.date = scrappedTicker.date
+    if (ticker) {
+      ticker.price = scrappedTicker.price;
+      ticker.date = scrappedTicker.date;
 
-      console.log("zwracam tikera",ticker)
-      await ticker.save()
-      return {new:false,data:ticker}
-     }
-
-//todo validate if ticker is correct
-    try {
-    const createdTicker = new this.tickerModel(scrappedTicker)
-    
-    
-    return {new:true,data:createdTicker.save()}
-
-    } catch (error) {
-      this._logger.error("error saving new ticker:",error)
+      await ticker.save();
+      return { new: false, data: ticker };
     }
 
+    try {
+      const createdTicker = new this.tickerModel(scrappedTicker);
 
-
-
+      return { new: true, data: createdTicker.save() };
+    } catch (error) {
+      this._logger.error('error saving new ticker:', error);
+    }
   }
 
-  async calculateMany(tickerAssets:any,portfCurrency:CurrencyType){
-    if(tickerAssets.length===0) return []
-
-    // console.log("TICKER ITEMS",tickerAssets)
-    const tickerNames:string[]=tickerAssets.map(item =>item.name)
-    // console.log("TICKER NAMES",tickerNames)
+  async calculateMany(tickerAssets: any, portfCurrency: CurrencyType) {
+    if (tickerAssets.length === 0) return [];
+    const tickerNames: string[] = tickerAssets.map((item) => item.name);
 
     let tickers = await this.tickerModel.find({ name: { $in: tickerNames } });
 
-    // console.log("TICKERS DB RESULT",tickers)
-
     const promises = tickers.map(async (item) => {
       if (IsDateOlderThanXHours(item.updatedAt, 24)) {
-          const updatedData = await this.tickerScrapper.updateTickerData(item.name);
-          //todo currency? przerzucić to do portf service a tutaj tylko foreach scrap?
-          // console.log("updatedData", updatedData);
-          const currencyRate = await this.currenciesService.getCurrencyRate(item.currency as CurrencyType,portfCurrency)
-          const assetItem =tickerAssets.find(item => item.name ===item)
+        const updatedData = await this.tickerScrapper.updateTickerData(item.name);
+        const currencyRate = await this.currenciesService.getCurrencyRate(
+          item.currency as CurrencyType,
+          portfCurrency,
+        );
+        const assetItem = tickerAssets.find((item) => item.name === item);
 
-          assetItem.price = updatedData.newPrice*currencyRate;
-          assetItem.date = updatedData.newDate;
-    
+        assetItem.price = updatedData.newPrice * currencyRate;
+        assetItem.date = updatedData.newDate;
       }
-  });
-  await Promise.all(promises);
+    });
+    await Promise.all(promises);
 
-  // console.log("po promisach",tickers)
-
-  return tickerAssets
-
-
-
-    // tickers.forEach(async(item) =>{
-
-    //   if(IsDateOlderThanXHours(item.updatedAt,24)){
-    //     const updatedData = await this.tickerScrapper.updateTickerData(item.name)
-    //     console.log("updatedData",updatedData)
-    //     item.price=updatedData.newPrice
-    //     item.date=updatedData.newDate
-    //     await item.save()
-    //   }
-
-    // })
-
-
-    // console.log("tickeruhy",tickers)
-
-
-
-return 1
-
+    return tickerAssets;
   }
-
 
   async calculateOne(name: string) {
     let ticker = await this.tickerModel.findOne({ name });
 
-    this._logger.log("Ticker found in db")
+    this._logger.log('Ticker found in db: ' + name);
 
     if (!ticker) {
-      throw new NotFoundException()
-
-  } 
-  
-// @ts-ignore
-  const dateString = ticker.updatedAt;
-  const dateObject = new Date(dateString);
-  const differenceInHours = (Math.abs(Date.now() - dateObject.getTime())) / (1000 * 60 * 60);
-
-  
-   if (differenceInHours>24) {
-
-     this._logger.debug('ticker found with obsolete data; scrapping...')
-     const scrappedTicker = await this.tickerScrapper.updateTickerData(name)
-     
-     
-     ticker.price=scrappedTicker.newPrice
-     ticker.date=scrappedTicker.newDate
-     await ticker.save()
-     
-     
-     removeMongoProperties(ticker)
+      throw new NotFoundException();
     }
-  
 
-    this._logger.debug('returning ticker:',ticker)
+    // @ts-ignore
+    const dateString = ticker.updatedAt;
+    const dateObject = new Date(dateString);
+    const differenceInHours = Math.abs(Date.now() - dateObject.getTime()) / (1000 * 60 * 60);
+
+    if (differenceInHours > 24) {
+      this._logger.debug('ticker found with obsolete data; scrapping...');
+      const scrappedTicker = await this.tickerScrapper.updateTickerData(name);
+
+      ticker.price = scrappedTicker.newPrice;
+      ticker.date = scrappedTicker.newDate;
+      await ticker.save();
+
+      removeMongoProperties(ticker);
+    }
+
+    this._logger.debug('returning ticker:', ticker);
     return ticker;
   }
 
   async findAll(): Promise<Ticker[]> {
     return this.tickerModel.find().exec();
   }
-
-
-
 }

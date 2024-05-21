@@ -1,5 +1,6 @@
-import { ObjectId } from "mongoose";
+import { CurrencyType } from 'src/currencies/schema/currencyRate.schema';
 
 export class CreatePortfolioDto {
-    name: string;
-  }
+  name: string;
+  currency: CurrencyType;
+}

@@ -6,9 +6,15 @@ type handleOrPageType = ElementHandle<Element> | Page;
 export const getByText = async (element: handleOrPageType, text: string, cssElement?: string) =>
   element.waitForSelector(cssElement ? `${cssElement} ::-p-text(${text})` : `::-p-text(${text})`);
 
-export const getByIdAndText = async (element: handleOrPageType,id:string, text: string, cssElement?: string) =>
-  element.waitForSelector(cssElement ? `${cssElement}#${id}::-p-text("${text}")` : `#${id}::-p-text("${text}")`);
-
+export const getByIdAndText = async (
+  element: handleOrPageType,
+  id: string,
+  text: string,
+  cssElement?: string,
+) =>
+  element.waitForSelector(
+    cssElement ? `${cssElement}#${id}::-p-text("${text}")` : `#${id}::-p-text("${text}")`,
+  );
 
 export const getById = (element: handleOrPageType, id: string) => element.waitForSelector(`[id^="${id}"]`);
 
@@ -21,4 +27,3 @@ export const setPageCookies = async (page: Page, cookies: any[]) => {
     }
   }
 };
-

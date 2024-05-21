@@ -4,21 +4,16 @@ import { getById, getByIdAndText, getByText, getText, setPageCookies } from '../
 import { parseStringDate } from '../utils/date.utils';
 import { ScrapperCurrencyAdapter, StooqCurrencyAdapter } from './utils/currency.adapter';
 
-
-
 type TickerType = {
-  name: string,
-  price: number,
-  currency: string,
-  date: Date,
-}
+  name: string;
+  price: number;
+  currency: string;
+  date: Date;
+};
 
-//todo get stock market data
 @Injectable()
 export class TickersScrapper {
-
-
-  private readonly _currencyAdapter:ScrapperCurrencyAdapter = StooqCurrencyAdapter
+  private readonly _currencyAdapter: ScrapperCurrencyAdapter = StooqCurrencyAdapter;
   private readonly _logger = new Logger(TickersScrapper.name);
   private readonly _baseUrl = 'https://stooq.pl/q/?s=';
   private _cookies = null;
@@ -30,9 +25,7 @@ export class TickersScrapper {
     this._cookies = value;
   }
 
-  //todo first run all data, next runs only price & date
-  async getTickerData(ticker: string):Promise<TickerType> {
-
+  async getTickerData(ticker: string): Promise<TickerType> {
     this._logger.debug('started full ticker scrapping');
 
     const browser = await puppeteer.launch();
@@ -51,17 +44,15 @@ export class TickersScrapper {
       const textContent = await getText(result);
 
       if (textContent.includes('Kurs')) {
-        const result =  await this.scrap( page,ticker, true);
-        await browser.close()
-        return result
+        const result = await this.scrap(page, ticker, true);
+        await browser.close();
+        return result;
       } else {
         const aElements = await result.$$eval('a', (elements) => elements.map((element) => element.href));
-        console.log("hrefik",aElements[0].split("=").pop())
-
 
         await page.goto(aElements[0]);
 
-        return await this.scrap(page,ticker, false);
+        return await this.scrap(page, ticker, false);
       }
     } catch (error) {
       this._logger.debug('invalid ticker: ' + error);
@@ -69,21 +60,23 @@ export class TickersScrapper {
     } finally {
       await browser.close();
     }
-
-
   }
 
+  private async scrap(page: Page, ticker: string, validTicker: boolean) {
+    const priceTd = await getByIdAndText(page, 'f13', 'Kurs', 'td');
 
-  private async scrap(page: Page,ticker:string, validTicker: boolean) {
-    const priceTd = await getByIdAndText(page,'f13', 'Kurs', 'td');
-
-    const tekst = await getText(priceTd)
+    const tekst = await getText(priceTd);
 
     const priceSpan = await getById(priceTd, 'aq_' + ticker);
     const price = await getText(priceSpan);
 
-    const a = await priceTd.waitForSelector('a');
-    const currency = await getText(a);
+    let currency = '$';
+    try {
+      const a = await priceTd.waitForSelector('a', { timeout: 2000 });
+      currency = await getText(a);
+    } catch (error) {
+      this._logger.error('no price available for asset ' + ticker);
+    }
 
     const dateTd = await getByText(page, 'Data', 'td');
 
@@ -94,14 +87,13 @@ export class TickersScrapper {
         .join('_'),
     );
 
-    let currencyData = this._currencyAdapter.find(item =>item.symbol===currency)
+    let currencyData = this._currencyAdapter.find((item) => item.symbol === currency);
+    if (!currencyData) currencyData = { currency: 'USD', symbol: '$', formatter: (item) => item };
 
-    if(!currencyData) currencyData = {currency:'USD',symbol:"$",formatter:(item)=>item}
-    
     const returnedData = {
       name: validTicker ? ticker : (await page.url()).split('=').pop(),
-      price:currencyData.formatter(Number(price)),
-      currency:currencyData.currency,
+      price: currencyData.formatter(Number(price)),
+      currency: currencyData.currency,
       date: parseStringDate(dateSpans),
     };
 
@@ -109,16 +101,11 @@ export class TickersScrapper {
 
     return returnedData;
   }
-  
 
-
-
-  
-
-  async updateTickerData(ticker: string):Promise<{
+  async updateTickerData(ticker: string): Promise<{
     newPrice: number;
     newDate: Date;
-}> {
+  }> {
     this._logger.debug('started partial ticker scrapping');
     const url = this._baseUrl + ticker;
 
@@ -148,7 +135,7 @@ export class TickersScrapper {
     }
 
     async function scrap(page: Page) {
-      const priceTd = await getByIdAndText(page,'f13', 'Kurs', 'td');
+      const priceTd = await getByIdAndText(page, 'f13', 'Kurs', 'td');
       const priceSpan = await getById(priceTd, 'aq_' + ticker);
       const price = await getText(priceSpan);
 

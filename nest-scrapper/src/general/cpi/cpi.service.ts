@@ -20,6 +20,7 @@ export class CPIService {
     const year = currentDate.getFullYear();
 
     const value = await this.cpiScrapper.getCPI_Polish(monthName, year);
+    console.log('VALUE cpi scrapper', value);
 
     const result = await this.cpiModel.findOne({ year });
 

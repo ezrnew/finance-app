@@ -14,8 +14,10 @@ export class Portfolio {
   @Prop()
   totalValue: number;
   @Prop()
+  freeCash: number;
+  @Prop()
   categories: { category: string; value: number }[];
-  @Prop() //todo addPaymentAdded info
+  @Prop()
   operationHistory: {
     id: string;
     accountName: string;

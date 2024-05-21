@@ -11,15 +11,14 @@ import { TickersModule } from '../tickers/tickers.module';
 import { CurrenciesModule } from '../currencies/currencies.module';
 
 @Module({
-  imports:[
-    MongooseModule.forFeature([{name:Portfolio.name, schema:PortfolioSchema}]),
-    MongooseModule.forFeature([{name:User.name, schema:UserSchema}]),
+  imports: [
+    MongooseModule.forFeature([{ name: Portfolio.name, schema: PortfolioSchema }]),
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     BondsModule,
     TickersModule,
-    CurrenciesModule
-
+    CurrenciesModule,
   ],
   providers: [PortfoliosService],
-  controllers: [PortfoliosController]
+  controllers: [PortfoliosController],
 })
 export class PortfoliosModule {}

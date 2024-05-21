@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Datepicker } from "@/components/ui/datepicker";
 import { Input } from "@/components/ui/input";
 import { InputDropdown } from "@/components/ui/input-dropdown";
@@ -12,15 +11,21 @@ import { X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-type assetType ={name:string,type:string,currency:string,price:number}
+type assetType = {
+  name: string;
+  type: string;
+  currency: string;
+  price: number;
+};
 
 export const BuyAssetModal = () => {
-  const {currentPortfolio,currentPortfolioId } = useTypedSelector((state) => state.portfolio);
+  const { currentPortfolio, currentPortfolioId } = useTypedSelector(
+    (state) => state.portfolio,
+  );
 
   const navigate = useNavigate();
 
   const [availableAssets, setAvailableAssets] = useState<assetType[]>([]);
-  // const [_,refetch] = useState(false)
 
   const [asset, setAsset] = useState<assetType | null>(null);
   const [category, setCategory] = useState("");
@@ -32,8 +37,8 @@ export const BuyAssetModal = () => {
   const [currencyRate, setCurrencyRate] = useState<number>(0);
   const [price, setPrice] = useState<number>(0);
   const [quantity, setQuantity] = useState<number>(0);
-  
-  const {refetchPortfolioData: updatePortfolioData} = useActions()
+
+  const { refetchPortfolioData: updatePortfolioData } = useActions();
 
   const [paymentAdded, setPaymentAdded] = useState(false);
 
@@ -44,48 +49,48 @@ export const BuyAssetModal = () => {
       const data = await server.getAllAssetNames();
 
       setAvailableAssets(data);
-
-
-      console.log("dejta", data);
     };
 
     fetchAssets();
   }, []);
 
+  useEffect(() => {
+    setCurrency(asset?.currency || "");
+    setPrice(asset?.price || 0);
+  }, [asset]);
 
-  useEffect(()=>{
-
-    setCurrency(asset?.currency || "")
-    setPrice(asset?.price || 0)
-    // set(asset?.currency || "")
-
-  },[asset])
-
-
-
-  const categoryNames = currentPortfolio?.categories.map((item) => item.category);
+  const categoryNames = currentPortfolio?.categories.map(
+    (item) => item.category,
+  );
   const accountNames = currentPortfolio?.accounts.map((item) => item.title);
 
-  const submitForm = async(e: React.FormEvent<HTMLFormElement>) => {
+  const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
-    
-    console.log("huj",asset)
+
     const validationResult = validateData();
-    if(!validationResult) return;
+    if (!validationResult) return;
 
-    //@ts-ignore asset&date are already validated
-   const result = await server.buyAsset(currentPortfolioId,category,account,asset,date,currency,currencyRate,price,quantity,paymentAdded)
-if(result) {
-  toast.operationSuccessful()
-  updatePortfolioData()
-}else{
-  toast.buyOperationFailure()
-}
-navigate("/portfolio");
-
-
-
+    const result = await server.buyAsset(
+      currentPortfolioId,
+      category,
+      account,
+      // @ts-ignore
+      asset,
+      date,
+      currency,
+      currencyRate,
+      price,
+      quantity,
+      paymentAdded,
+    );
+    if (result) {
+      toast.operationSuccessful();
+      updatePortfolioData();
+    } else {
+      toast.buyOperationFailure();
+    }
+    navigate("/portfolio");
   };
 
   function validateData() {
@@ -102,24 +107,24 @@ navigate("/portfolio");
       return false;
     }
 
-    const acc = currentPortfolio?.accounts.find((item) => item.title === account);
+    const acc = currentPortfolio?.accounts.find(
+      (item) => item.title === account,
+    );
     if (!acc) {
       setError("account doesnt exist!");
       return false;
     }
 
-    console.log("prajs i kesz", price * quantity, acc.cash);
     const canAfford = price * quantity <= acc.cash;
     if (!canAfford && !paymentAdded) {
       setError(
-        "You dont have enought cash on selected account. Did you mean to include 'Add Payment to account' option?"
+        "You dont have enought cash on selected account. Did you mean to include 'Add Payment to account' option?",
       );
       return false;
     }
 
-    if(!asset) return false;
-    if(!date) return false;
-
+    if (!asset) return false;
+    if (!date) return false;
 
     return true;
   }
@@ -162,7 +167,7 @@ navigate("/portfolio");
             <span>Category</span>
 
             <InputDropdown
-              data={categoryNames?.filter(item => item!=="cash") ||[]}
+              data={categoryNames?.filter((item) => item !== "cash") || []}
               value={category}
               setValue={setCategory}
               placeholder="Search Categories..."
@@ -173,7 +178,7 @@ navigate("/portfolio");
             <span>Account</span>
 
             <InputDropdown
-              data={accountNames ||[]}
+              data={accountNames || []}
               value={account}
               setValue={setAccount}
               placeholder="Search Accounts..."
@@ -190,7 +195,6 @@ navigate("/portfolio");
           <div className="flex items-center space-x-2 ">
             <span>Currency </span>
 
-            {/* //todo data */}
             <InputDropdown
               data={["PLN", "USD", "EUR", "GBP"]}
               value={currency}
@@ -198,25 +202,40 @@ navigate("/portfolio");
             />
           </div>
 
-          {/* //todo popup info "at buy time" */}
           <div className="flex items-center space-x-2 ">
             <span>Currency Rate</span>
-            <Input  value={currencyRate} onChange={(e)=>{setCurrencyRate(Number(e.target.value))}} type="number" />
+            <Input
+              value={currencyRate}
+              onChange={(e) => {
+                setCurrencyRate(Number(e.target.value));
+              }}
+              type="number"
+            />
           </div>
 
           <div className="flex items-center space-x-2 ">
             <span>Unit Price</span>
 
-            <Input value={price} onChange={(e)=>{setPrice(Number(e.target.value))}}  type="number" />
+            <Input
+              value={price}
+              onChange={(e) => {
+                setPrice(Number(e.target.value));
+              }}
+              type="number"
+            />
           </div>
           <div className="flex items-center space-x-2 ">
             <span>Quantity</span>
 
-            <Input value={quantity} onChange={(e)=>{setQuantity(Number(e.target.value))}} />
+            <Input
+              value={quantity}
+              onChange={(e) => {
+                setQuantity(Number(e.target.value));
+              }}
+            />
           </div>
 
           <div className="flex items-center space-x-2 ">
-            {/* //todo shadcn style checkbox */}
             <input
               type="checkbox"
               checked={paymentAdded}
@@ -230,9 +249,7 @@ navigate("/portfolio");
 
           <p className="text-red-500 font-medium pb-2">{error}</p>
 
-          {/* <div className="flex -center space-x-2 "> */}
           <Button>Buy</Button>
-          {/* </div> */}
         </div>
       </form>
     </ModalWrapper>

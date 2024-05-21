@@ -1,13 +1,11 @@
 @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
-  
+@tailwind components;
+@tailwind utilities;
 
-  body{
-    color:#404040;
-  }
+body {
+  color: #404040;
+}
 
-
-  .recharts-pie-label-line{
-    display: none;
-  }
+.recharts-pie-label-line {
+  display: none;
+}

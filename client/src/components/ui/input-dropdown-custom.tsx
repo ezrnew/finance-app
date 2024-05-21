@@ -1,9 +1,8 @@
- 
-import * as React from "react"
-import { Check, ChevronsUpDown } from "lucide-react"
- 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import * as React from "react";
+import { Check, ChevronsUpDown } from "lucide-react";
+
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -11,34 +10,37 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
- 
+} from "@/components/ui/popover";
 
-interface Props{
-    data:{name:string,type:string,quantity?:number}[]
-    value:{name:string,type:string,quantity?:number}
-    setValue: React.Dispatch<React.SetStateAction<{
+interface Props {
+  data: { name: string; type: string; quantity?: number }[];
+  value: { name: string; type: string; quantity?: number };
+  setValue: React.Dispatch<
+    React.SetStateAction<{
       name: string;
-      type: string,
-      quantity?:number
-  } | null>>
-    placeholder?:string
-    label?:string
+      type: string;
+      quantity?: number;
+    } | null>
+  >;
+  placeholder?: string;
+  label?: string;
 }
- //todo optional search if items.length>n
-export function InputDropdownCustom({data,value,setValue,label,placeholder}:Props) {
-  const [open, setOpen] = React.useState(false)
+export function InputDropdownCustom({
+  data,
+  value,
+  setValue,
+  label,
+  placeholder,
+}: Props) {
+  const [open, setOpen] = React.useState(false);
 
-
-  console.log("VAL",value)
- 
   return (
-<Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -48,31 +50,26 @@ export function InputDropdownCustom({data,value,setValue,label,placeholder}:Prop
           aria-label="Select Asset"
           className="w-[200px] justify-between dark:text-white"
         >
-{value
-  ? value.name
-  :  ""}
+          {value ? value.name : ""}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder={placeholder ||""} />
+          <CommandInput placeholder={placeholder || ""} />
           <CommandList>
             <CommandEmpty>No item found.</CommandEmpty>
             <CommandGroup>
               {data.map((item) => (
                 <CommandItem
-                className="cursor-pointer"
+                  className="cursor-pointer"
                   key={item.name}
                   value={item.name}
                   onSelect={(currentValue) => {
-                    console.log("curr", currentValue);
-                    console.log("item.value", item.name);
                     setValue(currentValue === item.name ? item : null);
 
                     setOpen(false);
                   }}
                 >
-         
                   {item.name}
                 </CommandItem>
               ))}
@@ -81,5 +78,5 @@ export function InputDropdownCustom({data,value,setValue,label,placeholder}:Prop
         </Command>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

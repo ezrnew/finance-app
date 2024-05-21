@@ -1,9 +1,6 @@
- 
-import * as React from "react"
-import { Check, ChevronsUpDown } from "lucide-react"
- 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import * as React from "react";
+
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -11,27 +8,31 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
- 
+} from "@/components/ui/popover";
 
-interface Props{
-    data:string[]
-    value:string
-    setValue: React.Dispatch<React.SetStateAction<string>>
-    placeholder?:string
-    label?:string
+interface Props {
+  data: string[];
+  value: string;
+  setValue: React.Dispatch<React.SetStateAction<string>>;
+  placeholder?: string;
+  label?: string;
 }
- //todo optional search if items.length>n
-export function InputDropdown({data,value,setValue,label,placeholder}:Props) {
-  const [open, setOpen] = React.useState(false)
- 
+export function InputDropdown({
+  data,
+  value,
+  setValue,
+  label,
+  placeholder,
+}: Props) {
+  const [open, setOpen] = React.useState(false);
+
   return (
-<Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -41,21 +42,18 @@ export function InputDropdown({data,value,setValue,label,placeholder}:Props) {
           aria-label="Select Asset"
           className="w-[200px] justify-between dark:text-white"
         >
-          {value
-            ? data.find((item) => item === value)
-            : label ||""}
-          {/* <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50 hidden lg:block" /> */}
+          {value ? data.find((item) => item === value) : label || ""}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder={placeholder ||""} />
+          <CommandInput placeholder={placeholder || ""} />
           <CommandList>
             <CommandEmpty>No item found.</CommandEmpty>
             <CommandGroup>
               {data.map((item) => (
                 <CommandItem
-                className="cursor-pointer"
+                  className="cursor-pointer"
                   key={item}
                   value={item}
                   onSelect={(currentValue) => {
@@ -63,7 +61,6 @@ export function InputDropdown({data,value,setValue,label,placeholder}:Props) {
                     setOpen(false);
                   }}
                 >
-         
                   {item}
                 </CommandItem>
               ))}
@@ -72,5 +69,5 @@ export function InputDropdown({data,value,setValue,label,placeholder}:Props) {
         </Command>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

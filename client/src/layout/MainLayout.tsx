@@ -1,11 +1,11 @@
-import { Sidebar } from '@/features/sidebar/Sidebar'
-import React from 'react'
+import { Sidebar } from "@/features/sidebar/Sidebar";
+import React from "react";
 
-export const MainLayout = ({children}:{children:React.ReactNode}) => {
+export const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className='h-screen w-screen flex'>
-        <Sidebar/>
-    {children}
+    <div className="h-screen min-h-screen w-screen flex">
+      <Sidebar />
+      {children}
     </div>
-  )
-}
+  );
+};

@@ -44,7 +44,7 @@ export interface PortfolioTableItem {
   name: string;
   type: string;
   value: number;
-  price:number;
+  price: number;
   quantity: number;
   buyDate: Date;
   account: string;
@@ -52,14 +52,14 @@ export interface PortfolioTableItem {
 
 export function OperationsTable({
   data,
-  currency
+  currency,
 }: {
   data: OperationHistoryType[];
-  currency:CurrencyType
+  currency: CurrencyType;
 }) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+    [],
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -84,14 +84,14 @@ export function OperationsTable({
     },
   });
 
-
-
   return (
     <div className="   w-full mx-auto p-6 ">
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter accounts..."
-          value={(table.getColumn("accountName")?.getFilterValue() as string) ?? ""}
+          value={
+            (table.getColumn("accountName")?.getFilterValue() as string) ?? ""
+          }
           onChange={(event) =>
             table.getColumn("accountName")?.setFilterValue(event.target.value)
           }
@@ -136,7 +136,7 @@ export function OperationsTable({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -148,7 +148,7 @@ export function OperationsTable({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                className={row.index%2===1?'bg-slate-50':''}
+                  className={row.index % 2 === 1 ? "bg-slate-50" : ""}
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
@@ -156,7 +156,7 @@ export function OperationsTable({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

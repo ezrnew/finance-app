@@ -22,12 +22,14 @@ import { AccountsTableItem } from "./AccountsTable";
 import { store } from "@/store/store";
 import { portfolioActions } from "@/store/portfolioSlice";
 
-interface Props{
-  addPaymentHandler:(accountName:string)=>void
-  deleteAccountHandler:()=>void
+interface Props {
+  addPaymentHandler: (accountName: string) => void;
+  deleteAccountHandler: () => void;
 }
-export const accountColumns=({addPaymentHandler,deleteAccountHandler}:Props):ColumnDef<AccountsTableItem>[]=>
-{
+export const accountColumns = ({
+  addPaymentHandler,
+  deleteAccountHandler,
+}: Props): ColumnDef<AccountsTableItem>[] => {
   return [
     {
       accessorKey: "title",
@@ -35,26 +37,28 @@ export const accountColumns=({addPaymentHandler,deleteAccountHandler}:Props):Col
       header: "Title",
       cell: ({ row }) => <div className="">{row.getValue("title")}</div>,
     },
-{
-          accessorKey: "cash",
+    {
+      accessorKey: "cash",
       header: "Free cash",
-      cell: ({ row }) => <div className="">{formatCurrency('PL-pl',row.getValue("cash"),'PLN')}</div>,
+      cell: ({ row }) => (
+        <div className="">
+          {formatCurrency("PL-pl", row.getValue("cash"), "PLN")}
+        </div>
+      ),
     },
-//TODO tooltip with asssets preview
     {
       accessorKey: "assets",
-  header: "Assets",
-  cell: ({ row }) => <div className="">{row.getValue("assets").length}</div>,
-},
- 
-
+      header: "Assets",
+      cell: ({ row }) => (
+        <div className="">{row.getValue("assets").length}</div>
+      ),
+    },
 
     {
       id: "actions",
       enableHiding: false,
       cell: ({ row }) => {
         const item = row.original;
-console.log("item",item)
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -66,23 +70,40 @@ console.log("item",item)
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-<DropdownMenuItem>
+              <DropdownMenuItem>
+                <div className="cursor-pointer w-full">Assets</div>
+              </DropdownMenuItem>
 
-              <div className="cursor-pointer w-full">Assets</div>
-</DropdownMenuItem>
-
-
-              <DropdownMenuItem
-              >
+              <DropdownMenuItem>
                 <div className="cursor-pointer w-full">Operations</div>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem><div onClick={()=>{store.dispatch(portfolioActions.setCurrentAccount(item));addPaymentHandler(item.title)}} className="cursor-pointer w-full">Add payment</div></DropdownMenuItem>
-              <DropdownMenuItem><div onClick={()=>{store.dispatch(portfolioActions.setCurrentAccount(item));deleteAccountHandler()}} className="cursor-pointer w-full">Delete account</div></DropdownMenuItem>
+              <DropdownMenuItem>
+                <div
+                  onClick={() => {
+                    store.dispatch(portfolioActions.setCurrentAccount(item));
+                    addPaymentHandler(item.title);
+                  }}
+                  className="cursor-pointer w-full"
+                >
+                  Add payment
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <div
+                  onClick={() => {
+                    store.dispatch(portfolioActions.setCurrentAccount(item));
+                    deleteAccountHandler();
+                  }}
+                  className="cursor-pointer w-full"
+                >
+                  Delete account
+                </div>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         );
       },
     },
   ];
-}
+};

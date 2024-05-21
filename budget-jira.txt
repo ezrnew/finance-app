@@ -1,0 +1,101 @@
+
+
+--------------------------------- SERVER ---------------------------------
+(?) merge all pl bonds to one schema 
+!!!FIX JWT SECRET sign/authGuard
+historical asset's data
+historical portfolio comparision to CPI
+---
+
+
+assets.service -> findAll -> return first x elements matching query instead of  all db
+portfolios.service -> cleanup buy/sell functions
+portfolios.service -> validate if porft/account/category name is taken server side
+portfolios.service -> extract validating if user owns portfolio to separate function
+portfolios.service -> handleAssetUpdate -> create handlemany func to avoid multiple db requests
+portfolioSchema -> add paymentAdded info to operationHistory object
+auth.controller -> token secure:false only in dev mode
+auth.service -> add JWT to blacklist after user manual logout
+auth.service -> include hashed password in JWT to invalidate token after user change password
+auth.service -> register -> DTO validation is not working (should it be working OOTB in nest.js?)
+bonds.PLtr.scrapper -> cleanup
+bonds.PLtr.scrapper -> click link outside viewport instead of accepting cookies for faster scrapping
+polishTreasury.factory -> add capitalization Period for each bond
+polishTreasury.service -> implement IKE
+polishTreasury.service -> implement referece bonds
+polishTreasury.service -> calculateCpiIndexed -> add validation before getRate function
+polishTreasury.service -> calculateCpiIndexed -> cleanup COI part (which is only one with yearly capitalization)
+currencies.controller -> tyle validation
+tickers.service -> addNew -> validate if ticker is correct
+currency.adapter -> typescript errors
+tickers.scrapper -> get stockMarket data
+tickers.scrapper -> dont update ticker if stockMarket is currently closed (tokyo/lon/US)
+tickers.scrapper -> merge functions getTickerData & updateTickerData
+--------------------------------- CLIENT ---------------------------------
+Add Translations for all app
+finish Dark mode #2
+(?) cache bonds till changed/sold & calculate value client side 
+----
+PortfolioPage -> updatePortfolioList after creating new one
+PortfolioPage -> fetch only titles& ids for availablePortfolios
+PortfolioPage -> page is crashing if backend is not running
+PortfolioPage -> handle portf sidebar auto open/close #1
+BuyAssetModal -> add shadcn style to checkbox addPayment
+BuyAssetModal -> fetch availableCurrencies from backend & store in redux instead of hardcoded ones
+BuyAssetModal -> popup info explaining "currency rate"
+PortfolioManageView -> handle response/errors for creating new account & new category
+PortfolioPieChart -> handle ts errors
+AccountColumns -> tooltip with assets preview
+AccountColumns -> handle ts errors
+CategoryColumns -> tooltip with assets preview
+input-dropdown-custom -> merge component with input-dropdown
+input-dropdown-custom -> conditional search if items.length>x
+SellAssetModal -> CurrencyRate doesnt work
+LoginPage -> Password reset
+LoginPage -> auth via google
+LoginPage/RegisterPage -> redirect when authenticated
+PortfolioTable -> fix Sell Asset
+Sidebar -> add user logout option
+
+
+
+
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////
+
+#1
+  // useEffect(() => {
+    
+  //   const togglePortfolioSidebar = () =>{
+  //     if(window.innerWidth<1024){
+  //       setShowPortfolioSidebar(false)
+  //     }else {
+  //       setShowPortfolioSidebar(true)
+  //     }
+  //   }
+  
+
+  //   window.addEventListener('resize', togglePortfolioSidebar);
+
+  //   return () => {
+  //     window.removeEventListener('resize', togglePortfolioSidebar);
+  //   };
+  // }, [])
+  
+#2
+        {/* <div className="flex mx-auto">
+          <Button
+            variant={"ghost"}
+            onClick={() => {
+              ls.setDarkMode(ls.getDarkMode() === "1" ? "0" : "1");
+            }}
+          >
+            {ls.getDarkMode() === "1" ? <Moon /> : <Sun />}
+          </Button>
+        </div> */}  

@@ -13,27 +13,20 @@ import { useTypedSelector } from "@/hooks/use-redux";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-interface Props {
-}
+interface Props {}
 
-export function UserSettings({  }: Props) {
-  const { username } = useTypedSelector((state) => state.auth);
-
+export function UserSettings({}: Props) {
   // user
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button
-          className="w-full"
-          onClick={() => {
-          }}
-        >
+        <button className="w-full" onClick={() => {}}>
           <FontAwesomeIcon className=" h-7 " icon={faUser} />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 text-center absolute bottom-4 left-8">
-        <DropdownMenuLabel className="">{username}</DropdownMenuLabel>
+        <DropdownMenuLabel className="">uusernazwa</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>

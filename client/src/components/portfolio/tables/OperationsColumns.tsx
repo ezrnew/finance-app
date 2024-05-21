@@ -1,14 +1,16 @@
 import { ColumnDef } from "@tanstack/react-table";
 
 import { OperationHistoryType } from "@/store/portfolioSlice";
-import { CurrencyType, currencyToIntlZone, formatDateShort } from "@/utils/formatters";
+import {
+  CurrencyType,
+  currencyToIntlZone,
+  formatDateShort,
+} from "@/utils/formatters";
 
-
-
-  export const getOperationColumns=(currency:CurrencyType):ColumnDef<OperationHistoryType>[]=>{
-
-    
-   return [
+export const getOperationColumns = (
+  currency: CurrencyType,
+): ColumnDef<OperationHistoryType>[] => {
+  return [
     {
       accessorKey: "accountName",
       enableHiding: false,
@@ -31,12 +33,14 @@ import { CurrencyType, currencyToIntlZone, formatDateShort } from "@/utils/forma
       accessorKey: "date",
       enableHiding: false,
       header: "Date",
-      cell: ({ row }) =>         <div className="">
-      {formatDateShort(
-        currencyToIntlZone[currency],
-        new Date (row.getValue("date"))
-      )}
-      </div>
+      cell: ({ row }) => (
+        <div className="">
+          {formatDateShort(
+            currencyToIntlZone[currency],
+            new Date(row.getValue("date")),
+          )}
+        </div>
+      ),
     },
   ];
-}
+};

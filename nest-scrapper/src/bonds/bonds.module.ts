@@ -48,8 +48,8 @@ import { PLtrScrapper } from './bonds.PLtr.scrapper';
     OtsConcrete,
     TosConcrete,
     BondsService,
-    PLtrScrapper
+    PLtrScrapper,
   ],
-  exports: [BondsService,PLtrScrapper,PolishTreasuryService],
+  exports: [BondsService, PLtrScrapper, PolishTreasuryService],
 })
 export class BondsModule {}

@@ -22,7 +22,7 @@ import {
 import { cn } from "@/lib/utils";
 
 export const getPortfolioColumns = (
-  currency: CurrencyType
+  currency: CurrencyType,
 ): ColumnDef<PortfolioTableItem>[] => {
   return [
     {
@@ -69,7 +69,6 @@ export const getPortfolioColumns = (
       cell: ({ row }) => {
         //? cannot start with number
         const id = "a" + row.original.id;
-        console.log("ODDDDDD", id);
         return (
           <div
             id={id}
@@ -77,13 +76,13 @@ export const getPortfolioColumns = (
               row.original.originalCurrrencyPrice >
                 row.original.originalCurrrencyBuyPrice && "text-green-500 ",
               row.original.originalCurrrencyPrice <
-                row.original.originalCurrrencyBuyPrice && "text-red-500"
+                row.original.originalCurrrencyBuyPrice && "text-red-500",
             )}
           >
             {formatCurrency(
               currencyToIntlZone[row.original.currency],
               row.getValue("originalCurrrencyPrice"),
-              row.original.currency
+              row.original.currency,
             )}
             <Tooltip anchorSelect={"#" + id} place={"bottom"}>
               <p
@@ -91,7 +90,7 @@ export const getPortfolioColumns = (
                   row.original.originalCurrrencyPrice >
                     row.original.originalCurrrencyBuyPrice && "text-green-500 ",
                   row.original.originalCurrrencyPrice <
-                    row.original.originalCurrrencyBuyPrice && "text-red-500"
+                    row.original.originalCurrrencyBuyPrice && "text-red-500",
                 )}
               >
                 {" "}
@@ -115,7 +114,7 @@ export const getPortfolioColumns = (
           {formatCurrency(
             currencyToIntlZone[row.original.currency],
             row.getValue("originalCurrrencyBuyPrice"),
-            row.original.currency
+            row.original.currency,
           )}
         </div>
       ),
@@ -127,7 +126,7 @@ export const getPortfolioColumns = (
         <div className="">
           {formatDateShort(
             currencyToIntlZone[currency],
-            new Date(row.getValue("date"))
+            new Date(row.getValue("date")),
           )}
         </div>
       ),

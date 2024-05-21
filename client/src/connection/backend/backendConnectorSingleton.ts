@@ -15,7 +15,6 @@ export class BackendConnectorSingleton {
     if (res?.ok) {
       const data = await res.json();
       console.log(data);
-      //todo set jwt
       return true;
     }
 
@@ -34,7 +33,6 @@ export class BackendConnectorSingleton {
 
     const error = await res?.json();
 
-    //todo types
     return { success: false, error: error.message as string };
   }
 
@@ -64,9 +62,9 @@ export class BackendConnectorSingleton {
     return false;
   }
 
-  async createNewPortfolio(name: string) {
+  async createNewPortfolio(name: string, currency: string) {
     const res = await this.httpRequest("/portfolios/create", "POST", {
-      body: { name },
+      body: { name, currency },
     });
 
     if (res?.ok) {
@@ -107,11 +105,21 @@ export class BackendConnectorSingleton {
     currencyRate: number,
     price: number,
     quantity: number,
-    paymentAdded: boolean
+    paymentAdded: boolean,
   ) {
-
     const res = await this.httpRequest("/portfolios/buyAsset", "POST", {
-      body: { portfolioId, category,account,asset,date,currency,currencyRate,price,quantity,paymentAdded },
+      body: {
+        portfolioId,
+        category,
+        account,
+        asset,
+        date,
+        currency,
+        currencyRate,
+        price,
+        quantity,
+        paymentAdded,
+      },
     });
 
     if (res?.ok) {
@@ -119,18 +127,16 @@ export class BackendConnectorSingleton {
     }
     return false;
   }
-
 
   async sellAsset(
     portfolioId: string,
-    assetId:string,
+    assetId: string,
     category: string,
     account: string,
-    quantityToSell:number
-
+    quantityToSell: number,
   ) {
     const res = await this.httpRequest("/portfolios/sellAsset", "POST", {
-      body: { portfolioId, category,account,assetId,quantityToSell },
+      body: { portfolioId, category, account, assetId, quantityToSell },
     });
 
     if (res?.ok) {
@@ -139,12 +145,9 @@ export class BackendConnectorSingleton {
     return false;
   }
 
-
-  async reevaluateAssets(
-    portfolioId: string,
-  ) {
+  async reevaluateAssets(portfolioId: string) {
     const res = await this.httpRequest("/portfolios/reevaluate", "POST", {
-      body: { portfolioId},
+      body: { portfolioId },
     });
 
     if (res?.ok) {
@@ -153,14 +156,9 @@ export class BackendConnectorSingleton {
     return false;
   }
 
-
-  async addOperation(
-    portfolioId: string,
-    accountId: string,
-    amount: number,
-  ) {
+  async addOperation(portfolioId: string, accountId: string, amount: number) {
     const res = await this.httpRequest("/portfolios/operation", "POST", {
-      body: { portfolioId,accountId,amount},
+      body: { portfolioId, accountId, amount },
     });
 
     if (res?.ok) {
@@ -170,44 +168,35 @@ export class BackendConnectorSingleton {
   }
 
   async findTicker(ticker: string) {
-    const res = await this.httpRequest(`/tickers/add/${ticker}` )
+    const res = await this.httpRequest(`/tickers/add/${ticker}`);
 
     if (res?.ok) {
-       return res.json();
+      return res.json();
     }
     return false;
   }
 
-
-
-  async deleteAccount(portfolioId: string,accountId:string) {
+  async deleteAccount(portfolioId: string, accountId: string) {
     const res = await this.httpRequest("/portfolios/account", "DELETE", {
-      body: { portfolioId,accountId},
+      body: { portfolioId, accountId },
     });
 
     if (res?.ok) {
-       return true;
+      return true;
     }
     return false;
   }
 
-  async deleteCategory(portfolioId: string,categoryName:string) {
+  async deleteCategory(portfolioId: string, categoryName: string) {
     const res = await this.httpRequest("/portfolios/category", "DELETE", {
-      body: { portfolioId,categoryName},
+      body: { portfolioId, categoryName },
     });
 
     if (res?.ok) {
-       return true;
+      return true;
     }
     return false;
   }
-
-
-
 }
-
-
-
-
 
 export const server = new BackendConnectorSingleton("http://localhost:2137");

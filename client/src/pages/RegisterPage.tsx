@@ -25,8 +25,7 @@ export const RegisterPage = () => {
 
     if (result.success) {
       navigate("/login");
-      //todo customize style
-      toast.success("Your account has been created successfully.")
+      toast.success("Your account has been created successfully.");
     }
 
     if (result.error === "email") setEmailError("Email already in use");
@@ -83,9 +82,8 @@ export const RegisterPage = () => {
               className="mb-1"
               type="password"
               placeholder="Password"
+              minLength={8}
             />
-
-            {/*//todo */}
           </div>
           <div className="flex justify-center"></div>
           <div className="w-full space-y-3">

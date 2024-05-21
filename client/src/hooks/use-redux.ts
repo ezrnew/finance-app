@@ -3,7 +3,7 @@ import { AppDispatch, RootState } from "../store/store";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 import { portfolioActions } from "@/store/portfolioSlice";
-import { authActions } from "@/store/authSlice";
+import { miscActions } from "@/store/miscSlice";
 
 export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 
@@ -11,7 +11,7 @@ const useAppDispatch: () => AppDispatch = useDispatch;
 
 const rootActions = {
   ...portfolioActions,
-  ...authActions,
+  ...miscActions,
 };
 
 export const useActions = () => {

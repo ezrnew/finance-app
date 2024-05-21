@@ -3,7 +3,12 @@ import { Input } from "@/components/ui/input";
 import { server } from "@/connection/backend/backendConnectorSingleton";
 import { EXAMPLE_PORTFOLIO } from "@/data/example_data";
 import { cn } from "@/lib/utils";
-import { CurrencyType, currencyToIntlZone, formatCurrency, formatDateFull } from "@/utils/formatters";
+import {
+  CurrencyType,
+  currencyToIntlZone,
+  formatCurrency,
+  formatDateFull,
+} from "@/utils/formatters";
 import { Toast, toast } from "@/utils/toasts";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,26 +26,20 @@ export const ToolsPage = () => {
 
   const submitFindTicker = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setTickerData(null)
+    setTickerData(null);
     // setLoading(true)
 
     // const result = await
     const promise = new Promise(async (res, rej) => {
       const result = await server.findTicker(tickerSearch);
-      console.log("PROMIS REZ", result);
-      if(!result) rej('invalid request');
-      setTickerData(result.data)
+      if (!result) rej("invalid request");
+      setTickerData(result.data);
       if (result.new === true) res("isNew");
       else rej("isNotNew");
     });
 
     const result2 = await toast.scrappingNewTicker(promise);
-
-    console.log("result", result2);
-    // setLoading(false)
   };
-
-  console.log(tickerData?.date)
 
   return (
     <div className="flex-grow bg-neutral-50 flex flex-col  ">
@@ -51,32 +50,51 @@ export const ToolsPage = () => {
         <p className="mx-auto text-lg font-semibold pb-4">Add a listed asset</p>
         <div className="flex space-x-2">
           <div className="relative">
-
-          <Input
-          className="pl-10"
-          placeholder="Search for ticker..."
-            value={tickerSearch}
-            onChange={(e) => {
-              setTickerSearch(e.target.value);
-            }}
+            <Input
+              className="pl-10"
+              placeholder="Search for ticker..."
+              value={tickerSearch}
+              onChange={(e) => {
+                setTickerSearch(e.target.value);
+              }}
             />
-      <FontAwesomeIcon icon={faMagnifyingGlass} className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-700 peer-focus:text-gray-900" />
-
-            </div>
+            <FontAwesomeIcon
+              icon={faMagnifyingGlass}
+              className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-700 peer-focus:text-gray-900"
+            />
+          </div>
           <Button>Submit</Button>
         </div>
         <div></div>
-        <div className={cn("flex flex-col h-52 p-6 border rounded-lg my-10",!tickerData && ' invisible')}>
-          {tickerData 
-          ?<>
-          <p className="text-center text-2xl font-semibold">{tickerData?.name.toUpperCase()}</p>
-          <p className="text-xl pb-4 mx-auto">{formatDateFull(currencyToIntlZone[tickerData?.currency],new Date(tickerData?.date))}</p>
-          <p className="text-xl">Price:{formatCurrency(currencyToIntlZone[tickerData.currency],tickerData.price,tickerData?.currency)}</p>
-          <p className="text-xl">Currency:{tickerData?.currency}</p>
-          <p className="text-xl">Stock Market:</p>
-          </>:null
-          }
-
+        <div
+          className={cn(
+            "flex flex-col h-52 p-6 border rounded-lg my-10",
+            !tickerData && " invisible",
+          )}
+        >
+          {tickerData ? (
+            <>
+              <p className="text-center text-2xl font-semibold">
+                {tickerData?.name.toUpperCase()}
+              </p>
+              <p className="text-xl pb-4 mx-auto">
+                {formatDateFull(
+                  currencyToIntlZone[tickerData?.currency],
+                  new Date(tickerData?.date),
+                )}
+              </p>
+              <p className="text-xl">
+                Price:
+                {formatCurrency(
+                  currencyToIntlZone[tickerData.currency],
+                  tickerData.price,
+                  tickerData?.currency,
+                )}
+              </p>
+              <p className="text-xl">Currency:{tickerData?.currency}</p>
+              <p className="text-xl">Stock Market:</p>
+            </>
+          ) : null}
         </div>
       </form>
     </div>

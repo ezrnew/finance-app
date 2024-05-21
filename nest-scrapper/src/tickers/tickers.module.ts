@@ -6,9 +6,9 @@ import { TickersService } from './tickers.service';
 import { CurrenciesModule } from '../currencies/currencies.module';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Ticker.name, schema: TickerSchema }]),CurrenciesModule],
+  imports: [MongooseModule.forFeature([{ name: Ticker.name, schema: TickerSchema }]), CurrenciesModule],
   controllers: [TickersController],
   providers: [TickersService],
-  exports:[TickersService]
+  exports: [TickersService],
 })
 export class TickersModule {}

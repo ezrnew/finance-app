@@ -12,7 +12,7 @@ export class SchedulerService {
   private readonly logger = new Logger(SchedulerService.name);
 
   //every 15th day of month 11:10
-  @Cron('11 10 15 * *', { timeZone: 'Europe/Berlin' })
+  @Cron('16 23 15 * *', { timeZone: 'Europe/Berlin' })
   handleCPIUpdate_Polish(): void {
     this.logger.log('updating cpi polish', new Date());
     this.cpiService.updateCPI_Polish();

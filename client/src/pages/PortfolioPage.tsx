@@ -4,73 +4,75 @@ import { PortfolioSidebar } from "@/components/portfolio/PortfolioSidebar";
 import { PortfolioTable } from "@/components/portfolio/tables/PortfolioTable";
 import { Button } from "@/components/ui/button";
 import { server } from "@/connection/backend/backendConnectorSingleton";
-import { EXAMPLE_PORTFOLIO } from "@/data/example_data";
 import { useActions, useTypedSelector } from "@/hooks/use-redux";
-import { cn } from "@/lib/utils";
 import {
   CurrencyType,
   currencyToIntlZone,
   formatCurrency,
 } from "@/utils/formatters";
 import { toast } from "@/utils/toasts";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 export const PortfolioPage = () => {
-  // const data = EXAMPLE_PORTFOLIO;
   const { currentPortfolio } = useTypedSelector((state) => state.portfolio);
-  const assets = getFlattenAssets(currentPortfolio?.accounts || []);
-  const {availablePortfolios,currentPortfolioId,updatePortfolioData} = useTypedSelector(state =>state.portfolio)
-  const {setAvailablePortfolios,setCurrentPortfolioId,setCurrentPortfolio} = useActions()
+  const { currentPortfolioId, updatePortfolioData } = useTypedSelector(
+    (state) => state.portfolio,
+  );
+  const { showPortfolioSidebar } = useTypedSelector((state) => state.misc);
+  const { setAvailablePortfolios, setCurrentPortfolio } = useActions();
   const [isManageView, setIsManageView] = useState(false);
-  const [isUpdatingData,setIsUpdatingData] = useState(false)
+  const assets = useMemo(
+    () => getFlattenAssets(currentPortfolio?.accounts || []),
+    [currentPortfolio],
+  );
 
   let location = useLocation();
 
-
-    
   useEffect(() => {
+    const fetchAllPortfolios = async () => {
+      const portfolios = await server.getAllPortfolios();
 
-    const getPortfolioData = async()=>{
-      const portfolio = await server.getPortfolioById(currentPortfolioId)
+      setAvailablePortfolios(portfolios);
+    };
 
-      setCurrentPortfolio(portfolio) 
+    fetchAllPortfolios();
+  }, []);
 
+  useEffect(() => {
+    const getPortfolioData = async () => {
+      const portfolio = await server.getPortfolioById(currentPortfolioId);
 
-      const portfolioWithReevaluatedValues = await server.reevaluateAssets(currentPortfolioId)
+      setCurrentPortfolio(portfolio);
 
-      setCurrentPortfolio(portfolioWithReevaluatedValues)
-    } 
+      const portfolioWithReevaluatedValues =
+        await server.reevaluateAssets(currentPortfolioId);
 
-    getPortfolioData()
-  }, [currentPortfolioId])
+      setCurrentPortfolio(portfolioWithReevaluatedValues);
+    };
 
+    getPortfolioData();
+  }, [currentPortfolioId]);
 
-  useEffect(()=>{
-    const reevaluateAssets = async()=>{
-      console.log("REEVALUATE")
-      setIsUpdatingData(true)
-      const portfolioWithReevaluatedValues = await toast.updatingPortfolioData(server.reevaluateAssets(currentPortfolioId))
-      
-      setCurrentPortfolio(portfolioWithReevaluatedValues)
-      setIsUpdatingData(false)
-    } 
-    reevaluateAssets()
-  },[updatePortfolioData])
-
-
-
-  //todo create routes
+  useEffect(() => {
+    const reevaluateAssets = async () => {
+      const portfolioWithReevaluatedValues = await toast.updatingPortfolioData(
+        server.reevaluateAssets(currentPortfolioId),
+      );
+      setCurrentPortfolio(portfolioWithReevaluatedValues);
+    };
+    reevaluateAssets();
+  }, [updatePortfolioData]);
 
   return (
     <div className="flex-grow bg-white flex flex-col  ">
       <div className="flex w-full h-full">
-        <PortfolioSidebar />
+        {showPortfolioSidebar ? <PortfolioSidebar /> : null}
 
         <div className="h-full w-full shadow-lg overflow-auto">
-          <div className="p-4 text-2xl font-semibold flex flex-col flex-grow   max-w-screen-xl mx-auto ">
+          <div className=" text-2xl font-semibold flex flex-col flex-grow   max-w-screen-xl mx-auto ">
             <div className="flex justify-between p-6 ">
-              <span className="flex space-x-2">{currentPortfolio?.title} {isUpdatingData&& <div>xd</div> }  </span>
+              <span className="flex space-x-2">{currentPortfolio?.title} </span>
               <div className="flex space-x-2 md:space-x-4">
                 <Button asChild>
                   <Link to="buy" state={{ background: location }}>
@@ -98,40 +100,45 @@ export const PortfolioPage = () => {
                 </Button>
               </div>
             </div>
-            {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-
-          </div> */}
             <div className="w-11/12 mx-auto h-[1px] bg-gray-200" />
 
-            <div className="w-full mx-auto p-6 ">
-              {/* <p>Total value: { ,)}</p> */}
+            <div className="w-full mx-auto lg:p-6 px-2 ">
+              {isManageView ? (
+                <PortfolioManageView portfolio={currentPortfolio} />
+              ) : (
+                <div className="  w-full mx-auto pt-6 xl:p-6 ">
+                  <PortfolioPieChart
+                    totalValueLabel={formatCurrency(
+                      currencyToIntlZone[
+                        currentPortfolio?.currency as CurrencyType
+                      ],
+                      currentPortfolio?.totalValue || 0,
+                      currentPortfolio?.currency || "PLN",
+                    )}
+                    data={
+                      currentPortfolio
+                        ? [
+                            {
+                              category: "cash",
+                              value: currentPortfolio.freeCash,
+                            },
+                            ...currentPortfolio?.categories,
+                          ]
+                        : []
+                    }
+                    currency={
+                      currentPortfolio?.currency || ("PLN" as CurrencyType)
+                    }
+                    freeCash={currentPortfolio?.freeCash || 0}
+                    assets={assets}
+                  />
 
-              {isManageView?
-             <PortfolioManageView portfolio={currentPortfolio}/> : 
-             
-            
-
-              <div className="  w-full mx-auto px-6 ">
-                <PortfolioPieChart
-                  totalValueLabel={formatCurrency(
-                    currencyToIntlZone[
-                      currentPortfolio?.currency as CurrencyType
-                    ],
-                    currentPortfolio?.totalValue || 0,
-                    currentPortfolio?.currency || "PLN"
-                  )}
-                  data={currentPortfolio?.categories || []}
-                  currency={
-                    currentPortfolio?.currency || ("PLN" as CurrencyType)
-                  }
-                  assets={assets}
-                />
-
-                <PortfolioTable
-                  data={assets}
-                  currency={currentPortfolio?.currency || ""} //todo
-                />
-              </div> }
+                  <PortfolioTable
+                    data={assets}
+                    currency={currentPortfolio?.currency || ""}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -140,7 +147,9 @@ export const PortfolioPage = () => {
   );
 };
 
-export function getFlattenAssets(accounts: { title: string; cash: number; assets: any[] }[]) {
+export function getFlattenAssets(
+  accounts: { title: string; cash: number; assets: any[] }[],
+) {
   const result: any = [];
 
   accounts.forEach((account) => {

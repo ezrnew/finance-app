@@ -8,10 +8,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 @Module({
   controllers: [AssetsController],
   providers: [AssetsService],
-  imports:[
-    
+  imports: [
     MongooseModule.forFeature([{ name: Edo.name, schema: EdoSchema }]),
     MongooseModule.forFeature([{ name: Ticker.name, schema: TickerSchema }]),
-  ]
+  ],
 })
 export class AssetsModule {}

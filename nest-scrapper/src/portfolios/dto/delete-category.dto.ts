@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongoose';
 
-export class AddCategoryDto {
+export class DeleteCategoryDto {
   portfolioId: string;
-  name: string;
+  categoryName: string;
 }

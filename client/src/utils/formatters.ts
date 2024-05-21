@@ -23,15 +23,12 @@ export function formatDateShort(zone: string, date: Date) {
 }
 
 export function formatDateFull(zone: string, date: Date) {
-
-    console.log("dataxd",date)
-    
-    return new Intl.DateTimeFormat(zone, {
-      second:'2-digit',  
-      minute:'2-digit',  
-      hour:'2-digit',  
-      day: "numeric",
-      month: "numeric",
-      year: "numeric",
-    }).format(date);
-  }
+  return new Intl.DateTimeFormat(zone, {
+    second: "2-digit",
+    minute: "2-digit",
+    hour: "2-digit",
+    day: "numeric",
+    month: "numeric",
+    year: "numeric",
+  }).format(date);
+}

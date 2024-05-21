@@ -3,7 +3,7 @@ import { HydratedDocument } from 'mongoose';
 
 export type TickerDocument = HydratedDocument<Ticker>;
 
-@Schema({timestamps:true})
+@Schema({ timestamps: true })
 export class Ticker {
   @Prop()
   name: string;
@@ -20,7 +20,7 @@ export class Ticker {
 
   @Prop()
   createdAt: string;
-  
+
   @Prop()
   updatedAt: string;
 }

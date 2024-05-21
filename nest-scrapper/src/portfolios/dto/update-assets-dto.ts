@@ -1,7 +1,5 @@
-import { ObjectId } from "mongoose";
+import { ObjectId } from 'mongoose';
 
 export class UpdateAssetsDto {
-
-    portfolioId:string;
-
-  }
+  portfolioId: string;
+}

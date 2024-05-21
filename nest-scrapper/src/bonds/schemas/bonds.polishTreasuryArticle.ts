@@ -3,14 +3,13 @@ import { HydratedDocument } from 'mongoose';
 
 export type PltrArticleDocument = HydratedDocument<PLtrArticle>;
 
-@Schema({collection:"general_PLtr_article"})
+@Schema({ collection: 'general_PLtr_article' })
 export class PLtrArticle {
-
   @Prop()
   text: string;
 
-//   @Prop()
-//   date: Date;
+  //   @Prop()
+  //   date: Date;
 }
 
 export const PLtrArticleSchema = SchemaFactory.createForClass(PLtrArticle);

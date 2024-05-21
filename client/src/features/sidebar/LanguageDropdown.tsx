@@ -1,5 +1,3 @@
-import { LogOut, User } from "lucide-react";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,22 +7,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useTypedSelector } from "@/hooks/use-redux";
-import { faLanguage, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faLanguage } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTranslation } from "react-i18next";
 
-interface Props {
-}
+interface Props {}
 // todo flag icons
-export function LanguageDropdown({  }: Props) {
-  const { username } = useTypedSelector((state) => state.auth);
-
-  const {t,i18n}= useTranslation()
+export function LanguageDropdown({}: Props) {
+  const { t, i18n } = useTranslation();
 
   const handleLanguageChange = (language: string) => {
-    // setSelectedLng(language);
-    console.log("jenzyk",language)
     i18n.changeLanguage(language);
   };
 
@@ -33,25 +25,28 @@ export function LanguageDropdown({  }: Props) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button
-          className="w-full"
-          onClick={() => {
-            // setShowUserSettings((item: any) => !item);
-          }}
-        >
+        <button className="w-full" onClick={() => {}}>
           <FontAwesomeIcon className=" h-7 " icon={faLanguage} />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 text-center absolute bottom-4 left-8">
-      <DropdownMenuLabel className="">{t('language')}</DropdownMenuLabel>
+        <DropdownMenuLabel className="">{t("language")}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={()=>{handleLanguageChange('pl')}}>
+          <DropdownMenuItem
+            onClick={() => {
+              handleLanguageChange("pl");
+            }}
+          >
             {/* <circle className="mr-2 h-4 w-4" /> */}
-            <span  className="ml-6">Polish</span>
+            <span className="ml-6">Polish</span>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={()=>{handleLanguageChange('en')}}>
-            <span  className="ml-6">English</span>
+          <DropdownMenuItem
+            onClick={() => {
+              handleLanguageChange("en");
+            }}
+          >
+            <span className="ml-6">English</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>

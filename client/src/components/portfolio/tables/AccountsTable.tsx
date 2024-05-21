@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -12,11 +12,11 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
+} from "@tanstack/react-table";
+import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -25,8 +25,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -34,30 +34,33 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { accountColumns } from "./AccountColumns"
+} from "@/components/ui/table";
+import { accountColumns } from "./AccountColumns";
 
 export type AccountsTableItem = {
-  title: string
-  cash: number
-  assets: any[]
-}
+  title: string;
+  cash: number;
+  assets: any[];
+};
 
-
-export function AccountsTable({data,accountColumns}:{  data: AccountsTableItem[],
-  accountColumns:ColumnDef<AccountsTableItem>[]
+export function AccountsTable({
+  data,
+  accountColumns,
+}: {
+  data: AccountsTableItem[];
+  accountColumns: ColumnDef<AccountsTableItem>[];
 }) {
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
+    [],
+  );
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
+    React.useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
     data,
-    columns:accountColumns,
+    columns: accountColumns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -72,7 +75,7 @@ export function AccountsTable({data,accountColumns}:{  data: AccountsTableItem[]
       columnVisibility,
       rowSelection,
     },
-  })
+  });
 
   return (
     <div className="w-full">
@@ -124,10 +127,10 @@ export function AccountsTable({data,accountColumns}:{  data: AccountsTableItem[]
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -136,15 +139,15 @@ export function AccountsTable({data,accountColumns}:{  data: AccountsTableItem[]
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                className={row.index%2===1?'bg-slate-50':''}
+                  className={row.index % 2 === 1 ? "bg-slate-50" : ""}
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}   >
+                    <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
@@ -188,5 +191,5 @@ export function AccountsTable({data,accountColumns}:{  data: AccountsTableItem[]
         </div>
       </div> */}
     </div>
-  )
+  );
 }

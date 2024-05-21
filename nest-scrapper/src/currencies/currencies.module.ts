@@ -8,8 +8,6 @@ import { CurrenciesController } from './currencies.controller';
   imports: [MongooseModule.forFeature([{ name: CurrencyRate.name, schema: CurrencyRateSchema }])],
   controllers: [CurrenciesController],
   providers: [CurrenciesService],
-  exports:[CurrenciesService],
-
-
+  exports: [CurrenciesService],
 })
 export class CurrenciesModule {}

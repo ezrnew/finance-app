@@ -13,14 +13,13 @@ export const calculateCummulatedRate = (amount, yearsLeft, cpiArr) => {
 };
 
 export const calculateConstantRate = (amount, cpiArr) => {
-    
-    let newAmount=amount
-    cpiArr.forEach(element => {
-        newAmount+=element
-    });
+  let newAmount = amount;
+  cpiArr.forEach((element) => {
+    newAmount += element;
+  });
 
-    return newAmount
-  };
+  return newAmount;
+};
 
 export const calculateYearRateByDaysPassed = (value: number, rate: number, lastYearStartDate: Date) => {
   const currentDate = new Date();
@@ -29,16 +28,10 @@ export const calculateYearRateByDaysPassed = (value: number, rate: number, lastY
 
   const differenceDays = Math.floor(differenceMs / (1000 * 60 * 60 * 24));
 
-  console.log('Różnica w dniach:', differenceDays);
-  console.log('value', value);
-  console.log('rate', rate);
-
   const percentageOfRate = isLeapYear(currentDate.getFullYear())
     ? differenceDays / 366
     : differenceDays / 365;
-  // console.log('percentage of rate', percentageOfRate);
   const percentageOfPercentagexd = percentageOfRate * rate;
-  // console.log('percentage of drugie', percentageOfPercentagexd);
   return addPercentageRate(value, percentageOfPercentagexd);
 };
 

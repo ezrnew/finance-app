@@ -16,7 +16,6 @@ export const LoginPage = () => {
     e.preventDefault();
     setLoginError("");
 
-    console.log("creds", username, password);
     const result = await server.login(username, password);
 
     if (!result) {
@@ -57,7 +56,6 @@ export const LoginPage = () => {
               placeholder="Password"
             />
 
-            {/*//todo */}
             <p className="text-xs mx-auto text-gray-400">Forgot password?</p>
           </div>
           <div className="flex justify-center">
@@ -71,21 +69,7 @@ export const LoginPage = () => {
               </Button>
             </div>
             <div className="w-full">
-              <Button
-                type="button"
-                onClick={async () => {
-                  const res = await fetch(
-                    "http://localhost:2137/auth/profile",
-                    {
-                      credentials: "include",
-                      headers: { "Content-Type": "application/json" },
-                    }
-                  );
-                  console.log("RES", await res.json());
-                }}
-                variant="outline"
-                className="w-full"
-              >
+              <Button type="button" variant="outline" className="w-full">
                 {" "}
                 <img
                   alt="google logo"

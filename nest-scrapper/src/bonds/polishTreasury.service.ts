@@ -27,23 +27,20 @@ export class PolishTreasuryService {
   ) {}
 
   private readonly logger = new Logger(PolishTreasuryService.name);
-  
 
   async handleBond(bondString: string, day?: number, hasIke?: boolean) {
     const dayOfMonth = day || 1;
-    const ike = hasIke || false; //todo
+    const ike = hasIke || false;
 
     const result = this.validateBond(bondString);
     if (!result) return false;
 
     const { type, month, year } = result;
-    console.log('RESULT', type, month, year);
 
     const bondFactory = this.bondFactoryCreator.getBondFactory(type);
 
     if (!isValidDayOfMonth(year - Math.floor(bondFactory.getLengthInMonths() / 12), month, dayOfMonth))
       return false;
-    // this.logger.warn("invalid day of month:"+dayOfMonth+"_"+month+"_"+(2000+year-(Math.floor(bondFactory.getLengthInMonths()/12)))
 
     const globalType = bondFactory.getGlobalType();
 
@@ -124,34 +121,26 @@ export class PolishTreasuryService {
     const startDate = new Date(endYear + 2000 - lengthInYears, month - 1, dayOfMonth);
     const endDate = new Date(endYear + 2000, month - 1, dayOfMonth);
 
-    //todo add validation before getRate function
     if (currentDate < startDate) {
-      console.log('futura ');
       return false;
     }
 
     const cpiMonth = getMonthShortNameByNumber(getMonthNumberBefore(month, 2) as monthNumber);
-    // const isJanOrFeb = cpiMonth === 'jan' || cpiMonth === 'feb' ? 2 : 1;
 
     let query: any = {};
     let endYearFull = endYear + 2000;
     if (endDate > currentDate) {
       let unfinishedYear = endYearFull - 1 - lengthInYears;
 
-      //czy
       if (isDateBeforeOtherDateIgnoringYear(currentDate, startDate)) {
-        // console.log('date older', currentDate.toLocaleDateString(), startDate.toLocaleDateString());
         unfinishedYear = unfinishedYear + 1;
       }
-
-      // console.log('nieskonczona, rok', unfinishedYear);
 
       query.year = { $gt: unfinishedYear };
     } else {
       query.year = { $gte: endYearFull + 1 - lengthInYears, $lt: endYearFull };
     }
 
-    /* EDO VALUES */
     const bondData = await dbModel.findOne({ id: bondString.toUpperCase() });
 
     if (!bondData) {
@@ -159,11 +148,8 @@ export class PolishTreasuryService {
       return false;
     }
     const { firstYear, margin } = bondData;
-    // console.log('BOND VALS', firstYear, margin);
-    /* EDO VALUES */
 
     const cpiArrayQuery = await this.cpiModel.find(query);
-    // console.log('CPIPLS', cpiArrayQuery);
     const cpiArrayUnfiltered = [];
     cpiArrayQuery.forEach((item) => {
       cpiArrayUnfiltered.push(item[cpiMonth]);
@@ -171,10 +157,7 @@ export class PolishTreasuryService {
 
     const cpiArray = cpiArrayUnfiltered.filter((n) => n);
 
-    // console.log('CPI ARRAY', cpiArray);
-
     if (cpiArray.length === 0) {
-      //NO DATA FOR CPI,RETURN CURRENT NON-FULL YEAR
       return calculateYearRateByDaysPassed(
         100,
         firstYear,
@@ -189,43 +172,28 @@ export class PolishTreasuryService {
         ? cpiPlusMargin.slice(1)
         : cpiPlusMargin;
 
-    // console.log('curr month i monthliczony', currentMonth, month - 2);
-
     let lastRate;
-    //zarówno w przypadku jak znana jak i nieznana popuje bo muszę wyliczyć niecały rok za ostatnią
     if (endDate > currentDate) {
-      // console.log('jezeli rok wiekszy');
       lastRate = cpiPlusMargin.pop();
     }
-
-    // console.log('CPI PLUS MARG after eventual pop()', cpiPlusMargin);
-
-    //CALCULATE
 
     let years = lengthInYears;
 
     let returnRate = 100;
 
     if (isDifferenceLessThanAYear(startDate, currentDate)) {
-      // console.log('obl krótsza niżrok');
       return calculateYearRateByDaysPassed(
         returnRate,
         firstYear,
         new Date(endYear + 2000 - years, month - 1, dayOfMonth),
       );
     }
-// 
-    // console.log('lastRate', lastRate);
 
     returnRate = addPercentageRate(returnRate, firstYear);
     years = years - 1;
-    // console.log('after first year:', returnRate);
-
-    // console.log('cummulated rate:', returnRate, cpiPlusMargin.length, cpiPlusMargin);
 
     //?
     if (cpiPlusMargin.length > 0) {
-      //todo
       if (type === 'COI') {
         returnRate = calculateConstantRate(returnRate, cpiPlusMargin);
       } else {
@@ -243,20 +211,14 @@ export class PolishTreasuryService {
       );
     }
 
-    // console.log('pozostalo lat:', years);
-
-    console.log('return rate:', returnRate);
-
-    return (returnRate/100);
+    return returnRate / 100;
   }
 
   private validateBond(bondString: string) {
     if (bondString.length != 7) {
-      console.log('invalid length');
       return false;
     }
 
-    //todo extract to factory
     const availableTypes = ['ROR', 'DOR', 'OTS', 'TOS', 'COI', 'EDO', 'ROS', 'ROD'];
 
     const type = bondString.slice(0, 3).toUpperCase();
@@ -268,7 +230,7 @@ export class PolishTreasuryService {
       isNaN(month) ||
       !(month >= 1 && month <= 12) ||
       isNaN(year) ||
-      year < 20 //todo currently no support for older ones
+      year < 20
     ) {
       console.log('invalid type', month, year);
       return false;
@@ -277,28 +239,15 @@ export class PolishTreasuryService {
     return { type, month, year };
   }
 
-
-  async calculateMany(bondAssets:any[],currency:string){
-    if(bondAssets.length===0) return[]
-    const bondNames:string[]=bondAssets.map(item =>item.name)
-
+  async calculateMany(bondAssets: any[], currency: string) {
+    if (bondAssets.length === 0) return [];
+    const bondNames: string[] = bondAssets.map((item) => item.name);
 
     const promises = bondAssets.map(async (item) => {
+      const returnRate = await this.handleBond(item.name);
+      if (returnRate) item.price = 100 + 100 * returnRate;
+    });
 
-      console.log("WYNIKaaaaa",await this.handleBond(item.name))
-      const returnRate = await this.handleBond(item.name)
-      if(returnRate) item.price =100+100*returnRate
-
-
-      // item.price = 100* (await this.handleBond(item.name))
-    
-    })
-
-    await Promise.all(promises)
-
+    await Promise.all(promises);
   }
-
-
 }
-
-

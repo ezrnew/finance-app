@@ -17,7 +17,6 @@ export const PortfolioOperationsHistoryModal = () => {
 
   const { currentPortfolio } = useTypedSelector((state) => state.portfolio);
 
-
   return (
     <ModalWrapper
       onClick={() => {
@@ -30,14 +29,12 @@ export const PortfolioOperationsHistoryModal = () => {
         }}
         className=" bg-white p-4 rounded-md m-auto text-gray-700 font-semibold flex flex-col relative"
       >
-
-<div className="w-full min-w-96">
-
-
-<OperationsTable currency={currentPortfolio?.currency || "PLN"} data={currentPortfolio?.operationHistory ||[]}/>
-</div>
-
-
+        <div className="w-full min-w-96">
+          <OperationsTable
+            currency={currentPortfolio?.currency || "PLN"}
+            data={currentPortfolio?.operationHistory || []}
+          />
+        </div>
       </div>
     </ModalWrapper>
   );

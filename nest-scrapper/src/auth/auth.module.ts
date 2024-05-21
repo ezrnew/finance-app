@@ -6,8 +6,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { JWT_EXP_TIME_IN_MILIS } from '../constants/jwtExpirationTime';
 
-// console.log("GIGATAJNYSEKRETWCHUJ",process.env.JWT_SECRET)
-
 @Module({
   imports: [
     ConfigModule,

@@ -1,23 +1,22 @@
-import * as React from "react"
-import { format } from "date-fns"
-import { Calendar as CalendarIcon } from "lucide-react"
- 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
+import * as React from "react";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
+
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
- 
-interface Props{
-    date:Date | undefined
-    setDate: React.Dispatch<React.SetStateAction<Date | undefined>>
+} from "@/components/ui/popover";
+
+interface Props {
+  date: Date | undefined;
+  setDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
 }
 
-export function Datepicker({date,setDate}:Props) {
- 
+export function Datepicker({ date, setDate }: Props) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -25,7 +24,7 @@ export function Datepicker({date,setDate}:Props) {
           variant={"outline"}
           className={cn(
             "w-[280px] justify-start text-left font-normal",
-            !date && "text-muted-foreground"
+            !date && "text-muted-foreground",
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
@@ -41,5 +40,5 @@ export function Datepicker({date,setDate}:Props) {
         />
       </PopoverContent>
     </Popover>
-  )
+  );
 }

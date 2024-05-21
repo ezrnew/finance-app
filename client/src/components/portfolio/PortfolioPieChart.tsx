@@ -3,7 +3,6 @@ import {
   currencyToIntlZone,
   formatCurrency,
 } from "@/utils/formatters";
-import React from "react";
 import {
   Cell,
   Label,
@@ -21,37 +20,30 @@ interface Props {
   totalValueLabel: string;
   data: { category: string; value: number }[];
   currency: CurrencyType;
-  assets:any[]
+  assets: any[];
+  freeCash: number;
 }
 
 export const PortfolioPieChart = ({
   totalValueLabel,
   data,
   currency,
-  assets
+  assets,
+  freeCash,
 }: Props) => {
-
-  console.log("ASETY",assets)
-
   return (
-    // <div className="mx-auto">
     <ResponsiveContainer height={400}>
       <PieChart>
         <Pie
           style={{ outline: "none" }}
-          // data={(()=>{const newData =data.filter(item => item.category!=="cash");newData.push(data[0]);return newData})()}
           data={data}
           dataKey="value"
           nameKey="category"
-          // cx="50%"
-          // cy="50%"
           innerRadius={90}
           cornerRadius={4}
           paddingAngle={1}
           startAngle={-268}
           endAngle={90}
-          // outerRadius={90}
-          // fill="#8884d8"
           label={(data) => renderCustomizedLabel(data)}
         >
           <Label
@@ -60,54 +52,44 @@ export const PortfolioPieChart = ({
             position="center"
             fill="#374151"
           />
-{     ( ()=>{
 
-// console.log("ciasto data",data.filter(item=>item.category!=='cash'));
-return <div/>
-})()}
-          {
-      
-          data.map(
+          {data.map(
             (item: { category: string; value: number }, index: number) => {
-              // console.log("items",item,colors[index % colors.length])
-
-
-              return <Cell key={index} fill={item.category==="cash"?'#FFBB28': colors[index % colors.length]} />;
-              
-              
+              return (
+                <Cell
+                  key={index}
+                  fill={
+                    item.category === "cash"
+                      ? "#FFBB28"
+                      : colors[index % colors.length]
+                  }
+                />
+              );
             }
           )}
         </Pie>
-        {/* //todo */}
-        <Tooltip content={<CustomTooltip currency={currency} assets={assets}  />}
-          // formatter={(value) =>
-          //   formatCurrency(
-          //     currencyToIntlZone[currency],
-          //     Number(value),
-          //     currency
-          //   )
-          // }
+
+        <Tooltip
+          content={<CustomTooltip currency={currency} assets={assets} />}
         />
         <Legend
           content={(item) => {
-            return renderLegend(item.payload);
+            return renderLegend(item.payload, freeCash);
           }}
         />
       </PieChart>
     </ResponsiveContainer>
-    // </div>
   );
 };
 
-function renderLegend(legendItems: Payload[] | undefined) {
+function renderLegend(legendItems: Payload[] | undefined, cash: number) {
   if (legendItems === undefined) return <div />;
-
-  // console.log("LEGEND ITEMS", legendItems);
 
   return (
     <div className="flex space-x-2 text-base justify-center text-gray-700 items-center h-full">
       {legendItems
         .filter((item) => item.value !== "cash")
+
         .map((item) => (
           <div key={item.value} className="border p-1 pr-3  flex rounded-md ">
             <div
@@ -118,28 +100,38 @@ function renderLegend(legendItems: Payload[] | undefined) {
             <span>{item.payload?.category}</span>
           </div>
         ))}
-      <div className="w-[1px] h-6 bg-gray-300"></div>
 
-      <div className="border p-1 pr-3  flex rounded-md ">
-        <div
-          style={{ background: "#FFBB28" }}
-          className="size-4 mx-2 rounded my-auto"
-        />
-        <span>cash</span>
-      </div>
+      {cash > 0 ? (
+        <>
+          <div className="w-[1px] h-6 bg-gray-300"></div>
+
+          <div className="border p-1 pr-3  flex rounded-md ">
+            <div
+              style={{ background: "#FFBB28" }}
+              className="size-4 mx-2 rounded my-auto"
+            />
+            <span>cash</span>
+          </div>
+        </>
+      ) : null}
     </div>
   );
 }
 
 const renderCustomizedLabel = ({
-  // @ts-ignore
   cx,
   cy,
   midAngle,
   innerRadius,
   outerRadius,
   percent,
-  index,
+}: {
+  cx: number;
+  cy: number;
+  midAngle: number;
+  innerRadius: number;
+  outerRadius: number;
+  percent: number;
 }) => {
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
   const x = cx + radius * Math.cos((-midAngle * Math.PI) / 180);
@@ -161,51 +153,46 @@ const renderCustomizedLabel = ({
   );
 };
 
+type TooltipProps = {
+  currency: CurrencyType;
+  assets: any[];
+  active: boolean;
+  payload: any[];
+};
 
-type TooltipProps={
-  currency:CurrencyType,
-  assets:any[],
-  active:boolean,
-  payload:any[]
-}
+const CustomTooltip = ({ currency, assets, active, payload }: TooltipProps) => {
+  if (!active || !payload || !payload.length) return null;
 
-const CustomTooltip = ({ currency,assets,active, payload }:TooltipProps) =>{
-  console.log("asety",assets)
-  if (!active || !payload || !payload.length) return null
+  return (
+    <div className="bg-white border border-gray-400 p-4 rounded-md flex flex-col text-xl">
+      <p>
+        {payload[0].name}:{" "}
+        {formatCurrency(
+          currencyToIntlZone[currency],
+          payload[0].value,
+          currency
+        )}
+      </p>
 
-
-  return <div className="bg-white border border-gray-400 p-4 rounded-md flex flex-col text-xl">
-    <p>{payload[0].name}: {
-    
-    
-    
-    formatCurrency(
-      currencyToIntlZone[currency],
-      payload[0].value,
-      currency
-    )
-    
-    }</p>
-
-
-    {assets?<>
-                    <div className="h-[1px] mx-auto w-4/5 my-1 bg-gray-300" />
-                    <ul>
-
-{assets.filter(item =>item.category===payload[0].name).map(item =><li key={item.id}>{item.name}: {
-
-formatCurrency(
-  currencyToIntlZone[currency],
-  item.price*item.quantity,
-  currency
-)
-
-}</li>)}
-
-</ul>
-    </>
- : null}
-
-  </div>
-}
-
+      {assets ? (
+        <>
+          <div className="h-[1px] mx-auto w-4/5 my-1 bg-gray-300" />
+          <ul>
+            {assets
+              .filter((item) => item.category === payload[0].name)
+              .map((item) => (
+                <li key={item.id}>
+                  {item.name}:{" "}
+                  {formatCurrency(
+                    currencyToIntlZone[currency],
+                    item.price * item.quantity,
+                    currency
+                  )}
+                </li>
+              ))}
+          </ul>
+        </>
+      ) : null}
+    </div>
+  );
+};
