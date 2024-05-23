@@ -70,6 +70,19 @@ export class TickersScrapper {
     const priceSpan = await getById(priceTd, 'aq_' + ticker);
     const price = await getText(priceSpan);
 
+
+    const stockMarket = await getById(page,'ta_s')
+      
+    const stockMarketText = await stockMarket.$eval('a',(aElement)=>{
+      console.log("AELEMENT",aElement)
+      return aElement.textContent
+
+    })
+
+    console.log("tekst",stockMarketText)
+
+
+
     let currency = '$';
     try {
       const a = await priceTd.waitForSelector('a', { timeout: 2000 });
@@ -95,6 +108,7 @@ export class TickersScrapper {
       price: currencyData.formatter(Number(price)),
       currency: currencyData.currency,
       date: parseStringDate(dateSpans),
+      stockMarket:stockMarketText
     };
 
     this._logger.debug('returning data: ', returnedData);

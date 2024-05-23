@@ -53,6 +53,7 @@ export class PortfoliosService {
 
   private async handleAssetUpdate(asset: any, portfolioCurrency: CurrencyType) {
     const currencyRate = await this.currenciesService.getCurrencyRate(asset.currency, portfolioCurrency);
+    console.log("currency rate:",currencyRate,asset.currency,portfolioCurrency)
 
     if (asset.type === 'bond_pltr') {
       const bondValue = await this.bonds_pltrService.handleBond(asset.name);

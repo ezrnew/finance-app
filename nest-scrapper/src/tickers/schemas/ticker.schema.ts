@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { CurrencyType } from 'src/currencies/schema/currencyRate.schema';
 
 export type TickerDocument = HydratedDocument<Ticker>;
 
@@ -9,11 +10,13 @@ export class Ticker {
   name: string;
 
   @Prop()
-  currency: string;
-  // todo Currencies model
+  currency: CurrencyType;
 
   @Prop()
   price: number;
+
+  @Prop()
+  stockMarket?: string;
 
   @Prop()
   date: Date;

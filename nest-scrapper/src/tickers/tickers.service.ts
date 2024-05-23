@@ -36,13 +36,16 @@ export class TickersService {
       ticker.date = scrappedTicker.date;
 
       await ticker.save();
+
+      console.log("TICKER",ticker)
       return { new: false, data: ticker };
     }
 
     try {
       const createdTicker = new this.tickerModel(scrappedTicker);
+      await createdTicker.save()
 
-      return { new: true, data: createdTicker.save() };
+      return { new: true, data: createdTicker };
     } catch (error) {
       this._logger.error('error saving new ticker:', error);
     }

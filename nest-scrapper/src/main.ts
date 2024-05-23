@@ -3,13 +3,12 @@ import { AppModule } from './app.module';
 import helmet from 'helmet';
 import * as cookieParser from 'cookie-parser';
 
-import * as dotenv from 'dotenv';
-import { resolve } from 'path';
+import * as config from '../config.json'
 
 declare const module: any;
 
 async function bootstrap() {
-  dotenv.config();
+  console.log("KONFIG",config)
 
   const app = await NestFactory.create(AppModule);
   app.use(helmet());

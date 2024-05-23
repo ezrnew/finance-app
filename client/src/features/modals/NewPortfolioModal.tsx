@@ -58,9 +58,10 @@ export const NewPortfolioModal = () => {
 
           <div className="w-11/12 my-1 mx-auto h-[1px] bg-gray-300"> </div>
           <div className="flex items-center space-x-2 ">
-            <span>Name</span>
+            <span className="w-28">Name</span>
 
             <Input
+            className="w-fit"
               value={name}
               onChange={(e) => {
                 setName(e.target.value);
@@ -69,7 +70,7 @@ export const NewPortfolioModal = () => {
           </div>
 
           <div className="flex items-center space-x-2 ">
-            <span>Currency</span>
+            <span className="w-28">Currency</span>
 
             <InputDropdown
               data={["PLN", "USD", "EUR", "GBP"]}

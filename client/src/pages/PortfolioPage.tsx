@@ -14,6 +14,7 @@ import { toast } from "@/utils/toasts";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
+let initialRender = true
 export const PortfolioPage = () => {
   const { currentPortfolio } = useTypedSelector((state) => state.portfolio);
   const { currentPortfolioId, updatePortfolioData } = useTypedSelector(
@@ -35,11 +36,11 @@ export const PortfolioPage = () => {
 
       setAvailablePortfolios(portfolios);
     };
-
-    fetchAllPortfolios();
+fetchAllPortfolios();
   }, []);
 
   useEffect(() => {
+    if(initialRender) {initialRender=false;return}
     const getPortfolioData = async () => {
       const portfolio = await server.getPortfolioById(currentPortfolioId);
 

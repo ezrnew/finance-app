@@ -11,7 +11,7 @@ export class Toast {
   scrappingNewTicker(promise: Promise<any>) {
     return t.promise(promise, {
       loading: "Trying to find data...",
-      success: <b>Asset has been successfully added</b>,
+      success: <b>Asset has been added</b>,
       error: <b>Asset already exist</b>,
     });
   }

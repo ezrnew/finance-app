@@ -34,11 +34,11 @@ export const BuyAssetModal = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
 
   const [currency, setCurrency] = useState("");
-  const [currencyRate, setCurrencyRate] = useState<number>(0);
+  const [currencyRate, setCurrencyRate] = useState<number>(1);
   const [price, setPrice] = useState<number>(0);
   const [quantity, setQuantity] = useState<number>(0);
 
-  const { refetchPortfolioData: updatePortfolioData } = useActions();
+  const { refetchPortfolioData } = useActions();
 
   const [paymentAdded, setPaymentAdded] = useState(false);
 
@@ -86,7 +86,7 @@ export const BuyAssetModal = () => {
     );
     if (result) {
       toast.operationSuccessful();
-      updatePortfolioData();
+      refetchPortfolioData();
     } else {
       toast.buyOperationFailure();
     }
@@ -147,13 +147,13 @@ export const BuyAssetModal = () => {
           onClick={() => {
             navigate("/portfolio");
           }}
-          className="absolute right-4  cursor-pointer"
+          className="absolute right-4  cursor-pointer pt-[6px]"
         >
           <X />
         </div>
         <div className="flex flex-col p-2 space-y-2">
-          <div className="flex items-center space-x-2 ">
-            <span>Asset</span>
+          <div className="flex items-center justify-between space-x-2 ">
+            <span className="w-28">Asset</span>
 
             <InputDropdownCustom
               data={availableAssets || []}
@@ -163,8 +163,8 @@ export const BuyAssetModal = () => {
             />
           </div>
 
-          <div className="flex items-center space-x-2 ">
-            <span>Category</span>
+          <div className="flex items-center justify-between space-x-2 ">
+            <span className="w-28">Category</span>
 
             <InputDropdown
               data={categoryNames?.filter((item) => item !== "cash") || []}
@@ -174,8 +174,8 @@ export const BuyAssetModal = () => {
             />
           </div>
 
-          <div className="flex items-center space-x-2 ">
-            <span>Account</span>
+          <div className="flex items-center justify-between space-x-2 ">
+            <span className="w-28">Account</span>
 
             <InputDropdown
               data={accountNames || []}
@@ -184,27 +184,29 @@ export const BuyAssetModal = () => {
               placeholder="Search Accounts..."
             />
           </div>
-          <div className="h-[1px] mx-auto w-4/5 bg-gray-200" />
+          {/* <div className="h-[1px] !my-3 mx-auto w-4/5 bg-gray-200" /> */}
 
-          <div className="flex items-center space-x-2 ">
-            <span>Date</span>
+          <div className="flex items-center justify-between space-x-2 ">
+            <span className="w-28">Date</span>
 
             <Datepicker date={date} setDate={setDate} />
           </div>
 
-          <div className="flex items-center space-x-2 ">
-            <span>Currency </span>
+          <div className="flex items-center justify-between space-x-2 ">
+            <span className="w-28">Currency </span>
 
             <InputDropdown
+            
               data={["PLN", "USD", "EUR", "GBP"]}
               value={currency}
               setValue={setCurrency}
             />
           </div>
 
-          <div className="flex items-center space-x-2 ">
-            <span>Currency Rate</span>
+          <div className="flex items-center justify-between space-x-2 ">
+            <span className="w-28">Currency Rate</span>
             <Input
+            className="w-fit"
               value={currencyRate}
               onChange={(e) => {
                 setCurrencyRate(Number(e.target.value));
@@ -213,10 +215,11 @@ export const BuyAssetModal = () => {
             />
           </div>
 
-          <div className="flex items-center space-x-2 ">
-            <span>Unit Price</span>
+          <div className="flex items-center justify-between space-x-2 ">
+            <span className="w-28">Unit Price</span>
 
             <Input
+            className="w-fit"
               value={price}
               onChange={(e) => {
                 setPrice(Number(e.target.value));
@@ -224,10 +227,12 @@ export const BuyAssetModal = () => {
               type="number"
             />
           </div>
-          <div className="flex items-center space-x-2 ">
-            <span>Quantity</span>
+          <div className="flex flex-shrink-0 items-center justify-between space-x-2 ">
+            <span className="w-28">Quantity</span>
 
             <Input
+                        className="w-fit"
+
               value={quantity}
               onChange={(e) => {
                 setQuantity(Number(e.target.value));
@@ -235,7 +240,7 @@ export const BuyAssetModal = () => {
             />
           </div>
 
-          <div className="flex items-center space-x-2 ">
+          <div className="flex items-center  space-x-2 pt-2 ">
             <input
               type="checkbox"
               checked={paymentAdded}

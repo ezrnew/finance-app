@@ -22,6 +22,7 @@ export const ToolsPage = () => {
     price: number;
     currency: CurrencyType;
     date: string;
+    stockMarket?:string;
   } | null>(null);
 
   const submitFindTicker = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -33,6 +34,7 @@ export const ToolsPage = () => {
     const promise = new Promise(async (res, rej) => {
       const result = await server.findTicker(tickerSearch);
       if (!result) rej("invalid request");
+      console.log("otrzymuje se dane",result.data)
       setTickerData(result.data);
       if (result.new === true) res("isNew");
       else rej("isNotNew");
@@ -75,7 +77,7 @@ export const ToolsPage = () => {
           {tickerData ? (
             <>
               <p className="text-center text-2xl font-semibold">
-                {tickerData?.name.toUpperCase()}
+                {tickerData.name && tickerData.name.toUpperCase()}
               </p>
               <p className="text-xl pb-4 mx-auto">
                 {formatDateFull(
@@ -84,15 +86,15 @@ export const ToolsPage = () => {
                 )}
               </p>
               <p className="text-xl">
-                Price:
+                Price: ‎ 
                 {formatCurrency(
                   currencyToIntlZone[tickerData.currency],
                   tickerData.price,
                   tickerData?.currency,
                 )}
               </p>
-              <p className="text-xl">Currency:{tickerData?.currency}</p>
-              <p className="text-xl">Stock Market:</p>
+              <p className="text-xl">Currency: {tickerData?.currency}</p>
+              <p className="text-xl">Stock Market: {tickerData?.stockMarket}</p>
             </>
           ) : null}
         </div>

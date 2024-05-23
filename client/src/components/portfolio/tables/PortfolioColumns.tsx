@@ -32,10 +32,10 @@ export const getPortfolioColumns = (
       cell: ({ row }) => <div className="">{row.getValue("name")}</div>,
     },
     {
-      accessorKey: "type",
-      header: "Type",
+      accessorKey: "category",
+      header: "Category",
       cell: ({ row }) => (
-        <div className="capitalize">{row.getValue("type")}</div>
+        <div className="capitalize">{row.getValue("category")}</div>
       ),
     },
 

@@ -11,6 +11,6 @@ export class BondsController {
     @Query('day') dayOfMonth: number,
     @Query('ike') ike: boolean,
   ) {
-    const result = await this.polishTreasury.handleBond(bond, dayOfMonth, ike);
+    return this.polishTreasury.handleBond(bond, dayOfMonth, ike);
   }
 }

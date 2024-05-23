@@ -5,14 +5,18 @@ import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { JWT_EXP_TIME_IN_MILIS } from '../constants/jwtExpirationTime';
+import * as config from '../../config.json';
 
+console.log("SEKRETNY SEKRET",config.jwtSecret)
 @Module({
   imports: [
     ConfigModule,
     UsersModule,
-    //todo FIX JWT
-    JwtModule.register({ global: true, secret: '123', signOptions: { expiresIn: JWT_EXP_TIME_IN_MILIS } }), //?
-    // JwtModule.register({ global: true, secret: process.env.JWT_SECRET, signOptions: { expiresIn: '1h' } }), //?
+    JwtModule.register({
+      global: true,
+      secret: config.jwtSecret,
+      signOptions: { expiresIn: JWT_EXP_TIME_IN_MILIS },
+    }), //?
   ],
   controllers: [AuthController],
   providers: [AuthService],

@@ -63,7 +63,7 @@ export const SellAssetModal = () => {
             onClick={() => {
               navigate("/portfolio");
             }}
-            className="absolute right-4   cursor-pointer"
+            className="absolute right-4   cursor-pointer pt-[6px]"
           >
             <X />
           </div>

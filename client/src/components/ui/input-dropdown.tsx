@@ -40,12 +40,12 @@ export function InputDropdown({
           role="combobox"
           aria-expanded={open}
           aria-label="Select Asset"
-          className="w-[200px] justify-between dark:text-white"
+          className="w-[196px] h-10 !ml-0 justify-between dark:text-white"
         >
           {value ? data.find((item) => item === value) : label || ""}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-[196px] p-0">
         <Command>
           <CommandInput placeholder={placeholder || ""} />
           <CommandList>

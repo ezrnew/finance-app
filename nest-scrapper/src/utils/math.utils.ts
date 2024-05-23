@@ -3,6 +3,7 @@ export const addPercentageRate = (value: number, rate: number) => {
 };
 
 export const calculateCummulatedRate = (amount, yearsLeft, cpiArr) => {
+  console.log("KWOTA",amount,yearsLeft,cpiArr)
   if (yearsLeft === 1) return (amount += amount * (cpiArr[cpiArr.length - 1] / 100));
   else
     return calculateCummulatedRate(

@@ -2,7 +2,6 @@
 
 --------------------------------- SERVER ---------------------------------
 (?) merge all pl bonds to one schema 
-!!!FIX JWT SECRET sign/authGuard
 historical asset's data
 historical portfolio comparision to CPI
 ---

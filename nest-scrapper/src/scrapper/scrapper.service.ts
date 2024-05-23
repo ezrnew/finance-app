@@ -8,7 +8,6 @@ export class ScrapperService {
   private readonly _baseUrl = 'https://stooq.pl/q/?s=';
 
   async getByTicker(ticker: string) {
-    this._logger.debug('startedxd');
 
     const scrap = async (page: Page) => {
       const priceTd = await getByText(page, 'Kurs', 'td');
@@ -17,6 +16,16 @@ export class ScrapperService {
 
       const a = await priceTd.waitForSelector('a');
       const currency = await getText(a);
+
+      const stockMarket = await getById(page,'ta_s')
+      
+      const stockMarketText = stockMarket.$eval('a',(aElement)=>{
+        console.log("AELEMENT",aElement)
+        return aElement.textContent
+
+      })
+
+      console.log("tekst",stockMarketText)
 
       const dateTd = await getByText(page, 'Data', 'td');
 
@@ -29,7 +38,7 @@ export class ScrapperService {
 
       await browser.close();
 
-      const returnedData = { price, currency, date: dateSpans };
+      const returnedData = { price, currency, date: dateSpans,stockMarket:stockMarketText };
 
       this._logger.debug('returning data: ' + returnedData);
 
