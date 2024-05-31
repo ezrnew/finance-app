@@ -15,21 +15,26 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-interface Props {
-  data: string[];
-  value: string;
-  setValue: React.Dispatch<React.SetStateAction<string>>;
+interface InputDropdownProps<T> {
+  data: T[];
+  value: T | null;
+  setValue: React.Dispatch<React.SetStateAction<T | null>>;
   placeholder?: string;
   label?: string;
 }
-export function InputDropdown({
+export function InputDropdown<T extends string | { name: string }>({
   data,
   value,
   setValue,
   label,
   placeholder,
-}: Props) {
+}: InputDropdownProps<T>) {
   const [open, setOpen] = React.useState(false);
+
+  const getItemName = (item: T) => {
+    if (typeof item === "string") return item;
+    return item.name;
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -42,7 +47,7 @@ export function InputDropdown({
           aria-label="Select Asset"
           className="w-[196px] h-10 !ml-0 justify-between dark:text-white"
         >
-          {value ? data.find((item) => item === value) : label || ""}
+          {value ? getItemName(value) : label || ""}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[196px] p-0">
@@ -54,14 +59,17 @@ export function InputDropdown({
               {data.map((item) => (
                 <CommandItem
                   className="cursor-pointer"
-                  key={item}
-                  value={item}
+                  key={getItemName(item)}
+                  value={getItemName(item)}
                   onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue);
+                    const selectedItem = data.find(
+                      (i) => getItemName(i) === currentValue
+                    );
+                    setValue(selectedItem || null);
                     setOpen(false);
                   }}
                 >
-                  {item}
+                  {getItemName(item)}
                 </CommandItem>
               ))}
             </CommandGroup>

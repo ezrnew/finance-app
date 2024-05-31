@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
+import { FormField } from "@/components/ui/form-field";
 import { Input } from "@/components/ui/input";
-import { InputDropdownCustom } from "@/components/ui/input-dropdown-custom";
+import { InputDropdown } from "@/components/ui/input-dropdown";
 import { ModalWrapper } from "@/components/ui/modal-wrapper";
 import { server } from "@/connection/backend/backendConnectorSingleton";
 import { useActions, useTypedSelector } from "@/hooks/use-redux";
@@ -14,7 +15,7 @@ export const SellAssetModal = () => {
   const navigate = useNavigate();
 
   const { currentPortfolio, currentPortfolioId } = useTypedSelector(
-    (state) => state.portfolio,
+    (state) => state.portfolio
   );
   const { refetchPortfolioData: updatePortfolioData } = useActions();
 
@@ -33,7 +34,7 @@ export const SellAssetModal = () => {
       asset.id,
       asset.category,
       asset.account,
-      quantity,
+      quantity
     );
     if (result) {
       toast.operationSuccessful();
@@ -54,56 +55,50 @@ export const SellAssetModal = () => {
         onClick={(e) => {
           e.stopPropagation();
         }}
-        className=" bg-white p-4 rounded-md m-auto text-gray-700 font-semibold flex flex-col relative"
+        className=" bg-white max-w-96 p-4 rounded-xl m-auto text-gray-700 font-semibold flex flex-col relative"
       >
-        <form onSubmit={submitForm} className="flex flex-col space-y-2">
-          <p className="text-2xl text-center ">Sell asset</p>
+        <form onSubmit={submitForm} className="flex flex-col space-y-2 ">
+          <p className="text-2xl text-center pb-4">Sell asset</p>
 
           <div
             onClick={() => {
               navigate("/portfolio");
             }}
-            className="absolute right-4   cursor-pointer pt-[6px]"
+            className="absolute right-4   cursor-pointer  "
           >
             <X />
           </div>
 
-          <div className="flex items-center space-x-2 pt-4">
-            Asset
-            <InputDropdownCustom
-              data={assets}
-              value={asset}
-              setValue={setAsset}
-            />
-          </div>
+          <FormField label={"Asset"}>
+            <InputDropdown data={assets} value={asset} setValue={setAsset} />
+          </FormField>
 
-          <div className="flex items-center space-x-2">
-            <p>Quantity</p>
-
+          <FormField label={"Quantity"}>
             <Input
+              className="w-fit"
               value={quantity}
               disabled={!asset}
               onChange={(e) => {
                 setQuantity(
                   Number(e.target.value) > asset.quantity
                     ? asset.quantity
-                    : Number(e.target.value),
+                    : Number(e.target.value)
                 );
               }}
               type="number"
               max={(asset && asset.quantity) || 0}
             />
-          </div>
+          </FormField>
+
           {asset ? (
             <p className="mx-auto text-xs text-gray-700">
               available: {asset.quantity}
             </p>
           ) : null}
 
-          <div className=" flex">
-            <p>Currency rate</p>
-
+          <FormField label="Currency Rate">
             <Input
+              className="w-fit"
               value={currencyRate}
               disabled={!asset}
               onChange={(e) => {
@@ -111,9 +106,9 @@ export const SellAssetModal = () => {
               }}
               type="number"
             />
-          </div>
+          </FormField>
 
-          <Button>Sell</Button>
+          <Button className="!mt-4">Sell</Button>
         </form>
       </div>
     </ModalWrapper>

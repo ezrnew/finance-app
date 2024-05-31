@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Datepicker } from "@/components/ui/datepicker";
+import { FormField } from "@/components/ui/form-field";
 import { Input } from "@/components/ui/input";
 import { InputDropdown } from "@/components/ui/input-dropdown";
-import { InputDropdownCustom } from "@/components/ui/input-dropdown-custom";
 import { ModalWrapper } from "@/components/ui/modal-wrapper";
 import { server } from "@/connection/backend/backendConnectorSingleton";
 import { useActions, useTypedSelector } from "@/hooks/use-redux";
@@ -20,7 +20,7 @@ type assetType = {
 
 export const BuyAssetModal = () => {
   const { currentPortfolio, currentPortfolioId } = useTypedSelector(
-    (state) => state.portfolio,
+    (state) => state.portfolio
   );
 
   const navigate = useNavigate();
@@ -28,12 +28,12 @@ export const BuyAssetModal = () => {
   const [availableAssets, setAvailableAssets] = useState<assetType[]>([]);
 
   const [asset, setAsset] = useState<assetType | null>(null);
-  const [category, setCategory] = useState("");
-  const [account, setAccount] = useState("");
+  const [category, setCategory] = useState<string | null>(null);
+  const [account, setAccount] = useState<string | null>(null);
 
   const [date, setDate] = useState<Date | undefined>(new Date());
 
-  const [currency, setCurrency] = useState("");
+  const [currency, setCurrency] = useState<string | null>(null);
   const [currencyRate, setCurrencyRate] = useState<number>(1);
   const [price, setPrice] = useState<number>(0);
   const [quantity, setQuantity] = useState<number>(0);
@@ -60,7 +60,7 @@ export const BuyAssetModal = () => {
   }, [asset]);
 
   const categoryNames = currentPortfolio?.categories.map(
-    (item) => item.category,
+    (item) => item.category
   );
   const accountNames = currentPortfolio?.accounts.map((item) => item.title);
 
@@ -73,16 +73,16 @@ export const BuyAssetModal = () => {
 
     const result = await server.buyAsset(
       currentPortfolioId,
+      // @ts-ignore
       category,
       account,
-      // @ts-ignore
       asset,
       date,
       currency,
       currencyRate,
       price,
       quantity,
-      paymentAdded,
+      paymentAdded
     );
     if (result) {
       toast.operationSuccessful();
@@ -108,7 +108,7 @@ export const BuyAssetModal = () => {
     }
 
     const acc = currentPortfolio?.accounts.find(
-      (item) => item.title === account,
+      (item) => item.title === account
     );
     if (!acc) {
       setError("account doesnt exist!");
@@ -118,7 +118,7 @@ export const BuyAssetModal = () => {
     const canAfford = price * quantity <= acc.cash;
     if (!canAfford && !paymentAdded) {
       setError(
-        "You dont have enought cash on selected account. Did you mean to include 'Add Payment to account' option?",
+        "You dont have enought cash on selected account. Did you mean to include 'Add Payment to account' option?"
       );
       return false;
     }
@@ -147,98 +147,81 @@ export const BuyAssetModal = () => {
           onClick={() => {
             navigate("/portfolio");
           }}
-          className="absolute right-4  cursor-pointer pt-[6px]"
+          className="absolute right-4  cursor-pointer top-6"
         >
           <X />
         </div>
         <div className="flex flex-col p-2 space-y-2">
-          <div className="flex items-center justify-between space-x-2 ">
-            <span className="w-28">Asset</span>
-
-            <InputDropdownCustom
+          <FormField label="Asset">
+            <InputDropdown
               data={availableAssets || []}
               value={asset}
               setValue={setAsset}
               placeholder="Search Assets..."
             />
-          </div>
+          </FormField>
 
-          <div className="flex items-center justify-between space-x-2 ">
-            <span className="w-28">Category</span>
-
+          <FormField label="Category">
             <InputDropdown
               data={categoryNames?.filter((item) => item !== "cash") || []}
               value={category}
               setValue={setCategory}
               placeholder="Search Categories..."
             />
-          </div>
+          </FormField>
 
-          <div className="flex items-center justify-between space-x-2 ">
-            <span className="w-28">Account</span>
-
+          <FormField label="Account">
             <InputDropdown
               data={accountNames || []}
               value={account}
               setValue={setAccount}
               placeholder="Search Accounts..."
             />
-          </div>
-          {/* <div className="h-[1px] !my-3 mx-auto w-4/5 bg-gray-200" /> */}
+          </FormField>
 
-          <div className="flex items-center justify-between space-x-2 ">
-            <span className="w-28">Date</span>
-
+          <FormField label="Date">
             <Datepicker date={date} setDate={setDate} />
-          </div>
+          </FormField>
 
-          <div className="flex items-center justify-between space-x-2 ">
-            <span className="w-28">Currency </span>
-
+          <FormField label="Currency">
             <InputDropdown
-            
               data={["PLN", "USD", "EUR", "GBP"]}
               value={currency}
               setValue={setCurrency}
             />
-          </div>
+          </FormField>
 
-          <div className="flex items-center justify-between space-x-2 ">
-            <span className="w-28">Currency Rate</span>
+          <FormField label="Currency Rate">
             <Input
-            className="w-fit"
+              className="w-fit"
               value={currencyRate}
               onChange={(e) => {
-                setCurrencyRate(Number(e.target.value));
+                setCurrencyRate(Math.abs(Number(e.target.value)));
               }}
               type="number"
             />
-          </div>
+          </FormField>
 
-          <div className="flex items-center justify-between space-x-2 ">
-            <span className="w-28">Unit Price</span>
-
+          <FormField label="Unit Price">
             <Input
-            className="w-fit"
-              value={price}
+              className="w-fit"
+              value={price || ""}
               onChange={(e) => {
-                setPrice(Number(e.target.value));
+                setPrice(Math.abs(Number(e.target.value)));
               }}
               type="number"
             />
-          </div>
-          <div className="flex flex-shrink-0 items-center justify-between space-x-2 ">
-            <span className="w-28">Quantity</span>
+          </FormField>
 
+          <FormField label="Quantity">
             <Input
-                        className="w-fit"
-
-              value={quantity}
+              className="w-fit"
+              value={quantity || ""}
               onChange={(e) => {
-                setQuantity(Number(e.target.value));
+                setQuantity(Math.abs(Number(e.target.value)));
               }}
             />
-          </div>
+          </FormField>
 
           <div className="flex items-center  space-x-2 pt-2 ">
             <input
