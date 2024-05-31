@@ -32,7 +32,7 @@ Portfolio is the main concept of this application where all the users' assets ar
 If a specific asset is not in the database users can add it manually by its ticker (only for [listed assets](https://www.investopedia.com/terms/l/listed.asp)). Scrapper will try to find asset with given name and if it succeds, the data is returned and saved in the database allowing every user can "buy" it.
 
 
-![adding asset](https://raw.githubusercontent.com/ezrnew/finance-app/main/assets/add-new-assset-demo.gif "adding asset")
+![adding asset](https://raw.githubusercontent.com/ezrnew/finance-app/main/assets/add-new-asset-demo.gif "adding asset")
 
 # Technologies
 ### Frontend
