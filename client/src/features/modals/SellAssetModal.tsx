@@ -9,9 +9,12 @@ import { getFlattenAssets } from "@/pages/PortfolioPage";
 import { toast } from "@/utils/toasts";
 import { X } from "lucide-react";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export const SellAssetModal = () => {
+  const location = useLocation();
+
+  const id = new URLSearchParams(location.search).get("id");
   const navigate = useNavigate();
 
   const { currentPortfolio, currentPortfolioId } = useTypedSelector(
@@ -21,7 +24,9 @@ export const SellAssetModal = () => {
 
   const assets = getFlattenAssets(currentPortfolio?.accounts || []);
 
-  const [asset, setAsset] = useState<any>(null);
+  const [asset, setAsset] = useState<any>(
+    id ? assets.find((asset: any) => asset.id === id) : null
+  );
 
   const [quantity, setQuantity] = useState(0);
   const [currencyRate, setCurrencyRate] = useState(0);
@@ -74,7 +79,7 @@ export const SellAssetModal = () => {
           </FormField>
 
           <FormField label={"Quantity"}>
-            <Input 
+            <Input
               className="w-fit"
               value={quantity}
               disabled={!asset}

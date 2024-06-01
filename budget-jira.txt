@@ -47,16 +47,13 @@ PortfolioPieChart -> handle ts errors
 AccountColumns -> tooltip with assets preview
 AccountColumns -> handle ts errors
 CategoryColumns -> tooltip with assets preview
-input-dropdown-custom -> merge component with input-dropdown
-input-dropdown-custom -> conditional search if items.length>x
 SellAssetModal -> CurrencyRate doesnt work
 LoginPage -> Password reset
 LoginPage -> auth via google
 LoginPage/RegisterPage -> redirect when authenticated
 PortfolioTable -> fix Sell Asset
 Sidebar -> add user logout option
-
-
+SellAssetModal -> display quantity in input-dropdown next to name
 
 
 

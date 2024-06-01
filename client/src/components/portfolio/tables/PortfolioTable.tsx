@@ -54,10 +54,11 @@ export interface PortfolioTableItem {
 
 export function PortfolioTable({
   data,
-  currency,
+  portfolioColumns,
 }: {
   data: PortfolioTableItem[];
-  currency: string;
+  portfolioColumns: ColumnDef<PortfolioTableItem>[];
+
 }) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -69,7 +70,7 @@ export function PortfolioTable({
 
   const table = useReactTable({
     data,
-    columns: getPortfolioColumns(currency as CurrencyType),
+    columns: portfolioColumns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),

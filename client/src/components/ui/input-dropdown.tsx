@@ -22,18 +22,19 @@ interface InputDropdownProps<T> {
   placeholder?: string;
   label?: string;
 }
-export function InputDropdown<T extends string | { name: string }>({
-  data,
-  value,
-  setValue,
-  label,
-  placeholder,
-}: InputDropdownProps<T>) {
+export function InputDropdown<
+  T extends string | { name: string; id?: string }
+>({ data, value, setValue, label, placeholder }: InputDropdownProps<T>) {
   const [open, setOpen] = React.useState(false);
 
   const getItemName = (item: T) => {
     if (typeof item === "string") return item;
     return item.name;
+  };
+  const getItemId = (item: T) => {
+    if (typeof item === "string") return item;
+
+    return item.id ? item.id : item.name;
   };
 
   return (
@@ -52,18 +53,20 @@ export function InputDropdown<T extends string | { name: string }>({
       </PopoverTrigger>
       <PopoverContent className="w-[196px] p-0">
         <Command>
-          <CommandInput placeholder={placeholder || ""} />
+          {data.length > 5 ? (
+            <CommandInput placeholder={placeholder || ""} />
+          ) : null}
           <CommandList>
             <CommandEmpty>No item found.</CommandEmpty>
             <CommandGroup>
               {data.map((item) => (
                 <CommandItem
                   className="cursor-pointer"
-                  key={getItemName(item)}
-                  value={getItemName(item)}
+                  key={getItemId(item)}
+                  value={getItemId(item)}
                   onSelect={(currentValue) => {
                     const selectedItem = data.find(
-                      (i) => getItemName(i) === currentValue
+                      (i) => getItemId(i) === currentValue
                     );
                     setValue(selectedItem || null);
                     setOpen(false);

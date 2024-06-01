@@ -23,6 +23,8 @@ import { cn } from "@/lib/utils";
 
 export const getPortfolioColumns = (
   currency: CurrencyType,
+  sellAssetHandler: (id: string) => void
+
 ): ColumnDef<PortfolioTableItem>[] => {
   return [
     {
@@ -154,14 +156,14 @@ export const getPortfolioColumns = (
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem>
-                <div className="cursor-pointer w-full">History</div>
+              <button className="cursor-pointer w-full text-left">History</button>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <div className="cursor-pointer w-full">Buy</div>
+              <button className="cursor-pointer w-full text-left">Buy</button>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <div className="cursor-pointer w-full">Sell</div>
+                <button onClick={()=>{sellAssetHandler(item.id)}} className="cursor-pointer w-full text-left">Sell</button>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

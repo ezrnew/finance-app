@@ -1,6 +1,7 @@
 import { PortfolioManageView } from "@/components/portfolio/PortfolioManageView";
 import { PortfolioPieChart } from "@/components/portfolio/PortfolioPieChart";
 import { PortfolioSidebar } from "@/components/portfolio/PortfolioSidebar";
+import { getPortfolioColumns } from "@/components/portfolio/tables/PortfolioColumns";
 import { PortfolioTable } from "@/components/portfolio/tables/PortfolioTable";
 import { Button } from "@/components/ui/button";
 import { server } from "@/connection/backend/backendConnectorSingleton";
@@ -12,23 +13,24 @@ import {
 } from "@/utils/formatters";
 import { toast } from "@/utils/toasts";
 import { useEffect, useMemo, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
-let initialRender = true
+let initialRender = true;
 export const PortfolioPage = () => {
+  let location = useLocation();
+  const navigate = useNavigate();
+
   const { currentPortfolio } = useTypedSelector((state) => state.portfolio);
   const { currentPortfolioId, updatePortfolioData } = useTypedSelector(
-    (state) => state.portfolio,
+    (state) => state.portfolio
   );
   const { showPortfolioSidebar } = useTypedSelector((state) => state.misc);
   const { setAvailablePortfolios, setCurrentPortfolio } = useActions();
   const [isManageView, setIsManageView] = useState(false);
   const assets = useMemo(
     () => getFlattenAssets(currentPortfolio?.accounts || []),
-    [currentPortfolio],
+    [currentPortfolio]
   );
-
-  let location = useLocation();
 
   useEffect(() => {
     const fetchAllPortfolios = async () => {
@@ -36,18 +38,22 @@ export const PortfolioPage = () => {
 
       setAvailablePortfolios(portfolios);
     };
-fetchAllPortfolios();
+    fetchAllPortfolios();
   }, []);
 
   useEffect(() => {
-    if(initialRender) {initialRender=false;return}
+    if (initialRender) {
+      initialRender = false;
+      return;
+    }
     const getPortfolioData = async () => {
       const portfolio = await server.getPortfolioById(currentPortfolioId);
 
       setCurrentPortfolio(portfolio);
 
-      const portfolioWithReevaluatedValues =
-        await server.reevaluateAssets(currentPortfolioId);
+      const portfolioWithReevaluatedValues = await server.reevaluateAssets(
+        currentPortfolioId
+      );
 
       setCurrentPortfolio(portfolioWithReevaluatedValues);
     };
@@ -58,12 +64,16 @@ fetchAllPortfolios();
   useEffect(() => {
     const reevaluateAssets = async () => {
       const portfolioWithReevaluatedValues = await toast.updatingPortfolioData(
-        server.reevaluateAssets(currentPortfolioId),
+        server.reevaluateAssets(currentPortfolioId)
       );
       setCurrentPortfolio(portfolioWithReevaluatedValues);
     };
     reevaluateAssets();
   }, [updatePortfolioData]);
+
+  const sellAssetHandler = (id: string) => {
+    navigate(`sell?id=${id}`, { state: { background: location } });
+  };
 
   return (
     <div className="flex-grow bg-white flex flex-col  ">
@@ -114,7 +124,7 @@ fetchAllPortfolios();
                         currentPortfolio?.currency as CurrencyType
                       ],
                       currentPortfolio?.totalValue || 0,
-                      currentPortfolio?.currency || "PLN",
+                      currentPortfolio?.currency || "PLN"
                     )}
                     data={
                       currentPortfolio
@@ -136,7 +146,10 @@ fetchAllPortfolios();
 
                   <PortfolioTable
                     data={assets}
-                    currency={currentPortfolio?.currency || ""}
+                    portfolioColumns={getPortfolioColumns(
+                      currentPortfolio?.currency || "PLN",
+                      sellAssetHandler
+                    )}
                   />
                 </div>
               )}
@@ -149,7 +162,7 @@ fetchAllPortfolios();
 };
 
 export function getFlattenAssets(
-  accounts: { title: string; cash: number; assets: any[] }[],
+  accounts: { title: string; cash: number; assets: any[] }[]
 ) {
   const result: any = [];
 

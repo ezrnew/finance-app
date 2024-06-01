@@ -17,6 +17,7 @@ interface Props {
 
 export const PortfolioManageView = ({ portfolio }: Props) => {
   let location = useLocation();
+  const navigate = useNavigate();
 
   const { currentPortfolioId } = useTypedSelector((state) => state.portfolio);
 
@@ -28,7 +29,6 @@ export const PortfolioManageView = ({ portfolio }: Props) => {
   const [newAccountError, setNewAccountError] = useState("");
 
   const { setCurrentPortfolio } = useActions();
-  const navigate = useNavigate();
   const { refetchPortfolioData } = useActions();
 
   const submitNewCategory = async (e: React.FormEvent<HTMLFormElement>) => {
