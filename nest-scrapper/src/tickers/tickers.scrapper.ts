@@ -3,6 +3,7 @@ import puppeteer, { Page } from 'puppeteer';
 import { getById, getByIdAndText, getByText, getText, setPageCookies } from '../utils/puppeteer.utils';
 import { parseStringDate } from '../utils/date.utils';
 import { ScrapperCurrencyAdapter, StooqCurrencyAdapter } from './utils/currency.adapter';
+import { CurrencyType } from 'src/currencies/schema/currencyRate.schema';
 
 type TickerType = {
   name: string;
@@ -70,18 +71,12 @@ export class TickersScrapper {
     const priceSpan = await getById(priceTd, 'aq_' + ticker);
     const price = await getText(priceSpan);
 
+    const stockMarket = await getById(page, 'ta_s');
 
-    const stockMarket = await getById(page,'ta_s')
-      
-    const stockMarketText = await stockMarket.$eval('a',(aElement)=>{
-      console.log("AELEMENT",aElement)
-      return aElement.textContent
-
-    })
-
-    console.log("tekst",stockMarketText)
-
-
+    const stockMarketText = await stockMarket.$eval('a', (aElement) => {
+      console.log('AELEMENT', aElement);
+      return aElement.textContent;
+    });
 
     let currency = '$';
     try {
@@ -108,7 +103,7 @@ export class TickersScrapper {
       price: currencyData.formatter(Number(price)),
       currency: currencyData.currency,
       date: parseStringDate(dateSpans),
-      stockMarket:stockMarketText
+      stockMarket: stockMarketText,
     };
 
     this._logger.debug('returning data: ', returnedData);
@@ -116,7 +111,10 @@ export class TickersScrapper {
     return returnedData;
   }
 
-  async updateTickerData(ticker: string): Promise<{
+  async updateTickerData(
+    ticker: string,
+    tickerCurrency: CurrencyType,
+  ): Promise<{
     newPrice: number;
     newDate: Date;
   }> {
@@ -163,8 +161,11 @@ export class TickersScrapper {
 
       browser.close();
 
+      let currencyData = this._currencyAdapter.find((item) => item.symbol === tickerCurrency);
+      if (!currencyData) currencyData = { currency: 'USD', symbol: '$', formatter: (item) => item };
+
       const returnedData = {
-        newPrice: Number(price),
+        newPrice: currencyData.formatter(Number(price)),
         newDate: parseStringDate(dateSpans),
       };
 

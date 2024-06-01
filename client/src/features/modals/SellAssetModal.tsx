@@ -74,7 +74,7 @@ export const SellAssetModal = () => {
           </FormField>
 
           <FormField label={"Quantity"}>
-            <Input
+            <Input 
               className="w-fit"
               value={quantity}
               disabled={!asset}
@@ -91,7 +91,7 @@ export const SellAssetModal = () => {
           </FormField>
 
           {asset ? (
-            <p className="mx-auto text-xs text-gray-700">
+            <p className="mx-auto text-xs text-gray-700/70">
               available: {asset.quantity}
             </p>
           ) : null}

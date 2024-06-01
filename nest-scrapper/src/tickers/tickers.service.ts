@@ -37,13 +37,13 @@ export class TickersService {
 
       await ticker.save();
 
-      console.log("TICKER",ticker)
+      console.log('TICKER', ticker);
       return { new: false, data: ticker };
     }
 
     try {
       const createdTicker = new this.tickerModel(scrappedTicker);
-      await createdTicker.save()
+      await createdTicker.save();
 
       return { new: true, data: createdTicker };
     } catch (error) {
@@ -59,7 +59,7 @@ export class TickersService {
 
     const promises = tickers.map(async (item) => {
       if (IsDateOlderThanXHours(item.updatedAt, 24)) {
-        const updatedData = await this.tickerScrapper.updateTickerData(item.name);
+        const updatedData = await this.tickerScrapper.updateTickerData(item.name, item.currency);
         const currencyRate = await this.currenciesService.getCurrencyRate(
           item.currency as CurrencyType,
           portfCurrency,
@@ -91,10 +91,11 @@ export class TickersService {
 
     if (differenceInHours > 24) {
       this._logger.debug('ticker found with obsolete data; scrapping...');
-      const scrappedTicker = await this.tickerScrapper.updateTickerData(name);
+      const scrappedTicker = await this.tickerScrapper.updateTickerData(name, ticker.currency);
 
       ticker.price = scrappedTicker.newPrice;
       ticker.date = scrappedTicker.newDate;
+      ticker.updatedAt = Date.now().toString();
       await ticker.save();
 
       removeMongoProperties(ticker);
