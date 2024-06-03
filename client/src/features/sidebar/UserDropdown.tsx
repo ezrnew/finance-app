@@ -12,11 +12,23 @@ import {
 import { useTypedSelector } from "@/hooks/use-redux";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { cookies, setCookie } from "@/utils/cookies";
+import { useNavigate } from "react-router-dom";
 
 interface Props {}
 
 export function UserSettings({}: Props) {
-  // user
+
+
+
+  const navigate = useNavigate();
+
+
+
+  const logOut = () =>{
+    setCookie(cookies.auth,'false')
+    navigate("/login")
+  }
 
   return (
     <DropdownMenu>
@@ -29,13 +41,19 @@ export function UserSettings({}: Props) {
         <DropdownMenuLabel className="">uusernazwa</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
+          <DropdownMenuItem >
+            <button className="flex w-full items-center ">
+
             <User className="mr-2 h-4 w-4" />
             <span>Settings</span>
+            </button>
           </DropdownMenuItem>
           <DropdownMenuItem>
+          <button onClick={logOut} className="flex w-full items-center ">
+
             <LogOut className="mr-2 h-4 w-4" />
             <span>Log Out</span>
+            </button>
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>

@@ -1,15 +1,11 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import helmet from 'helmet';
 import * as cookieParser from 'cookie-parser';
-
-import * as config from '../config.json'
+import helmet from 'helmet';
+import { AppModule } from './app.module';
 
 declare const module: any;
 
 async function bootstrap() {
-  console.log("KONFIG",config)
-
   const app = await NestFactory.create(AppModule);
   app.use(helmet());
   app.use(cookieParser());

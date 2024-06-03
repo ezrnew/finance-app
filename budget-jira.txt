@@ -52,7 +52,6 @@ LoginPage -> Password reset
 LoginPage -> auth via google
 LoginPage/RegisterPage -> redirect when authenticated
 PortfolioTable -> fix Sell Asset
-Sidebar -> add user logout option
 SellAssetModal -> display quantity in input-dropdown next to name
 
 

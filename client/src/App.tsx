@@ -14,6 +14,7 @@ import { RegisterPage } from "./pages/RegisterPage";
 import { ToolsPage } from "./pages/ToolsPage";
 import { store } from "./store/store";
 import { ls } from "./utils/localStorage";
+import { AuthorizedRoute } from "./features/AuthorizedRoute";
 
 function App() {
   const location = useLocation();
@@ -29,9 +30,11 @@ function App() {
           <Route
             path="/tools"
             element={
-              <MainLayout>
-                <ToolsPage />
-              </MainLayout>
+              <AuthorizedRoute>
+                <MainLayout>
+                  <ToolsPage />
+                </MainLayout>
+              </AuthorizedRoute>
             }
           />
           <Route path="/" element={<Navigate to="/login" />} />
@@ -39,9 +42,11 @@ function App() {
           <Route
             path="/portfolio"
             element={
-              <MainLayout>
-                <PortfolioPage />
-              </MainLayout>
+              <AuthorizedRoute>
+                <MainLayout>
+                  <PortfolioPage />
+                </MainLayout>
+              </AuthorizedRoute>
             }
           ></Route>
         </Routes>
