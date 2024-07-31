@@ -58,7 +58,8 @@ export class PortfoliosService {
     if (asset.type === 'bond_pltr') {
       const bondValue = await this.bonds_pltrService.handleBond(asset.name);
       let bondResult: number | undefined;
-      if (bondValue) bondResult = asset.buyPrice * bondValue;
+      //@ts-ignore //todo fix
+      if (bondValue) bondResult = asset.buyPrice * bondValue; //?
       return [bondResult, currencyRate];
     }
     if (asset.type === 'tickers') {

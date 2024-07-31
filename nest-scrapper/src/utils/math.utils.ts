@@ -3,24 +3,26 @@ export const addPercentageRate = (value: number, rate: number) => {
 };
 
 export const calculateCummulatedRate = (amount, yearsLeft, cpiArr) => {
-  console.log("KWOTA",amount,yearsLeft,cpiArr)
   if (yearsLeft === 1) return (amount += amount * (cpiArr[cpiArr.length - 1] / 100));
   else
     return calculateCummulatedRate(
+  
       (amount += amount * (cpiArr[cpiArr.length - yearsLeft] / 100)),
       yearsLeft - 1,
       cpiArr,
     );
 };
 
-export const calculateConstantRate = (amount, cpiArr) => {
+export const calculateConstantRate = (amount, cpiArr,tax) => {
+
   let newAmount = amount;
-  cpiArr.forEach((element) => {
-    newAmount += element;
+  cpiArr.forEach((value) => {
+    newAmount += value - value*tax;
   });
 
   return newAmount;
 };
+
 
 export const calculateYearRateByDaysPassed = (value: number, rate: number, lastYearStartDate: Date) => {
   const currentDate = new Date();
@@ -28,10 +30,10 @@ export const calculateYearRateByDaysPassed = (value: number, rate: number, lastY
   const differenceMs = currentDate.getTime() - lastYearStartDate.getTime();
 
   const differenceDays = Math.floor(differenceMs / (1000 * 60 * 60 * 24));
-
   const percentageOfRate = isLeapYear(currentDate.getFullYear())
     ? differenceDays / 366
     : differenceDays / 365;
+
   const percentageOfPercentagexd = percentageOfRate * rate;
   return addPercentageRate(value, percentageOfPercentagexd);
 };

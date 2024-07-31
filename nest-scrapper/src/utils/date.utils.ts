@@ -139,3 +139,35 @@ export function IsDateOlderThanXHours(dateString: string, hours: number) {
 
   return differenceInHours > hours;
 }
+
+
+export function getDifferenceInYears(startDate, endDate) {
+  let startYear = startDate.getFullYear();
+  let endYear = endDate.getFullYear();
+  let startMonth = startDate.getMonth();
+  let endMonth = endDate.getMonth();
+  let startDay = startDate.getDate();
+  let endDay = endDate.getDate();
+
+  let yearDifference = endYear - startYear;
+  let monthDifference = endMonth - startMonth;
+
+  if (endDay < startDay) {
+      monthDifference -= 1;
+  }
+
+  let totalMonths = yearDifference * 12 + monthDifference;
+
+  if (endDay < startDay) {
+      let prevMonth = new Date(endDate);
+      prevMonth.setMonth(endMonth - 1);
+      let daysInPrevMonth = new Date(prevMonth.getFullYear(), prevMonth.getMonth() + 1, 0).getDate();
+      totalMonths += (endDay + daysInPrevMonth - startDay) / daysInPrevMonth;
+  } else {
+      totalMonths += (endDay - startDay) / new Date(endYear, endMonth + 1, 0).getDate();
+  }
+
+  let years = totalMonths / 12;
+
+  return years;
+}
