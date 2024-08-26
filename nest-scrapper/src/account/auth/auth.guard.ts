@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import * as config from '../../config.json'
+import * as config from '../../../config.json'
 
 
 @Injectable()

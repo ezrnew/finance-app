@@ -9,7 +9,7 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '../auth/auth.guard';
+import { AuthGuard } from '../account/auth/auth.guard';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { PortfoliosService } from './portfolios.service';
 import { AddAccountDto } from './dto/add-account.dto';

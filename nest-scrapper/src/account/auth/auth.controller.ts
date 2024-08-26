@@ -4,7 +4,7 @@ import { AuthService } from './auth.service';
 import { SignInDto } from './dto/signInDto';
 import { RegisterDto } from './dto/registerDto';
 import { Response } from 'express';
-import { JWT_EXP_TIME_IN_MILIS } from '../constants/jwtExpirationTime';
+import { JWT_EXP_TIME_IN_MILIS } from '../../constants/jwtExpirationTime';
 
 @Controller('auth')
 export class AuthController {
