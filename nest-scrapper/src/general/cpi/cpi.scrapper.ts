@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { getPolishMonthNameByNumber } from '../../utils/date.utils';
+import { getPolishMonthNameByNumber } from '../../common/utils/date.utils';
 import puppeteer, { ElementHandle } from 'puppeteer';
-import { getByText, getText } from '../../utils/puppeteer.utils';
+import { getByText, getText } from '../../common/utils/puppeteer.utils';
 
 @Injectable()
 export class CpiScrapper {

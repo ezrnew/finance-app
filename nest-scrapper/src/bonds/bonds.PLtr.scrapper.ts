@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import puppeteer, { ElementHandle, Page, Puppeteer } from 'puppeteer';
-import { getText } from '../utils/puppeteer.utils';
+import { getText } from '../common/utils/puppeteer.utils';
 @Injectable()
 export class PLtrScrapper {
   async getData(currentText: string) {

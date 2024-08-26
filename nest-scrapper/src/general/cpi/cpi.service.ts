@@ -2,7 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { getMonthShortNameByNumber, getPolishMonthNameByNumber, monthNumber } from '../../utils/date.utils';
+import { getMonthShortNameByNumber, getPolishMonthNameByNumber, monthNumber } from '../../common/utils/date.utils';
 import { CpiScrapper } from './cpi.scrapper';
 import { yearlyCpiDto } from './dto/add-cpi.dto';
 import { Cpi } from './schemas/cpi.schema';

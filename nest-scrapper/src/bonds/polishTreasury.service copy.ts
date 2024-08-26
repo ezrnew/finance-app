@@ -10,13 +10,13 @@ import {
   isDifferenceLessThanAYear,
   isValidDayOfMonth,
   monthNumber,
-} from '../utils/date.utils';
+} from '../common/utils/date.utils';
 import {
   addPercentageRate,
   calculateConstantRate,
   calculateCummulatedRate,
   calculateYearRateByDaysPassed,
-} from '../utils/math.utils';
+} from '../common/utils/math.utils';
 import { BondFactory } from './polishTreasury.factory';
 import { Coi, Edo, Ots, Rod, Ros, Tos } from './schemas/bonds.polishTreasury';
 @Injectable()

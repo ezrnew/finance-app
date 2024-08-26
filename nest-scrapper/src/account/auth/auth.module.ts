@@ -4,7 +4,7 @@ import { AuthService } from './auth.service';
 import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
-import { JWT_EXP_TIME_IN_MILIS } from '../../constants/jwtExpirationTime';
+import { JWT_EXP_TIME_IN_MILIS } from '../../common/constants/jwtExpirationTime';
 import * as config from '../../../config.json';
 
 @Module({
