@@ -8,7 +8,6 @@ import { BondsModule } from './bonds/bonds.module';
 import { CurrenciesModule } from './currencies/currencies.module';
 import { PortfoliosModule } from './portfolios/portfolios.module';
 import { SchedulerModule } from './scheduler/scheduler.module';
-import { ScrapperModule } from './scrapper/scrapper.module';
 import { TickersModule } from './tickers/tickers.module';
 import { UsersModule } from './users/users.module';
 
@@ -17,7 +16,6 @@ import { UsersModule } from './users/users.module';
     ScheduleModule.forRoot(),
     ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.MONGODB_URI),
-    ScrapperModule,
     TickersModule,
     SchedulerModule,
     BondsModule,
