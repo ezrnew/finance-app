@@ -9,7 +9,6 @@ import { CurrenciesModule } from './currencies/currencies.module';
 import { PortfoliosModule } from './portfolios/portfolios.module';
 import { SchedulerModule } from './scheduler/scheduler.module';
 import { TickersModule } from './tickers/tickers.module';
-import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -20,7 +19,6 @@ import { UsersModule } from './users/users.module';
     SchedulerModule,
     BondsModule,
     AuthModule,
-    UsersModule,
     CurrenciesModule,
     AssetsModule,
     PortfoliosModule,
