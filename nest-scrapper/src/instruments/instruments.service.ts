@@ -5,7 +5,7 @@ import { Edo } from '../bonds/schemas/bonds.polishTreasury';
 import { Ticker } from '../tickers/schemas/ticker.schema';
 
 @Injectable()
-export class AssetsService {
+export class InstrumentsService {
   constructor(
     @InjectModel(Ticker.name) private tickerModel: Model<Ticker>,
     @InjectModel(Edo.name) private edoModel: Model<Edo>,
@@ -32,4 +32,7 @@ export class AssetsService {
     );
     return assets;
   }
+
+
+  
 }

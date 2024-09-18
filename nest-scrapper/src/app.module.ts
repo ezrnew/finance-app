@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
 import { SecurityModule } from './security/security.module';
-import { AssetsModule } from './assets/assets.module';
+import { InstrumentsModule } from './instruments/instruments.module';
 import { BondsModule } from './bonds/bonds.module';
 import { CurrenciesModule } from './currencies/currencies.module';
 import { PortfoliosModule } from './portfolios/portfolios.module';
@@ -12,18 +12,18 @@ import { TickersModule } from './tickers/tickers.module';
 
 @Module({
   imports: [
+    MongooseModule.forRoot(process.env.MONGODB_URI),
     ScheduleModule.forRoot(),
     ConfigModule.forRoot(),
-    MongooseModule.forRoot(process.env.MONGODB_URI),
     
+    SchedulerModule,
     SecurityModule,
 
+    InstrumentsModule,
     TickersModule,
-    SchedulerModule,
     BondsModule,
 
     CurrenciesModule,
-    AssetsModule,
     PortfoliosModule,
     SecurityModule,
   ],
