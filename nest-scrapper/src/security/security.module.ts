@@ -10,4 +10,4 @@ import { UsersModule } from './users/users.module';
     ]
 
 })
-export class AccountModule {}
+export class SecurityModule {}

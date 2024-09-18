@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
-import { AccountModule } from './account/account.module';
+import { SecurityModule } from './security/security.module';
 import { AssetsModule } from './assets/assets.module';
 import { BondsModule } from './bonds/bonds.module';
 import { CurrenciesModule } from './currencies/currencies.module';
@@ -16,7 +16,7 @@ import { TickersModule } from './tickers/tickers.module';
     ConfigModule.forRoot(),
     MongooseModule.forRoot(process.env.MONGODB_URI),
     
-    AccountModule,
+    SecurityModule,
 
     TickersModule,
     SchedulerModule,
@@ -25,7 +25,7 @@ import { TickersModule } from './tickers/tickers.module';
     CurrenciesModule,
     AssetsModule,
     PortfoliosModule,
-    AccountModule,
+    SecurityModule,
   ],
   controllers: [],
   providers: [],

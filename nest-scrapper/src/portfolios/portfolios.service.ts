@@ -3,7 +3,7 @@ import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { Portfolio } from './schemas/portfolio.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Document, Model, Types } from 'mongoose';
-import { User } from '../account/users/schemas/user.schema';
+import { User } from '../security/users/schemas/user.schema';
 import { BuyAssetDto } from './dto/buyAssetDto';
 import { SellAssetDto } from './dto/sell-asset-dto';
 import { PolishTreasuryService } from '../bonds/polishTreasury.service';
