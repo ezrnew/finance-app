@@ -1,14 +1,14 @@
 import { Controller, Get, Param, Post, Query } from '@nestjs/common';
-import { PolishTreasuryService } from './polishTreasury.service';
+import { BondsPolishTreasuryService } from './bonds-polish-treasury.service';
 
 @Controller('bonds')
-export class BondsController {
-  constructor(private readonly polishTreasury: PolishTreasuryService) {}
+export class BondsPolishTreasuryController {
+  constructor(private readonly polishTreasuryService: BondsPolishTreasuryService) {}
 
   @Get('PLtr/testowy')
   async testowy() {
 
-    return this.polishTreasury.handleBondsMultiple([
+    return this.polishTreasuryService.handleBondsMultiple([
       { type: 'EDO0521', day: 15 },
       { type: 'EDO0434', day: 1 },
       { type: 'EDO0330', day: 1 },
@@ -25,6 +25,6 @@ export class BondsController {
     @Query('day') dayOfMonth: number,
     @Query('ike') ike: boolean,
   ) {
-    return this.polishTreasury.handleBond(bond, dayOfMonth, ike);
+    return this.polishTreasuryService.handleBond(bond, dayOfMonth, ike);
   }
 }

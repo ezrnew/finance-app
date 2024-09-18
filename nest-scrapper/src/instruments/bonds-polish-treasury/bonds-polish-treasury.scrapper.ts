@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import puppeteer, { ElementHandle, Page, Puppeteer } from 'puppeteer';
-import { getText } from '../common/utils/puppeteer.utils';
+import { getText } from '../../common/utils/puppeteer.utils';
 @Injectable()
-export class PLtrScrapper {
+export class BondsPolishTreasuryScrapper {
   async getData(currentText: string) {
     const url = 'https://www.obligacjeskarbowe.pl/komunikaty/';
     const newEmissionText = 'rozpoczyna się sprzedaż nowych emisji';

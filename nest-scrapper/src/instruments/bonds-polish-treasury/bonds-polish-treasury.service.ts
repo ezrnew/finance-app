@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Cpi } from '../general/cpi/schemas/cpi.schema';
+import { Cpi } from '../../general/cpi/schemas/cpi.schema';
 import {
   differenceInDays,
   getDifferenceInYears,
@@ -11,23 +11,25 @@ import {
   isDifferenceLessThanAYear,
   isValidDayOfMonth,
   monthNumber,
-} from '../common/utils/date.utils';
+} from '../../common/utils/date.utils';
 import {
   addPercentageRate,
   calculateConstantRate,
   calculateCummulatedRate,
   calculateYearRateByDaysPassed,
-} from '../common/utils/math.utils';
-import { BondFactory } from './polishTreasury.factory';
+} from '../../common/utils/math.utils';
+import { BondFactory } from './bonds-polish-treasury.factory';
 import { Coi, Edo, Ots, Rod, Ros, Tos } from './schemas/bonds.polishTreasury';
+
+
 @Injectable()
-export class PolishTreasuryService {
+export class BondsPolishTreasuryService {
   constructor(
     @InjectModel(Cpi.name) private cpiModel: Model<Cpi>,
     private readonly bondFactoryCreator: BondFactory,
   ) {}
 
-  private readonly logger = new Logger(PolishTreasuryService.name);
+  private readonly logger = new Logger(BondsPolishTreasuryService.name);
   private readonly belkaTax = 0.19; //todo extract somewhere
 
   async handleBond(bondString: string, day?: number, hasIke?: boolean) {

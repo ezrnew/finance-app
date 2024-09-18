@@ -6,7 +6,7 @@ import { Document, Model, Types } from 'mongoose';
 import { User } from '../security/users/schemas/user.schema';
 import { BuyAssetDto } from './dto/buyAssetDto';
 import { SellAssetDto } from './dto/sell-asset-dto';
-import { PolishTreasuryService } from '../bonds/polishTreasury.service';
+import { BondsPolishTreasuryService } from '../instruments/bonds-polish-treasury/bonds-polish-treasury.service';
 import { TickersService } from '../tickers/tickers.service';
 import { AddOperationDto } from './dto/add-operation.dto';
 import { CurrenciesService } from '../currencies/currencies.service';
@@ -21,7 +21,7 @@ export class PortfoliosService {
   constructor(
     @InjectModel(Portfolio.name) private portfolioModel: Model<Portfolio>,
     @InjectModel(User.name) private userModel: Model<User>,
-    private bonds_pltrService: PolishTreasuryService,
+    private bonds_pltrService: BondsPolishTreasuryService,
     private tickerService: TickersService,
     private currenciesService: CurrenciesService,
   ) {}

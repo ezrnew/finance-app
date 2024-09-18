@@ -6,6 +6,6 @@ import { CPIService } from './cpi.service';
 @Module({
   imports: [MongooseModule.forFeature([{ name: Cpi.name, schema: CpiSchema }])],
   providers: [CPIService],
-  exports: [CPIService],
+  exports: [CPIService,MongooseModule],
 })
 export class CpiModule {}

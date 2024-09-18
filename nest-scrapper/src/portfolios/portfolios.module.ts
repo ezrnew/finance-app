@@ -4,17 +4,18 @@ import { PortfoliosController } from './portfolios.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Portfolio, PortfolioSchema } from './schemas/portfolio.schema';
 import { User, UserSchema } from '../security/users/schemas/user.schema';
-import { PolishTreasuryService } from '../bonds/polishTreasury.service';
+import { BondsPolishTreasuryService } from '../instruments/bonds-polish-treasury/bonds-polish-treasury.service';
 import { TickersService } from '../tickers/tickers.service';
-import { BondsModule } from '../bonds/bonds.module';
+// import { BondsModule } from '../bonds/bonds.module';
 import { TickersModule } from '../tickers/tickers.module';
 import { CurrenciesModule } from '../currencies/currencies.module';
+import { BondsPolishTreasuryModule } from '../instruments/bonds-polish-treasury/bonds-polish-treasury.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Portfolio.name, schema: PortfolioSchema }]),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-    BondsModule,
+    BondsPolishTreasuryModule,
     TickersModule,
     CurrenciesModule,
   ],

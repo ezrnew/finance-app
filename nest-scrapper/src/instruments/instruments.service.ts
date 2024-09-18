@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Edo } from '../bonds/schemas/bonds.polishTreasury';
+import { Edo } from './bonds-polish-treasury/schemas/bonds.polishTreasury';
 import { Ticker } from '../tickers/schemas/ticker.schema';
 
 @Injectable()

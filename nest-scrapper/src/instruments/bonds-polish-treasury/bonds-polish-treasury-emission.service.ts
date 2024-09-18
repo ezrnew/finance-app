@@ -2,14 +2,14 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { PLtrArticle } from './schemas/bonds.polishTreasuryArticle';
 import { Model } from 'mongoose';
-import { PLtrScrapper } from './bonds.PLtr.scrapper';
+import { BondsPolishTreasuryScrapper } from './bonds-polish-treasury.scrapper';
 import { Coi, Edo, Ots, Rod, Ros, Tos } from './schemas/bonds.polishTreasury';
 
 @Injectable()
-export class BondsService {
+export class BondsPolishTreasuryEmissionService {
   constructor(
     @InjectModel(PLtrArticle.name) private polishTreasuryArticleModel: Model<PLtrArticle>,
-    private readonly polishTreasuryScrapper: PLtrScrapper,
+    private readonly polishTreasuryScrapper: BondsPolishTreasuryScrapper,
     @InjectModel(Edo.name) private edoModel: Model<Edo>,
     @InjectModel(Coi.name) private coiModel: Model<Coi>,
     @InjectModel(Ros.name) private rosModel: Model<Ros>,
@@ -17,7 +17,7 @@ export class BondsService {
     @InjectModel(Ots.name) private otsModel: Model<Ots>,
     @InjectModel(Tos.name) private tosModel: Model<Tos>,
   ) {}
-  private readonly logger = new Logger(BondsService.name);
+  private readonly logger = new Logger(BondsPolishTreasuryEmissionService.name);
 
   async updatePLtr() {
     const articleText = (await this.polishTreasuryArticleModel.findOne()).text || '';
@@ -84,4 +84,6 @@ export class BondsService {
       this.logger.error('cannot update PLtr:', error);
     }
   }
+
+  
 }
