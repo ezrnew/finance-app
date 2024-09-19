@@ -9,9 +9,9 @@ import { SellAssetDto } from './dto/sell-asset-dto';
 import { BondsPolishTreasuryService } from '../instruments/bonds-polish-treasury/bonds-polish-treasury.service';
 import { TickersService } from '../instruments/tickers/tickers.service';
 import { AddOperationDto } from './dto/add-operation.dto';
-import { CurrenciesService } from '../currencies/currencies.service';
+import { CurrenciesService } from '../general/currencies/currencies.service';
 import { DeleteAccountDto } from './dto/delete-account.dto';
-import { CurrencyType } from 'src/currencies/schema/currencyRate.schema';
+import { CurrencyType } from 'src/general/currencies/schema/currencyRate.schema';
 import { DeleteCategoryDto } from './dto/delete-category.dto';
 
 @Injectable()

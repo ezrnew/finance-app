@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CurrencyType } from './schema/currencyRate.schema';
 import puppeteer from 'puppeteer';
-import { getById, getByIdAndText, getByText, getText, setPageCookies } from '../common/utils/puppeteer.utils';
+import { getById, getByIdAndText, getByText, getText, setPageCookies } from '../../common/utils/puppeteer.utils';
 
 @Injectable()
 export class CurrenciesRateScrapper {

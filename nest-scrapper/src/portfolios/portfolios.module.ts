@@ -8,7 +8,7 @@ import { BondsPolishTreasuryService } from '../instruments/bonds-polish-treasury
 import { TickersService } from '../instruments/tickers/tickers.service';
 // import { BondsModule } from '../bonds/bonds.module';
 import { TickersModule } from '../instruments/tickers/tickers.module';
-import { CurrenciesModule } from '../currencies/currencies.module';
+import { CurrenciesModule } from '../general/currencies/currencies.module';
 import { BondsPolishTreasuryModule } from '../instruments/bonds-polish-treasury/bonds-polish-treasury.module';
 
 @Module({

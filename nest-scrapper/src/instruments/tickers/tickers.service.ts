@@ -7,8 +7,8 @@ import { TickersScrapper } from './tickers.scrapper';
 import { IsDateOlderThanXHours, isToday } from '../../common/utils/date.utils';
 import { removeMongoProperties } from '../../common/utils/mongoose.utils';
 import { ScrapperCurrencyAdapter, StooqCurrencyAdapter } from './tickers.currencyAdapter';
-import { CurrencyType } from '../../currencies/schema/currencyRate.schema';
-import { CurrenciesService } from '../../currencies/currencies.service';
+import { CurrencyType } from '../../general/currencies/schema/currencyRate.schema';
+import { CurrenciesService } from '../../general/currencies/currencies.service';
 
 @Injectable()
 export class TickersService {

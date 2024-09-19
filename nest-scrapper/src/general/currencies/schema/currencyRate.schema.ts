@@ -9,12 +9,6 @@ export class CurrencyRate {
   @Prop()
   currencyRateString: string;
 
-  // @Prop()
-  // from: CurrencyType;
-
-  // @Prop()
-  // to: CurrencyType;
-
   @Prop()
   rate: number;
 }

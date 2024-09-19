@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import { CurrencyType } from 'src/currencies/schema/currencyRate.schema';
+import { CurrencyType } from 'src/general/currencies/schema/currencyRate.schema';
 
 export type TickerDocument = HydratedDocument<Ticker>;
 
