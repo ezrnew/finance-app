@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { PLtrArticle } from './schemas/bonds.polishTreasuryArticle';
+import { BondsPolishTreassuryEmission } from './schemas/bonds.polishTreasuryArticle';
 import { Model } from 'mongoose';
 import { BondsPolishTreasuryScrapper } from './bonds-polish-treasury.scrapper';
 import { Coi, Edo, Ots, Rod, Ros, Tos } from './schemas/bonds.polishTreasury';
@@ -8,7 +8,7 @@ import { Coi, Edo, Ots, Rod, Ros, Tos } from './schemas/bonds.polishTreasury';
 @Injectable()
 export class BondsPolishTreasuryEmissionService {
   constructor(
-    @InjectModel(PLtrArticle.name) private polishTreasuryArticleModel: Model<PLtrArticle>,
+    @InjectModel(BondsPolishTreassuryEmission.name) private polishTreasuryArticleModel: Model<BondsPolishTreassuryEmission>,
     private readonly polishTreasuryScrapper: BondsPolishTreasuryScrapper,
     @InjectModel(Edo.name) private edoModel: Model<Edo>,
     @InjectModel(Coi.name) private coiModel: Model<Coi>,

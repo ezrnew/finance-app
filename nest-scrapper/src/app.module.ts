@@ -8,7 +8,6 @@ import { InstrumentsModule } from './instruments/instruments.module';
 import { CurrenciesModule } from './currencies/currencies.module';
 import { PortfoliosModule } from './portfolios/portfolios.module';
 import { SchedulerModule } from './scheduler/scheduler.module';
-import { TickersModule } from './tickers/tickers.module';
 import * as config from '../config.json'
 
 @Module({
@@ -21,7 +20,7 @@ import * as config from '../config.json'
     SecurityModule,
 
     InstrumentsModule,
-    TickersModule,
+    // TickersModule,
     // BondsModule,
 
     CurrenciesModule,

@@ -9,8 +9,8 @@ import {
   TosSchema,
 } from '../../instruments/bonds-polish-treasury/schemas/bonds.polishTreasury';
 import {
-  PLtrArticle,
-  PLtrArticleSchema,
+  BondsPolishTreassuryEmission,
+  PolishTreasuryEmission,
 } from '../../instruments/bonds-polish-treasury/schemas/bonds.polishTreasuryArticle';
 import { CpiModule } from '../../general/cpi/cpi.module';
 import { BondsPolishTreasuryService } from './bonds-polish-treasury.service';
@@ -29,7 +29,6 @@ import { BondsPolishTreasuryScrapper } from './bonds-polish-treasury.scrapper';
 
 @Module({
   imports: [
-    // MongooseModule.forFeature([{ name: 'Cpi', schema: CpiSchema }]),
     CpiModule,
 
     MongooseModule.forFeature([{ name: 'Edo', schema: EdoSchema }]),
@@ -39,7 +38,7 @@ import { BondsPolishTreasuryScrapper } from './bonds-polish-treasury.scrapper';
 
     MongooseModule.forFeature([{ name: 'Ots', schema: OtsSchema }]),
     MongooseModule.forFeature([{ name: 'Tos', schema: TosSchema }]),
-    MongooseModule.forFeature([{ name: PLtrArticle.name, schema: PLtrArticleSchema }]),
+    MongooseModule.forFeature([{ name: BondsPolishTreassuryEmission.name, schema: PolishTreasuryEmission }]),
   ],
   providers: [
     BondsPolishTreasuryService,

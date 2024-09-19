@@ -7,7 +7,7 @@ import { User } from '../security/users/schemas/user.schema';
 import { BuyAssetDto } from './dto/buyAssetDto';
 import { SellAssetDto } from './dto/sell-asset-dto';
 import { BondsPolishTreasuryService } from '../instruments/bonds-polish-treasury/bonds-polish-treasury.service';
-import { TickersService } from '../tickers/tickers.service';
+import { TickersService } from '../instruments/tickers/tickers.service';
 import { AddOperationDto } from './dto/add-operation.dto';
 import { CurrenciesService } from '../currencies/currencies.service';
 import { DeleteAccountDto } from './dto/delete-account.dto';

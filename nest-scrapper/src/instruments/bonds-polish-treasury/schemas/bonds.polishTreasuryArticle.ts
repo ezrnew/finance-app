@@ -1,10 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
-export type PltrArticleDocument = HydratedDocument<PLtrArticle>;
+ type PolishTreasuryEmission = HydratedDocument<BondsPolishTreassuryEmission>;
 
 @Schema({ collection: 'general_PLtr_article' })
-export class PLtrArticle {
+export class BondsPolishTreassuryEmission {
   @Prop()
   text: string;
 
@@ -12,4 +12,4 @@ export class PLtrArticle {
   //   date: Date;
 }
 
-export const PLtrArticleSchema = SchemaFactory.createForClass(PLtrArticle);
+export const PolishTreasuryEmission = SchemaFactory.createForClass(BondsPolishTreassuryEmission);

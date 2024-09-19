@@ -4,11 +4,11 @@ import { Model } from 'mongoose';
 import { createTickerDto } from './dto/create-ticker.dto';
 import { Ticker } from './schemas/ticker.schema';
 import { TickersScrapper } from './tickers.scrapper';
-import { IsDateOlderThanXHours, isToday } from '../common/utils/date.utils';
-import { removeMongoProperties } from '../common/utils/mongoose.utils';
-import { ScrapperCurrencyAdapter, StooqCurrencyAdapter } from './utils/currency.adapter';
-import { CurrencyType } from '../currencies/schema/currencyRate.schema';
-import { CurrenciesService } from '../currencies/currencies.service';
+import { IsDateOlderThanXHours, isToday } from '../../common/utils/date.utils';
+import { removeMongoProperties } from '../../common/utils/mongoose.utils';
+import { ScrapperCurrencyAdapter, StooqCurrencyAdapter } from './tickers.currencyAdapter';
+import { CurrencyType } from '../../currencies/schema/currencyRate.schema';
+import { CurrenciesService } from '../../currencies/currencies.service';
 
 @Injectable()
 export class TickersService {

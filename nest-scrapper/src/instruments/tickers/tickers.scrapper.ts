@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import puppeteer, { Page } from 'puppeteer';
-import { getById, getByIdAndText, getByText, getText, setPageCookies } from '../common/utils/puppeteer.utils';
-import { parseStringDate } from '../common/utils/date.utils';
-import { ScrapperCurrencyAdapter, StooqCurrencyAdapter } from './utils/currency.adapter';
-import { CurrencyType } from 'src/currencies/schema/currencyRate.schema';
+import { getById, getByIdAndText, getByText, getText, setPageCookies } from '../../common/utils/puppeteer.utils';
+import { parseStringDate } from '../../common/utils/date.utils';
+import { ScrapperCurrencyAdapter, StooqCurrencyAdapter } from './tickers.currencyAdapter';
+import { CurrencyType } from '../../currencies/schema/currencyRate.schema';
 
 type TickerType = {
   name: string;
