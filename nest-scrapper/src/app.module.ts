@@ -4,24 +4,29 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
 import { SecurityModule } from './security/security.module';
 import { InstrumentsModule } from './instruments/instruments.module';
-// import { BondsModule } from './bonds/bonds.module';
 import { CurrenciesModule } from './currencies/currencies.module';
 import { PortfoliosModule } from './portfolios/portfolios.module';
 import { SchedulerModule } from './scheduler/scheduler.module';
-import * as config from '../config.json'
+import { JwtModule } from '@nestjs/jwt';
+import { JWT_EXP_TIME_IN_MILIS } from './common/constants/jwtExpirationTime';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(config.mongodbUri),
+    ConfigModule.forRoot({ isGlobal: true }),
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: JWT_EXP_TIME_IN_MILIS },
+    }),
+
+    MongooseModule.forRoot(process.env.MONGODB_URI),
+
     ScheduleModule.forRoot(),
-    ConfigModule.forRoot({  isGlobal: true, }),
-    
+
     SchedulerModule,
     SecurityModule,
 
     InstrumentsModule,
-    // TickersModule,
-    // BondsModule,
 
     CurrenciesModule,
     PortfoliosModule,

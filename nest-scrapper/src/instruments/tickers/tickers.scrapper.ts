@@ -74,7 +74,6 @@ export class TickersScrapper {
     const stockMarket = await getById(page, 'ta_s');
 
     const stockMarketText = await stockMarket.$eval('a', (aElement) => {
-      console.log('AELEMENT', aElement);
       return aElement.textContent;
     });
 

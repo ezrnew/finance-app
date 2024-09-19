@@ -618,7 +618,6 @@ export class BondsPolishTreasuryService {
       if (!value) return false;
       bond.rate = value.rate;
 
-      console.log('KONCOWY ROK', endYear);
       const endDate = new Date(endYear, month - 1, bond.day);
       const startDate = new Date(endYear - bondData.getLengthInMonths() / 12, month - 1, bond.day);
 
