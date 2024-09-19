@@ -1,30 +1,31 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ScheduleModule } from '@nestjs/schedule';
-import { AssetsModule } from './assets/assets.module';
-import { AuthModule } from './auth/auth.module';
-import { BondsModule } from './bonds/bonds.module';
-import { CurrenciesModule } from './currencies/currencies.module';
+import { JWT_EXP_TIME_IN_MILIS } from './common/constants/jwtExpirationTime';
+import { GeneralModule } from './general/general.module';
+import { InstrumentsModule } from './instruments/instruments.module';
 import { PortfoliosModule } from './portfolios/portfolios.module';
 import { SchedulerModule } from './scheduler/scheduler.module';
-import { ScrapperModule } from './scrapper/scrapper.module';
-import { TickersModule } from './tickers/tickers.module';
-import { UsersModule } from './users/users.module';
+import { SecurityModule } from './security/security.module';
 
 @Module({
   imports: [
-    ScheduleModule.forRoot(),
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: JWT_EXP_TIME_IN_MILIS },
+    }),
     MongooseModule.forRoot(process.env.MONGODB_URI),
-    ScrapperModule,
-    TickersModule,
+    ScheduleModule.forRoot(),
+
+    SecurityModule,
     SchedulerModule,
-    BondsModule,
-    AuthModule,
-    UsersModule,
-    CurrenciesModule,
-    AssetsModule,
+
+    GeneralModule,
+    InstrumentsModule,
     PortfoliosModule,
   ],
   controllers: [],

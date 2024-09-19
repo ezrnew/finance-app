@@ -1,13 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { CPIService } from '../general/cpi/cpi.service';
-import { BondsService } from '../bonds/bonds.service';
+import { BondsPolishTreasuryEmissionService } from '../instruments/bonds-polish-treasury/bonds-polish-treasury-emission.service';
 
 @Injectable()
 export class SchedulerService {
   constructor(
     private readonly cpiService: CPIService,
-    private readonly bondsService: BondsService,
+    private readonly bondsPolishTreasuryService: BondsPolishTreasuryEmissionService,
   ) {}
   private readonly logger = new Logger(SchedulerService.name);
 
@@ -22,7 +22,7 @@ export class SchedulerService {
   checkForEmissionPLtr(): void {
     this.logger.log('checking for polish treasury emission');
 
-    this.bondsService.updatePLtr();
+    this.bondsPolishTreasuryService.updatePLtr();
   }
 }
 

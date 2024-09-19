@@ -3,15 +3,15 @@ import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { Portfolio } from './schemas/portfolio.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Document, Model, Types } from 'mongoose';
-import { User } from '../users/schemas/user.schema';
+import { User } from '../security/users/schemas/user.schema';
 import { BuyAssetDto } from './dto/buyAssetDto';
 import { SellAssetDto } from './dto/sell-asset-dto';
-import { PolishTreasuryService } from '../bonds/polishTreasury.service';
-import { TickersService } from '../tickers/tickers.service';
+import { BondsPolishTreasuryService } from '../instruments/bonds-polish-treasury/bonds-polish-treasury.service';
+import { TickersService } from '../instruments/tickers/tickers.service';
 import { AddOperationDto } from './dto/add-operation.dto';
-import { CurrenciesService } from '../currencies/currencies.service';
+import { CurrenciesService } from '../general/currencies/currencies.service';
 import { DeleteAccountDto } from './dto/delete-account.dto';
-import { CurrencyType } from 'src/currencies/schema/currencyRate.schema';
+import { CurrencyType } from 'src/general/currencies/schema/currencyRate.schema';
 import { DeleteCategoryDto } from './dto/delete-category.dto';
 
 @Injectable()
@@ -21,7 +21,7 @@ export class PortfoliosService {
   constructor(
     @InjectModel(Portfolio.name) private portfolioModel: Model<Portfolio>,
     @InjectModel(User.name) private userModel: Model<User>,
-    private bonds_pltrService: PolishTreasuryService,
+    private bonds_pltrService: BondsPolishTreasuryService,
     private tickerService: TickersService,
     private currenciesService: CurrenciesService,
   ) {}
@@ -53,7 +53,7 @@ export class PortfoliosService {
 
   private async handleAssetUpdate(asset: any, portfolioCurrency: CurrencyType) {
     const currencyRate = await this.currenciesService.getCurrencyRate(asset.currency, portfolioCurrency);
-    console.log("currency rate:",currencyRate,asset.currency,portfolioCurrency)
+    // console.log("currency rate:",currencyRate,asset.currency,portfolioCurrency)
 
     if (asset.type === 'bond_pltr') {
       const bondValue = await this.bonds_pltrService.handleBond(asset.name);

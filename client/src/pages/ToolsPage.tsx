@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { server } from "@/connection/backend/backendConnectorSingleton";
-import { EXAMPLE_PORTFOLIO } from "@/data/example_data";
 import { cn } from "@/lib/utils";
 import {
   CurrencyType,
@@ -9,11 +8,10 @@ import {
   formatCurrency,
   formatDateFull,
 } from "@/utils/formatters";
-import { Toast, toast } from "@/utils/toasts";
+import { toast } from "@/utils/toasts";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 export const ToolsPage = () => {
   const [tickerSearch, setTickerSearch] = useState("");
@@ -22,25 +20,21 @@ export const ToolsPage = () => {
     price: number;
     currency: CurrencyType;
     date: string;
-    stockMarket?:string;
+    stockMarket?: string;
   } | null>(null);
 
   const submitFindTicker = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setTickerData(null);
-    // setLoading(true)
-
-    // const result = await
     const promise = new Promise(async (res, rej) => {
       const result = await server.findTicker(tickerSearch);
       if (!result) rej("invalid request");
-      console.log("otrzymuje se dane",result.data)
       setTickerData(result.data);
       if (result.new === true) res("isNew");
       else rej("isNotNew");
     });
 
-    const result2 = await toast.scrappingNewTicker(promise);
+    await toast.scrappingNewTicker(promise);
   };
 
   return (
@@ -71,7 +65,7 @@ export const ToolsPage = () => {
         <div
           className={cn(
             "flex flex-col h-52 p-6 border rounded-lg my-10",
-            !tickerData && " invisible",
+            !tickerData && " invisible"
           )}
         >
           {tickerData ? (
@@ -82,15 +76,15 @@ export const ToolsPage = () => {
               <p className="text-xl pb-4 mx-auto">
                 {formatDateFull(
                   currencyToIntlZone[tickerData?.currency],
-                  new Date(tickerData?.date),
+                  new Date(tickerData?.date)
                 )}
               </p>
               <p className="text-xl">
-                Price: ‎ 
+                Price: ‎
                 {formatCurrency(
                   currencyToIntlZone[tickerData.currency],
                   tickerData.price,
-                  tickerData?.currency,
+                  tickerData?.currency
                 )}
               </p>
               <p className="text-xl">Currency: {tickerData?.currency}</p>
