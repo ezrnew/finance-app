@@ -1,9 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import { Tooltip } from "react-tooltip";
 
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,20 +11,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { PortfolioTableItem } from "./PortfolioTable";
+import { cn } from "@/lib/utils";
 import {
   CurrencyType,
   currencyToIntlZone,
   formatCurrency,
   formatDateShort,
 } from "@/utils/formatters";
-import { cn } from "@/lib/utils";
+import { Asset } from "@/store/portfolioSlice";
 
 export const getPortfolioColumns = (
   currency: CurrencyType,
   sellAssetHandler: (id: string) => void
 
-): ColumnDef<PortfolioTableItem>[] => {
+): ColumnDef<Asset>[] => {
+
+
   return [
     {
       accessorKey: "name",
@@ -66,7 +67,7 @@ export const getPortfolioColumns = (
     },
 
     {
-      accessorKey: "originalCurrrencyPrice",
+      accessorKey: "originalCurrencyPrice",
       header: "Price",
       cell: ({ row }) => {
         //? cannot start with number
@@ -75,30 +76,30 @@ export const getPortfolioColumns = (
           <div
             id={id}
             className={cn(
-              row.original.originalCurrrencyPrice >
-                row.original.originalCurrrencyBuyPrice && "text-green-500 ",
-              row.original.originalCurrrencyPrice <
-                row.original.originalCurrrencyBuyPrice && "text-red-500",
+              row.original.originalCurrencyPrice >
+                row.original.originalCurrencyBuyPrice && "text-green-500 ",
+              row.original.originalCurrencyPrice <
+                row.original.originalCurrencyBuyPrice && "text-red-500",
             )}
           >
             {formatCurrency(
               currencyToIntlZone[row.original.currency],
-              row.getValue("originalCurrrencyPrice"),
+              row.getValue("originalCurrencyPrice"),
               row.original.currency,
             )}
             <Tooltip anchorSelect={"#" + id} place={"bottom"}>
               <p
                 className={cn(
-                  row.original.originalCurrrencyPrice >
-                    row.original.originalCurrrencyBuyPrice && "text-green-500 ",
-                  row.original.originalCurrrencyPrice <
-                    row.original.originalCurrrencyBuyPrice && "text-red-500",
+                  row.original.originalCurrencyPrice >
+                    row.original.originalCurrencyBuyPrice && "text-green-500 ",
+                  row.original.originalCurrencyPrice <
+                    row.original.originalCurrencyBuyPrice && "text-red-500",
                 )}
               >
                 {" "}
                 {(
-                  (row.original.originalCurrrencyPrice /
-                    row.original.originalCurrrencyBuyPrice -
+                  (row.original.originalCurrencyPrice /
+                    row.original.originalCurrencyBuyPrice -
                     1) *
                   100
                 ).toFixed(2) + "%"}
@@ -109,13 +110,13 @@ export const getPortfolioColumns = (
       },
     },
     {
-      accessorKey: "originalCurrrencyBuyPrice",
+      accessorKey: "originalCurrencyBuyPrice",
       header: "Buy Price",
       cell: ({ row }) => (
         <div className="">
           {formatCurrency(
             currencyToIntlZone[row.original.currency],
-            row.getValue("originalCurrrencyBuyPrice"),
+            row.getValue("originalCurrencyBuyPrice"),
             row.original.currency,
           )}
         </div>

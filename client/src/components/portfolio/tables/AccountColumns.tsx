@@ -1,8 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,16 +10,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { PortfolioTableItem } from "./PortfolioTable";
+import { portfolioActions } from "@/store/portfolioSlice";
+import { store } from "@/store/store";
 import {
-  CurrencyType,
-  currencyToIntlZone,
-  formatCurrency,
-  formatDateShort,
+  formatCurrency
 } from "@/utils/formatters";
 import { AccountsTableItem } from "./AccountsTable";
-import { store } from "@/store/store";
-import { portfolioActions } from "@/store/portfolioSlice";
 
 interface Props {
   addPaymentHandler: (accountName: string) => void;
@@ -46,13 +41,14 @@ export const accountColumns = ({
         </div>
       ),
     },
-    {
-      accessorKey: "assets",
-      header: "Assets",
-      cell: ({ row }) => (
-        <div className="">{row.getValue("assets").length}</div>
-      ),
-    },
+ //todo
+    // {
+    //   accessorKey: "assets",
+    //   header: "Assets",
+    //   cell: ({ row }) => (
+    //     <div className="">{row.getValue("assets").length}</div>
+    //   ),
+    // },
 
     {
       id: "actions",

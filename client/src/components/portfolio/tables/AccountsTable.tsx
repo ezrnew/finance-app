@@ -24,9 +24,9 @@ import {
 } from "@/components/ui/table";
 
 export type AccountsTableItem = {
+  id:string;
   title: string;
   cash: number;
-  assets: any[];
 };
 
 export function AccountsTable({

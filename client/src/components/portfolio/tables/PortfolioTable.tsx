@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -13,17 +12,14 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+import { ChevronDown } from "lucide-react";
+import * as React from "react";
 
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -35,34 +31,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getPortfolioColumns } from "./PortfolioColumns";
-import { CurrencyType } from "@/utils/formatters";
-
-export interface PortfolioTableItem {
-  id: string;
-  name: string;
-  type: string;
-  value: number;
-  currency: CurrencyType;
-  price: number;
-  originalCurrrencyPrice: number;
-  originalCurrrencyBuyPrice: number;
-  quantity: number;
-  buyDate: Date;
-  account: string;
-}
+import { Asset } from "@/store/portfolioSlice";
 
 export function PortfolioTable({
   data,
   portfolioColumns,
 }: {
-  data: PortfolioTableItem[];
-  portfolioColumns: ColumnDef<PortfolioTableItem>[];
-
+  data: Asset[];
+  portfolioColumns: ColumnDef<Asset>[];
 }) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    [],
+    []
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -137,7 +117,7 @@ export function PortfolioTable({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext(),
+                            header.getContext()
                           )}
                     </TableHead>
                   );
@@ -157,7 +137,7 @@ export function PortfolioTable({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext(),
+                        cell.getContext()
                       )}
                     </TableCell>
                   ))}

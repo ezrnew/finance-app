@@ -1,10 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
+import { Asset } from 'src/common/types/portfolioAsset.type';
 import { CurrencyType } from 'src/general/currencies/schema/currencyRate.schema';
 
 export type PortfolioDocument = HydratedDocument<Portfolio>;
 
 export type OperationType = 'sell' | 'buy' | 'withdraw' | 'deposit';
+
+
 @Schema()
 export class Portfolio {
   @Prop()
@@ -29,7 +32,11 @@ export class Portfolio {
     buyDate?: Date;
   }[];
   @Prop()
-  accounts: { id: string; title: string; cash: number; assets: any[] }[];
+  accounts: { id: string; title: string; cash: number }[];
+
+
+  @Prop()
+  assets: Asset[]
 }
 
 export const PortfolioSchema = SchemaFactory.createForClass(Portfolio);

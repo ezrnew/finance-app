@@ -27,10 +27,22 @@ export const PortfolioPage = () => {
   const { showPortfolioSidebar } = useTypedSelector((state) => state.misc);
   const { setAvailablePortfolios, setCurrentPortfolio } = useActions();
   const [isManageView, setIsManageView] = useState(false);
-  const assets = useMemo(
-    () => getFlattenAssets(currentPortfolio?.accounts || []),
-    [currentPortfolio]
-  );
+  //todo
+  const assets = useMemo(() => {
+    const updatedAssets = structuredClone(currentPortfolio?.assets);
+
+    if (updatedAssets) {
+      updatedAssets.forEach(
+        (asset) =>
+          // @ts-ignore
+          (asset.account = currentPortfolio?.accounts.find(
+            (item) => item.id === asset.accountId
+          )?.title)
+      );
+    }
+
+    return updatedAssets;
+  }, [currentPortfolio]);
 
   useEffect(() => {
     const fetchAllPortfolios = async () => {
@@ -141,11 +153,11 @@ export const PortfolioPage = () => {
                       currentPortfolio?.currency || ("PLN" as CurrencyType)
                     }
                     freeCash={currentPortfolio?.freeCash || 0}
-                    assets={assets}
+                    assets={assets || []}
                   />
 
                   <PortfolioTable
-                    data={assets}
+                    data={assets || []}
                     portfolioColumns={getPortfolioColumns(
                       currentPortfolio?.currency || "PLN",
                       sellAssetHandler
@@ -161,17 +173,17 @@ export const PortfolioPage = () => {
   );
 };
 
-export function getFlattenAssets(
-  accounts: { title: string; cash: number; assets: any[] }[]
-) {
-  const result: any = [];
+// export function getFlattenAssets(
+//   accounts: { title: string; cash: number; assets: any[] }[]
+// ) {
+//   const result: any = [];
 
-  accounts.forEach((account) => {
-    const { title, assets } = account;
-    assets.forEach((asset) => {
-      result.push({ ...asset, account: title });
-    });
-  });
+//   accounts.forEach((account) => {
+//     const { title, assets } = account;
+//     assets.forEach((asset) => {
+//       result.push({ ...asset, account: title });
+//     });
+//   });
 
-  return result;
-}
+//   return result;
+// }

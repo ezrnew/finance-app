@@ -37,7 +37,7 @@ export class BackendConnectorSingleton {
   }
 
   async getAllAssetNames() {
-    const res = await this.httpRequest("/assets");
+    const res = await this.httpRequest("/instruments");
 
     if (res?.ok) {
       return res.json();
@@ -98,7 +98,7 @@ export class BackendConnectorSingleton {
   async buyAsset(
     portfolioId: string,
     category: string,
-    account: string,
+    accountId: string,
     asset: { name: string; type: string },
     date: Date,
     currency: string,
@@ -111,7 +111,7 @@ export class BackendConnectorSingleton {
       body: {
         portfolioId,
         category,
-        account,
+        accountId,
         asset,
         date,
         currency,
@@ -132,11 +132,11 @@ export class BackendConnectorSingleton {
     portfolioId: string,
     assetId: string,
     category: string,
-    account: string,
+    accountId: string,
     quantityToSell: number,
   ) {
     const res = await this.httpRequest("/portfolios/sellAsset", "POST", {
-      body: { portfolioId, category, account, assetId, quantityToSell },
+      body: { portfolioId, category, accountId, assetId, quantityToSell },
     });
 
     if (res?.ok) {

@@ -14,6 +14,27 @@ export type OperationHistoryType = {
   buyDate?: Date;
 };
 
+
+export type AssetType = 'bond_pltr' | 'ticker';
+
+export type Asset = {
+  accountId: string;
+  category: string;
+
+  type: AssetType;
+  id: string;
+  name: string;
+  date: Date;
+  currency: CurrencyType;
+  currencyRate: number;
+  buyPrice: number;
+  price: number;
+  originalCurrencyPrice: number;
+  originalCurrencyBuyPrice: number;
+  quantity: number;
+};
+
+
 export interface Portfolio {
   title: string;
   currency: CurrencyType;
@@ -21,7 +42,8 @@ export interface Portfolio {
   freeCash: number;
   categories: { category: string; value: number }[];
   operationHistory: OperationHistoryType[];
-  accounts: { id: string; title: string; cash: number; assets: any[] }[];
+  accounts: { id: string; title: string; cash: number;  }[];
+  assets: Asset[]
 }
 
 interface State {
@@ -33,7 +55,6 @@ interface State {
     id: string;
     title: string;
     cash: number;
-    assets: any[];
   } | null;
 
   updatePortfolioData: boolean;
@@ -70,7 +91,6 @@ const portfolioSlice = createSlice({
         id: string;
         title: string;
         cash: number;
-        assets: any[];
       }>,
     ) => {
       state.currentAccount = action.payload;

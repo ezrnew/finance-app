@@ -60,6 +60,9 @@ export class BondsPolishTreasuryService {
       bonds.filter((bond) => bond.type.startsWith('EDO')),
       ike,
     );
+
+    console.log("RESULT EDO",resultEDO)
+
     const resultROD = await this.calculateROD(
       bonds.filter((bond) => bond.type.startsWith('ROD')),
       ike,
@@ -92,7 +95,7 @@ export class BondsPolishTreasuryService {
   }
 
   private async calculateEDO(bonds: { type: string; day: number }[], ike: boolean) {
-    if (bonds.length === 0) return;
+    if (bonds.length === 0) return [];
     const currentDate = new Date();
 
     const newBonds: {
@@ -202,7 +205,7 @@ export class BondsPolishTreasuryService {
   }
 
   private async calculateROD(bonds: { type: string; day: number }[], ike: boolean) {
-    // if (bonds.length === 0) return;
+    if (bonds.length === 0) return[];
 
     const currentDate = new Date();
 
@@ -313,7 +316,7 @@ export class BondsPolishTreasuryService {
   }
 
   private async calculateROS(bonds: { type: string; day: number }[], ike: boolean) {
-    // if (bonds.length === 0) return;
+    if (bonds.length === 0) return[];
 
     const currentDate = new Date();
 
@@ -424,6 +427,9 @@ export class BondsPolishTreasuryService {
   }
 
   private async calculateCOI(bonds: { type: string; day: number }[], ike: boolean) {
+    if (bonds.length === 0) return[];
+
+
     const currentDate = new Date();
 
     const newBonds: {
@@ -537,6 +543,9 @@ export class BondsPolishTreasuryService {
   }
 
   private async calculateOTS(bonds: { type: string; day: number }[], ike: boolean) {
+
+    if (bonds.length === 0) return[];
+
     const newBonds: {
       type: string;
       day: number;
@@ -590,6 +599,9 @@ export class BondsPolishTreasuryService {
   }
 
   private async calculateTOS(bonds: { type: string; day: number }[], ike: boolean) {
+    if (bonds.length === 0) return[];
+
+
     const newBonds: {
       type: string;
       day: number;

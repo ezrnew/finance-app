@@ -29,7 +29,7 @@ export const BuyAssetModal = () => {
 
   const [asset, setAsset] = useState<assetType | null>(null);
   const [category, setCategory] = useState<string | null>(null);
-  const [account, setAccount] = useState<string | null>(null);
+  const [account, setAccount] = useState<{name:string,id:string} | null>(null);
 
   const [date, setDate] = useState<Date | undefined>(new Date());
 
@@ -62,7 +62,7 @@ export const BuyAssetModal = () => {
   const categoryNames = currentPortfolio?.categories.map(
     (item) => item.category
   );
-  const accountNames = currentPortfolio?.accounts.map((item) => item.title);
+  const accounts = currentPortfolio?.accounts.map((item) => {return {name:item.title,id:item.id}});
 
   const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -73,9 +73,9 @@ export const BuyAssetModal = () => {
 
     const result = await server.buyAsset(
       currentPortfolioId,
-      // @ts-ignore
-      category,
-      account,
+      category ||"",
+      account?.id ||"",
+      //@ts-ignore
       asset,
       date,
       currency,
@@ -108,7 +108,7 @@ export const BuyAssetModal = () => {
     }
 
     const acc = currentPortfolio?.accounts.find(
-      (item) => item.title === account
+      (item) => item.id === account?.id
     );
     if (!acc) {
       setError("account doesnt exist!");
@@ -172,7 +172,7 @@ export const BuyAssetModal = () => {
 
           <FormField label="Account">
             <InputDropdown
-              data={accountNames || []}
+              data={accounts || []}
               value={account}
               setValue={setAccount}
               placeholder="Search Accounts..."
