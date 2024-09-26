@@ -52,9 +52,13 @@ export class BondsPolishTreasuryService {
       }
     }
   }
-
+//todo refactor that it mutates input bonds instead of updating
   async handleBondsMultiple(bonds: { type: string; day: number }[], ike: boolean) {
     const updatedBonds = [];
+
+    const bondsdoupdate = bonds.filter((bond) => bond.type.startsWith('EDO'))
+
+    console.log("BONDSY",bonds)
 
     const resultEDO = await this.calculateEDO(
       bonds.filter((bond) => bond.type.startsWith('EDO')),

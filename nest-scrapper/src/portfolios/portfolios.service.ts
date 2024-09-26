@@ -308,7 +308,7 @@ async reevaluateAssets(username, portfolioId: string) {
 
   // console.log("portfelik",portfolio)
 
-  console.log("PORTFOLIO",portfolio)
+  // console.log("PORTFOLIO",portfolio)
   const reevaluatedPortfolio = this.reeavluateCategoriesAndTotalValue(portfolio) //this.reeavluateCategoriesAndTotalValue(portfolio);
 
   await this.portfolioModel.findByIdAndUpdate(portfolioId, reevaluatedPortfolio);
@@ -345,7 +345,7 @@ private async handleAssetsUpdate(assets: Asset[], portfolioCurrency: CurrencyTyp
   console.log("assety",assets)
   //todo bondsPolishTreasuryIke = ...
   const bondsPolishTreasury = assets.filter(item =>item.type ==="bond_pltr") as (Asset & {day:number})[]
-  bondsPolishTreasury.forEach(item =>{item.day = item.date.getDate()})
+  bondsPolishTreasury.forEach(item =>{console.log("DACISKO",item.date);item.day = new Date(item.date).getDate()})
 
   // }
   const tickers = assets.filter(item =>item.type ==="ticker")
@@ -367,7 +367,7 @@ private async handleAssetsUpdate(assets: Asset[], portfolioCurrency: CurrencyTyp
       }),
     );
 
-    console.log("tickersy",tickers)
+    console.log("bondsy do update",bondsPolishTreasury)
 
 const updatedBonds = await this.bonds_pltrService.handleBondsMultiple(bondsPolishTreasury,false)
 

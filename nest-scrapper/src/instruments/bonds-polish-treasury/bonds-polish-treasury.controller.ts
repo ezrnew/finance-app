@@ -9,13 +9,13 @@ export class BondsPolishTreasuryController {
   async testowy() {
 
     return this.polishTreasuryService.handleBondsMultiple([
-      { type: 'EDO0521', day: 15 },
-      { type: 'EDO0434', day: 1 },
-      { type: 'EDO0330', day: 1 },
-      { type: 'ROD0135', day: 15 },
-      { type: 'COI0726', day: 30 },
-      { type: 'OTS1024', day: 1 },
-      { type: 'TOS0425', day: 1 },
+      { name: 'EDO0521', day: 15 },
+      { name: 'EDO0434', day: 1 },
+      { name: 'EDO0330', day: 1 },
+      { name: 'ROD0135', day: 15 },
+      { name: 'COI0726', day: 30 },
+      { name: 'OTS1024', day: 1 },
+      { name: 'TOS0425', day: 1 },
     ],false)
   }
 
