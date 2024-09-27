@@ -5,7 +5,7 @@ import { InputDropdown } from "@/components/ui/input-dropdown";
 import { ModalWrapper } from "@/components/ui/modal-wrapper";
 import { server } from "@/connection/backend/backendConnectorSingleton";
 import { useActions, useTypedSelector } from "@/hooks/use-redux";
-import { getFlattenAssets } from "@/pages/PortfolioPage";
+import { Asset } from "@/store/portfolioSlice";
 import { toast } from "@/utils/toasts";
 import { X } from "lucide-react";
 import React, { useState } from "react";
@@ -17,15 +17,14 @@ export const SellAssetModal = () => {
   const id = new URLSearchParams(location.search).get("id");
   const navigate = useNavigate();
 
-  const { currentPortfolio, currentPortfolioId } = useTypedSelector(
-    (state) => state.portfolio
-  );
+  const { currentPortfolioId,currentPortfolio } = useTypedSelector((state) => state.portfolio);
   const { refetchPortfolioData: updatePortfolioData } = useActions();
 
-  const assets = getFlattenAssets(currentPortfolio?.accounts || []);
+  //todo
+  const assets = currentPortfolio?.assets ||[];
 
-  const [asset, setAsset] = useState<any>(
-    id ? assets.find((asset: any) => asset.id === id) : null
+  const [asset, setAsset] = useState<Asset|null>(
+  /*  id ? assets.find((asset: Asset) => asset.id === id) : */null
   );
 
   const [quantity, setQuantity] = useState(0);
@@ -34,11 +33,13 @@ export const SellAssetModal = () => {
   const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (!asset) return;
+
     const result = await server.sellAsset(
       currentPortfolioId,
       asset.id,
       asset.category,
-      asset.account,
+      asset.accountId,
       quantity
     );
     if (result) {
@@ -85,8 +86,8 @@ export const SellAssetModal = () => {
               disabled={!asset}
               onChange={(e) => {
                 setQuantity(
-                  Number(e.target.value) > asset.quantity
-                    ? asset.quantity
+                  Number(e.target.value) > (asset?.quantity ||0)
+                    ? (asset?.quantity ||0)
                     : Number(e.target.value)
                 );
               }}

@@ -6,7 +6,7 @@ historical asset's data
 historical portfolio comparision to CPI
 ---
 
-
+portfolios.service -> add some cache array (if asset data already received from db in current update request then dont make another request for asset with same type 'vwra.uk')
 assets.service -> findAll -> return first x elements matching query instead of  all db
 portfolios.service -> cleanup buy/sell functions
 portfolios.service -> validate if porft/account/category name is taken server side

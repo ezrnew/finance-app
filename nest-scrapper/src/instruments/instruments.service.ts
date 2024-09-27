@@ -25,7 +25,7 @@ export class InstrumentsService {
     tickers.forEach((item) =>
       assets.push({
         name: item._id.name,
-        type: 'tickers',
+        type: 'ticker',
         currency: item._id.currency,
         price: item._id.price,
       }),

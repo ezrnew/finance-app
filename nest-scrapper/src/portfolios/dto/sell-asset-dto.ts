@@ -4,6 +4,6 @@ export class SellAssetDto {
   portfolioId: string;
   assetId: string;
   category: string;
-  account: string;
+  accountId: string;
   quantityToSell: number;
 }

@@ -1,13 +1,15 @@
 import { ObjectId } from 'mongoose';
+import { AssetType } from 'src/common/types/portfolioAsset.type';
+import { CurrencyType } from 'src/general/currencies/schema/currencyRate.schema';
 
 export class BuyAssetDto {
   portfolioId: string;
   category: string;
-  account: string;
+  accountId: string;
 
-  asset: { name: string; type: string };
+  asset: { name: string; type: AssetType };
   date: Date;
-  currency: string;
+  currency: CurrencyType;
   currencyRate: number;
   price: number;
   quantity: number;
