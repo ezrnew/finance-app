@@ -13,7 +13,7 @@ import { CurrenciesService } from '../general/currencies/currencies.service';
 import { DeleteAccountDto } from './dto/delete-account.dto';
 import { CurrencyType } from 'src/general/currencies/schema/currencyRate.schema';
 import { DeleteCategoryDto } from './dto/delete-category.dto';
-import { Asset, AssetType } from 'src/common/types/portfolioAsset.type';
+import { Asset, AssetType, AssetWithDay } from 'src/common/types/portfolioAsset.type';
 
 @Injectable()
 export class PortfoliosService {
@@ -27,9 +27,7 @@ export class PortfoliosService {
     private currenciesService: CurrenciesService,
   ) {}
 
-
-
-  async create(username:string, createPortfolioDto: CreatePortfolioDto) {
+  async create(username: string, createPortfolioDto: CreatePortfolioDto) {
     const user = await this.userModel.findOne({ username });
 
     const newPortfolio = new this.portfolioModel({
@@ -39,7 +37,7 @@ export class PortfoliosService {
       operationHistory: [],
       categories: [],
       accounts: [],
-      assets: []
+      assets: [],
     });
 
     user.portfolios.push(newPortfolio.id);
@@ -65,7 +63,6 @@ export class PortfoliosService {
   }
 
   async addAccount(username: string, portfolioId: string, name: string) {
-    
     const userOwnsPortfolio = await this.userModel.findOne({ username, portfolios: portfolioId });
     if (!userOwnsPortfolio) throw new UnauthorizedException();
 
@@ -86,8 +83,6 @@ export class PortfoliosService {
   }
 
   async buyAsset(username: string, buyAssetDto: BuyAssetDto) {
-
-    
     const userOwnsPortfolio = await this.userModel.findOne({ username, portfolios: buyAssetDto.portfolioId });
     if (!userOwnsPortfolio) throw new UnauthorizedException();
 
@@ -102,14 +97,12 @@ export class PortfoliosService {
     if (!portfolioCategory) return false;
 
     portfolioCategory.value += totalPrice;
-//
+    //
     const selectedIndex = portfolio.categories.findIndex((item) => item.category === buyAssetDto.category);
 
-    portfolio.categories[selectedIndex] = portfolioCategory;//?
+    portfolio.categories[selectedIndex] = portfolioCategory; //?
 
     const portfolioAccount = portfolio.accounts.find((item) => item.id === buyAssetDto.accountId);
-
-
 
     if (!portfolioAccount) return false;
 
@@ -118,7 +111,7 @@ export class PortfoliosService {
     if (portfolioAccount.cash < 0) return false;
 
     portfolio.assets.push({
-      accountId:buyAssetDto.accountId,
+      accountId: buyAssetDto.accountId,
       category: buyAssetDto.category,
       id: crypto.randomUUID(),
       name: buyAssetDto.asset.name,
@@ -144,19 +137,17 @@ export class PortfoliosService {
       quantity: buyAssetDto.quantity,
       buyDate: buyAssetDto.date,
     });
-//
+    //
 
     const selectedIndex2 = portfolio.accounts.findIndex((item) => item.title === buyAssetDto.accountId);
 
     portfolio.accounts[selectedIndex2] = portfolioAccount;
-//
+    //
 
     return portfolio.save();
   }
 
   async sellAsset(username: string, sellAssetDto: SellAssetDto) {
-
-
     const userOwnsPortfolio = await this.userModel.findOne({
       username,
       portfolios: sellAssetDto.portfolioId,
@@ -176,27 +167,18 @@ export class PortfoliosService {
 
     const accountIndex = portfolio.accounts.findIndex((item) => item.id === sellAssetDto.accountId);
 
+    const { ...sellItem } = portfolio.assets.find((item) => item.id === sellAssetDto.assetId);
 
-    const { ...sellItem } = portfolio.assets.find(
-      (item) => item.id === sellAssetDto.assetId,
-    );
-
-    const sellItemIndex = portfolio.assets.findIndex(
-      (item) => item.id === sellAssetDto.assetId,
-    );
+    const sellItemIndex = portfolio.assets.findIndex((item) => item.id === sellAssetDto.assetId);
 
     sellItem.quantity = sellItem.quantity - sellAssetDto.quantityToSell;
 
-
     if (sellItem.quantity <= 0) {
-      portfolio.assets = portfolio.assets.filter(
-        (item) => item.id !== sellAssetDto.assetId,
-      );
+      portfolio.assets = portfolio.assets.filter((item) => item.id !== sellAssetDto.assetId);
     } else {
       portfolio.assets[sellItemIndex].quantity =
         portfolio.assets[sellItemIndex].quantity - sellAssetDto.quantityToSell;
     }
-
 
     const sellAmount = sellAssetDto.quantityToSell * sellItem.price;
 
@@ -216,7 +198,6 @@ export class PortfoliosService {
       quantity: sellAssetDto.quantityToSell,
     });
 
-
     try {
       await this.portfolioModel.findByIdAndUpdate(sellAssetDto.portfolioId, portfolio);
     } catch (error) {
@@ -224,7 +205,6 @@ export class PortfoliosService {
     }
 
     return 3;
-
   }
 
   async addAccountOperation(username, addOperationDto: AddOperationDto) {
@@ -292,172 +272,74 @@ export class PortfoliosService {
     return this.portfolioModel.findByIdAndUpdate(deleteCategoryDto.portfolioId, portfolio);
   }
 
+  //! update
 
+  async reevaluateAssets(username, portfolioId: string) {
+    const userOwnsPortfolio = await this.userModel.findOne({ username, portfolios: portfolioId });
+    if (!userOwnsPortfolio) throw new UnauthorizedException();
 
-//! update
+    const portfolio = await this.portfolioModel.findById(portfolioId);
 
-async reevaluateAssets(username, portfolioId: string) {
-  const userOwnsPortfolio = await this.userModel.findOne({ username, portfolios: portfolioId });
-  if (!userOwnsPortfolio) throw new UnauthorizedException();
+    await this.handleAssetsUpdate(portfolio.assets, portfolio.currency);
 
-  const portfolio = await this.portfolioModel.findById(portfolioId);
+    const reevaluatedPortfolio = this.reeavluateCategoriesAndTotalValue(portfolio);
 
+    await this.portfolioModel.findByIdAndUpdate(portfolioId, reevaluatedPortfolio);
 
-  await this.handleAssetsUpdate(portfolio.assets,portfolio.currency)
+    return portfolio;
+  }
 
+  private async handleAssetsUpdate(assets: Asset[], portfolioCurrency: CurrencyType) {
+    //todo bondsPolishTreasuryIke = ...
+    const bondsPolishTreasury = assets.filter((item) => item.type === 'bond_pltr') as AssetWithDay[];
+    bondsPolishTreasury.forEach((item) => {
+      console.log('DACISKO', item.date);
+      item.day = new Date(item.date).getDate();
+    });
 
-  // console.log("portfelik",portfolio)
+    // }
+    const tickers = assets.filter((item) => item.type === 'ticker');
 
-  // console.log("PORTFOLIO",portfolio)
-  const reevaluatedPortfolio = this.reeavluateCategoriesAndTotalValue(portfolio) //this.reeavluateCategoriesAndTotalValue(portfolio);
-
-  await this.portfolioModel.findByIdAndUpdate(portfolioId, reevaluatedPortfolio);
-
-  
-  return portfolio
-
-
-/*
-
-  const promises = portfolio.accounts.map(async (account) => {
     await Promise.all(
-      account.assets.map(async (asset) => {
-        const [price, currencyRate] = await this.handleAssetUpdate(asset, portfolio.currency);
-        if (price && currencyRate) {
-          asset.price = price * currencyRate;
-          asset.originalCurrrencyPrice = price;
-        }
-      }),
-    );
-  });
-  await Promise.all(promises);
-
-  const reevaluatedPortfolio = this.reeavluateCategoriesAndTotalValue(portfolio);
-
-  await this.portfolioModel.findByIdAndUpdate(portfolioId, reevaluatedPortfolio);
-
-  return reevaluatedPortfolio;*/
-}
-
-
-private async handleAssetsUpdate(assets: Asset[], portfolioCurrency: CurrencyType) {
-
-  console.log("assety",assets)
-  //todo bondsPolishTreasuryIke = ...
-  const bondsPolishTreasury = assets.filter(item =>item.type ==="bond_pltr") as (Asset & {day:number})[]
-  bondsPolishTreasury.forEach(item =>{console.log("DACISKO",item.date);item.day = new Date(item.date).getDate()})
-
-  // }
-  const tickers = assets.filter(item =>item.type ==="ticker")
-
-  const updatedTickers = await Promise.all(
       tickers.map(async (asset) => {
-
         const currencyRate = await this.currenciesService.getCurrencyRate(asset.currency, portfolioCurrency);
 
         const price = (await this.tickerService.calculateOne(asset.name)).price;
 
-        console.log("CENA",price)
-
-        if(price && currencyRate){
-          asset.price = price*currencyRate
-          asset.originalCurrencyPrice = price
-        }      
-
+        if (price && currencyRate) {
+          asset.price = price * currencyRate;
+          asset.originalCurrencyPrice = price;
+        }
       }),
     );
 
-    console.log("bondsy do update",bondsPolishTreasury)
+    await this.bonds_pltrService.updateBondsMany(bondsPolishTreasury, false);
 
-const updatedBonds = await this.bonds_pltrService.handleBondsMultiple(bondsPolishTreasury,false)
-
-console.log("UPDATED BONDSY",updatedBonds)
-
-
+    console.log('done');
   }
 
-  // const currencyRate = await this.currenciesService.getCurrencyRate(asset.currency, portfolioCurrency);
+  private reeavluateCategoriesAndTotalValue(
+    portf: Document<unknown, {}, Portfolio> &
+      Portfolio & {
+        _id: Types.ObjectId;
+      },
+  ) {
+    portf.categories.forEach((category) => (category.value = 0));
+    portf.totalValue = 0;
+    portf.freeCash = 0;
 
-  // if (asset.type === 'bond_pltr') {
-  //   const bondValue = await this.bonds_pltrService.handleBond(asset.name);
-  //   let bondResult: number | undefined;
-  //   //@ts-ignore //todo fix
-  //   if (bondValue) bondResult = asset.buyPrice * bondValue; //?
-  //   return [bondResult, currencyRate];
-  // }
-  // if (asset.type === 'tickers') {
-  //   const tickerResult = (await this.tickerService.calculateOne(asset.name)).price;
-  //   return [tickerResult, currencyRate];
-  // }
+    portf.accounts.forEach((account) => {
+      portf.freeCash += account.cash;
+    });
 
-  // this._logger.warn('RETURNING INVALID DATA');
-  // return [];
-//}
+    portf.assets.forEach((asset) => {
+      const index = portf.categories.findIndex((category) => category.category === asset.category);
+      if (index !== -1) portf.categories[index].value += asset.price * asset.quantity;
+    });
 
-// private async handleAssetUpdate(asset: any, portfolioCurrency: CurrencyType) {
-  
-//   const currencyRate = await this.currenciesService.getCurrencyRate(asset.currency, portfolioCurrency);
-//   // console.log("currency rate:",currencyRate,asset.currency,portfolioCurrency)
+    portf.categories.forEach((category) => (portf.totalValue += category.value));
+    portf.totalValue += portf.freeCash;
 
-//   if (asset.type === 'bond_pltr') {
-//     const bondValue = await this.bonds_pltrService.handleBond(asset.name);
-//     let bondResult: number | undefined;
-//     //@ts-ignore //todo fix
-//     if (bondValue) bondResult = asset.buyPrice * bondValue; //?
-//     return [bondResult, currencyRate];
-//   }
-//   if (asset.type === 'tickers') {
-//     const tickerResult = (await this.tickerService.calculateOne(asset.name)).price;
-//     return [tickerResult, currencyRate];
-//   }
-
-//   this._logger.warn('RETURNING INVALID DATA');
-//   return [];
-// }
-
-
-
-private reeavluateCategoriesAndTotalValue(
-  portf: Document<unknown, {}, Portfolio> &
-    Portfolio & {
-      _id: Types.ObjectId;
-    },
-) {
-  portf.categories.forEach((category) => (category.value = 0));
-  portf.totalValue = 0;
-  portf.freeCash = 0;
-
-  portf.accounts.forEach((account) => {
-    portf.freeCash += account.cash;
-
-
-  });
-
-  portf.assets.forEach((asset)=>{
-
-    const index = portf.categories.findIndex((category) => category.category === asset.category);
-    if (index !== -1) portf.categories[index].value += asset.price * asset.quantity;
-  })
-
-
-      // //@ts-ignore
-      // account.assets.forEach((asset) => {
-      //   const index = portf.categories.findIndex((category) => category.category === asset.category);
-      //   if (index !== -1) portf.categories[index].value += asset.price * asset.quantity;
-      // });
-
-  portf.categories.forEach((category) => (portf.totalValue += category.value));
-  portf.totalValue += portf.freeCash;
-
-  return portf;
-}
-
-
-
-
-
-
-
-
-
+    return portf;
+  }
 }

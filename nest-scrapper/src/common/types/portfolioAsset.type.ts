@@ -18,3 +18,8 @@ export type Asset = {
   originalCurrencyBuyPrice: number;
   quantity: number;
 };
+
+export type AssetWithDay  = Asset & {
+day:number
+
+};

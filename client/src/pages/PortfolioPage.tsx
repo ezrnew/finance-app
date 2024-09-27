@@ -29,6 +29,7 @@ export const PortfolioPage = () => {
   const [isManageView, setIsManageView] = useState(false);
   //todo
   const assets = useMemo(() => {
+    console.log("PORTFOLIO",currentPortfolio)
     const updatedAssets = structuredClone(currentPortfolio?.assets);
 
     if (updatedAssets) {
