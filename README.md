@@ -14,7 +14,7 @@ The following diagram shows how client is receiving up to date assets data (curr
 - There are also "scheduled scrappers" which run at some time interval. They provide data that is neccessary for reevaluating assets such as  currency rates or  [cpi](https://en.wikipedia.org/wiki/Consumer_price_index) values (only polish atm).
 
 # Portfolio
-Portfolio is the main concept of this application where all the users' assets are stored. User can have multiple portfolios to keep investitions separated, although a single portfolio is enough access all features.
+Portfolio is the main concept of this application where all the users' assets are stored. User can have multiple portfolios to keep investitions separated, although a single portfolio is enough to access all features.
 
 ![example portfolio](https://raw.githubusercontent.com/ezrnew/finance-app/main/assets/example-portfolio.png "example portfolio")
 
@@ -47,28 +47,16 @@ If a specific asset is not in the database users can add it manually by its tick
 ### Backend
 - Core: Typescript, Nest.js, Express, REST
 - Database: Mongodb
-- User authentication & authorization: JWT tokens (OOTB nest.js module)
+- User authentication & authorization: JWT (OOTB nest.js module)
 - Web scraping: Puppeteer
-# Future plans
-There are some key features that im currently prioritizing:
-- Portolio historical value compared to CPI or other indexes
-- Including taxes when selling assets or depositing money - and extending portfolios' accounts to have "tax modifiers" like polish IKE
-- Preview assset historical prices 
-- Dark mode
-- Unit tests  (:
 
 
 
 # Installation
-install node modules in both client and nest-scrapper. Nest-scrapper also requires two config files in its root directory:
+install node modules in both client and nest-scrapper. Nest-scrapper also requires config file in its root directory:
 
  .env
  ```
 MONGODB_URI = YOUR_MONGODB_URI
+JWT_SECRET = YOUR_JWT_SECRET
  ```
- config.json
- ```
- { "jwtSecret": YOUR_JWT_SECRET }
- ```
-
-Thats it!
