@@ -19,8 +19,6 @@ export class PortfoliosTimeseriesController {
   @Get()
   async getValuesForPortfolio(@Query() dto:getPortfolioTimeseriesDto) {
 
-    console.log("PARAMSY",dto)
-
     return this.portfoliosTimeseriesService.getValuesForPortfolio(dto);
   }
 

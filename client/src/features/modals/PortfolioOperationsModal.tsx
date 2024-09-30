@@ -3,7 +3,7 @@ import { ModalWrapper } from "@/components/ui/modal-wrapper";
 import { useTypedSelector } from "@/hooks/use-redux";
 import { useNavigate } from "react-router-dom";
 
-export const PortfolioOperationsHistoryModal = () => {
+export const PortfolioOperationsModal = () => {
   const navigate = useNavigate();
 
   const { currentPortfolio } = useTypedSelector((state) => state.portfolio);

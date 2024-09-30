@@ -5,7 +5,7 @@ import { DeleteAccountModal } from "./features/modals/AccountDeleteModal";
 import { AddPaymentModal } from "./features/modals/AddPaymentModal";
 import { BuyAssetModal } from "./features/modals/BuyAssetModal";
 import { NewPortfolioModal } from "./features/modals/NewPortfolioModal";
-import { PortfolioOperationsHistoryModal } from "./features/modals/PortfolioOperationsHistoryModal";
+import { PortfolioOperationsModal } from "./features/modals/PortfolioOperationsModal";
 import { SellAssetModal } from "./features/modals/SellAssetModal";
 import { MainLayout } from "./layout/MainLayout";
 import { LoginPage } from "./pages/LoginPage";
@@ -15,6 +15,7 @@ import { ToolsPage } from "./pages/ToolsPage";
 import { store } from "./store/store";
 import { ls } from "./utils/localStorage";
 import { AuthorizedRoute } from "./features/AuthorizedRoute";
+import { PortfolioHistoryModal } from "./features/modals/PortfolioHistoryModal";
 
 function App() {
   const location = useLocation();
@@ -37,6 +38,9 @@ function App() {
               </AuthorizedRoute>
             }
           />
+
+
+          
           <Route path="/" element={<Navigate to="/login" />} />
 
           <Route
@@ -57,8 +61,15 @@ function App() {
             <Route path="/portfolio/payment" element={<AddPaymentModal />} />
             <Route
               path="/portfolio/operations"
-              element={<PortfolioOperationsHistoryModal />}
+              element={<PortfolioOperationsModal />}
             />
+
+<Route
+              path="/portfolio/history"
+              element={<PortfolioHistoryModal />}
+            />
+
+
             <Route
               path="/portfolio/deleteAccount"
               element={<DeleteAccountModal />}
