@@ -44,6 +44,8 @@ export interface Portfolio {
   operationHistory: OperationHistoryType[];
   accounts: { id: string; title: string; cash: number;  }[];
   assets: Asset[]
+  createdAt:Date,
+  timeseriesValueLastUpdate:Date
 }
 
 interface State {

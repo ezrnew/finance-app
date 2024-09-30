@@ -1,7 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose';
-import { Asset } from 'src/common/types/portfolioAsset.type';
-import { CurrencyType } from 'src/general/currencies/schema/currencyRate.schema';
+import { HydratedDocument } from 'mongoose';
 
 export type PortfolioDocument = HydratedDocument<PortfolioValueTimeseries>;
 

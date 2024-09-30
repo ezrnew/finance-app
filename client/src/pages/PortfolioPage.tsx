@@ -29,7 +29,7 @@ export const PortfolioPage = () => {
   const [isManageView, setIsManageView] = useState(false);
   //todo
   const assets = useMemo(() => {
-    console.log("PORTFOLIO",currentPortfolio)
+    console.log("PORTFOLIO", currentPortfolio);
     const updatedAssets = structuredClone(currentPortfolio?.assets);
 
     if (updatedAssets) {
@@ -97,6 +97,20 @@ export const PortfolioPage = () => {
           <div className=" text-2xl font-semibold flex flex-col flex-grow   max-w-screen-xl mx-auto ">
             <div className="flex justify-between p-6 ">
               <span className="flex space-x-2">{currentPortfolio?.title} </span>
+
+              <button
+                onClick={async () => {
+                  const data = await server.getPortfolioTimeseries(
+                    currentPortfolioId,
+                    new Date (Date.now() -24*60*60*1000) || new Date(Date.now()),
+                    new Date(Date.now())
+                  );
+
+                  console.log("DATA",data)
+                }}
+              >
+                TESTOWY
+              </button>
               <div className="flex space-x-2 md:space-x-4">
                 <Button asChild>
                   <Link to="buy" state={{ background: location }}>

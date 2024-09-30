@@ -14,6 +14,8 @@ import {
   PortfolioValueTimeseries,
   PortfolioValueTimeseriesSchema,
 } from './schemas/portfolioValueTimeseries.schema';
+import { PortfoliosTimeseriesService } from './portfoliosTimeseries.service';
+import { PortfoliosTimeseriesController } from './portfolios-timeseries.controller';
 
 @Module({
   imports: [
@@ -26,7 +28,7 @@ import {
     TickersModule,
     CurrenciesModule,
   ],
-  providers: [PortfoliosService],
-  controllers: [PortfoliosController],
+  providers: [PortfoliosService,PortfoliosTimeseriesService],
+  controllers: [PortfoliosController,PortfoliosTimeseriesController],
 })
 export class PortfoliosModule {}

@@ -199,16 +199,26 @@ export class BackendConnectorSingleton {
   }
 
 
-  // async deleteCategory(portfolioId: string, categoryName: string) {
-  //   const res = await this.httpRequest("/portfolios/category", "DELETE", {
-  //     body: { portfolioId, categoryName },
-  //   });
+  async getPortfolioTimeseries(portfolioId: string, from: Date,to:Date) {
 
-  //   if (res?.ok) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
+
+    const queryString = new URLSearchParams({
+      portfolioId: portfolioId,
+      from: from.toISOString(),  
+      to: to.toISOString()
+    }).toString();
+
+
+    const res = await this.httpRequest(`/portfolios-timeseries?${queryString}`);
+
+    if (res?.ok) {
+      return res.json();
+    }
+    return false;
+  }
+
+
+
 }
 
 export const server = new BackendConnectorSingleton("http://localhost:2137");

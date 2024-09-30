@@ -45,6 +45,13 @@ export class Portfolio {
 
   @Prop()
   ownContributionValue: number;
+
+
+  @Prop()
+  createdAt: Date;
+
+  @Prop()
+  timeseriesValueLastUpdate: Date;
 }
 
 export const PortfolioSchema = SchemaFactory.createForClass(Portfolio);

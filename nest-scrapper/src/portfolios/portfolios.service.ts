@@ -14,6 +14,9 @@ import { DeleteAccountDto } from './dto/delete-account.dto';
 import { CurrencyType } from 'src/general/currencies/schema/currencyRate.schema';
 import { DeleteCategoryDto } from './dto/delete-category.dto';
 import { Asset, AssetType, AssetWithDay } from 'src/common/types/portfolioAsset.type';
+import { PortfolioValueTimeseries } from './schemas/portfolioValueTimeseries.schema';
+import { PortfoliosTimeseriesService } from './portfoliosTimeseries.service';
+import { isDateOlderThanXHours } from '../common/utils/date.utils';
 
 @Injectable()
 export class PortfoliosService {
@@ -25,6 +28,7 @@ export class PortfoliosService {
     private bonds_pltrService: BondsPolishTreasuryService,
     private tickerService: TickersService,
     private currenciesService: CurrenciesService,
+    private portfolioTimeseriesService: PortfoliosTimeseriesService,
   ) {}
 
   async create(username: string, createPortfolioDto: CreatePortfolioDto) {
@@ -39,6 +43,8 @@ export class PortfoliosService {
       categories: [],
       accounts: [],
       assets: [],
+      createdAt: new Date(Date.now()),
+      timeseriesValueLastUpdate: new Date(Date.now()-(24*60*60*1000)) //? 24h
     });
 
     user.portfolios.push(newPortfolio.id);
@@ -284,7 +290,7 @@ export class PortfoliosService {
 
   //! update
 
-  async reevaluateAssets(username, portfolioId: string) {
+  async reevaluateAssets(username:string, portfolioId: string) {
     const userOwnsPortfolio = await this.userModel.findOne({ username, portfolios: portfolioId });
     if (!userOwnsPortfolio) throw new UnauthorizedException();
 
@@ -293,6 +299,15 @@ export class PortfoliosService {
     await this.handleAssetsUpdate(portfolio.assets, portfolio.currency);
 
     const reevaluatedPortfolio = this.reeavluateCategoriesAndTotalValue(portfolio);
+
+    if(isDateOlderThanXHours(reevaluatedPortfolio.timeseriesValueLastUpdate,8)){
+
+      this.portfolioTimeseriesService.addRecord(portfolio.id,portfolio.totalValue,portfolio.ownContributionValue)
+
+      portfolio.timeseriesValueLastUpdate = new Date(Date.now())
+
+    }
+
 
     await this.portfolioModel.findByIdAndUpdate(portfolioId, reevaluatedPortfolio);
 

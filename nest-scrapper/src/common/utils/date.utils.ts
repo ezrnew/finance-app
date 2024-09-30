@@ -133,8 +133,8 @@ export function isValidDayOfMonth(year: number, month: number, day: number): boo
   return day >= 1 && day <= 31;
 }
 
-export function IsDateOlderThanXHours(dateString: string, hours: number) {
-  const dateObject = new Date(dateString);
+export function isDateOlderThanXHours(date: string | Date, hours: number) {
+  const dateObject = new Date(date);
   const differenceInHours = Math.abs(Date.now() - dateObject.getTime()) / (1000 * 60 * 60);
 
   return differenceInHours > hours;
