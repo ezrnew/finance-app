@@ -106,4 +106,12 @@ export class PortfoliosController {
   async deleteCategory(@Request() req, @Body() deleteCategoryDto: DeleteCategoryDto) {
     await this.portfoliosService.deleteCategory(req.user.username, deleteCategoryDto);
   }
+
+//todo nowe
+
+  // @UseGuards(AuthGuard)
+  // @Delete('cpi')
+  // async getPortfolioCpiRate(@Request() req, @Body() deleteCategoryDto: DeleteCategoryDto) {
+  //   // await this.portfoliosService.deleteCategory(req.user.username, deleteCategoryDto);
+  // }
 }

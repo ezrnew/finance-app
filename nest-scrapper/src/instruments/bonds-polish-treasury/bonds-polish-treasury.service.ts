@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Cpi } from '../../general/cpi/schemas/cpi.schema';
+import { CpiPolishYY } from '../../general/cpi/schemas/cpi-polish-yy.schema';
 import {
   differenceInDays,
   getDifferenceInYears,
@@ -27,7 +27,7 @@ import { Asset, AssetWithDay } from 'src/common/types/portfolioAsset.type';
 @Injectable()
 export class BondsPolishTreasuryService {
   constructor(
-    @InjectModel(Cpi.name) private cpiModel: Model<Cpi>,
+    @InjectModel(CpiPolishYY.name) private cpiModel: Model<CpiPolishYY>,
     private readonly bondFactoryCreator: BondFactory,
   ) {}
 

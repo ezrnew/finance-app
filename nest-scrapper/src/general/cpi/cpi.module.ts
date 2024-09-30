@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Cpi, CpiSchema } from './schemas/cpi.schema';
-import { CPIService } from './cpi.service';
+import { CpiPolishYY, CpiPolishYYSchema } from './schemas/cpi-polish-yy.schema';
+import { CPIService } from './cpi.polish.service';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Cpi.name, schema: CpiSchema }])],
+  imports: [MongooseModule.forFeature([{ name: CpiPolishYY.name, schema: CpiPolishYYSchema }])],
   providers: [CPIService],
   exports: [CPIService,MongooseModule],
 })

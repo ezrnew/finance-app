@@ -9,15 +9,18 @@ import {
 } from '../../common/utils/date.utils';
 import { CpiScrapper } from './cpi.scrapper';
 import { yearlyCpiDto } from './dto/add-cpi.dto';
-import { Cpi } from './schemas/cpi.schema';
+import { CpiPolishYY } from './schemas/cpi-polish-yy.schema';
 
+//todo rename cpi model to polish cpi y/y
 @Injectable()
 export class CPIService {
   private readonly cpiScrapper = new CpiScrapper();
 
-  constructor(@InjectModel(Cpi.name) private cpiModel: Model<Cpi>) {}
+  constructor(@InjectModel(CpiPolishYY.name) private cpiModel: Model<CpiPolishYY>) {}
 
   async updateCPI_Polish(): Promise<void> {
+
+    
     const currentDate = new Date();
     const month = currentDate.getMonth() as monthNumber; // -1 by default
     const monthName = getPolishMonthNameByNumber(month);
@@ -55,4 +58,17 @@ export class CPIService {
       newYearData.save();
     }
   }
+
+
+  
+
+  // todo take country as arg if there are more cpis than polish
+  async getCpiSinceDate(){
+
+
+
+  }
+
+
+
 }

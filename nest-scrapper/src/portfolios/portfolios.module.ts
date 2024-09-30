@@ -10,11 +10,18 @@ import { TickersService } from '../instruments/tickers/tickers.service';
 import { TickersModule } from '../instruments/tickers/tickers.module';
 import { CurrenciesModule } from '../general/currencies/currencies.module';
 import { BondsPolishTreasuryModule } from '../instruments/bonds-polish-treasury/bonds-polish-treasury.module';
+import {
+  PortfolioValueTimeseries,
+  PortfolioValueTimeseriesSchema,
+} from './schemas/portfolioValueTimeseries.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Portfolio.name, schema: PortfolioSchema }]),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([
+      { name: Portfolio.name, schema: PortfolioSchema },
+      { name: User.name, schema: UserSchema },
+      { name: PortfolioValueTimeseries.name, schema: PortfolioValueTimeseriesSchema },
+    ]),
     BondsPolishTreasuryModule,
     TickersModule,
     CurrenciesModule,

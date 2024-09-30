@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
-export type CpiDocument = HydratedDocument<Cpi>;
+export type CpiDocument = HydratedDocument<CpiPolishMM>;
 
-@Schema()
-export class Cpi {
+// year/year
+@Schema({collection:'cpi-polish-mm'})
+export class CpiPolishMM { 
   @Prop()
   year: number;
 
@@ -34,4 +35,4 @@ export class Cpi {
   dec: number | null;
 }
 
-export const CpiSchema = SchemaFactory.createForClass(Cpi);
+export const CpiPolishMMSchema = SchemaFactory.createForClass(CpiPolishMM);

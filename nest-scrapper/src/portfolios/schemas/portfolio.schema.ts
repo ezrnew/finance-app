@@ -16,10 +16,14 @@ export class Portfolio {
   currency: CurrencyType;
   @Prop()
   totalValue: number;
+
   @Prop()
   freeCash: number;
   @Prop()
   categories: { category: string; value: number }[];
+
+
+  
   @Prop()
   operationHistory: {
     id: string;
@@ -37,6 +41,10 @@ export class Portfolio {
 
   @Prop()
   assets: Asset[]
+
+
+  @Prop()
+  ownContributionValue: number;
 }
 
 export const PortfolioSchema = SchemaFactory.createForClass(Portfolio);

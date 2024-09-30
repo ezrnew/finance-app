@@ -34,6 +34,7 @@ export class PortfoliosService {
       title: createPortfolioDto.name,
       currency: createPortfolioDto.currency,
       totalValue: 0,
+      ownContributionValue:0,
       operationHistory: [],
       categories: [],
       accounts: [],
@@ -88,7 +89,7 @@ export class PortfoliosService {
 
     const portfolio = await this.portfolioModel.findById(buyAssetDto.portfolioId);
 
-    const totalPrice = buyAssetDto.price * buyAssetDto.quantity;
+    const totalPrice = buyAssetDto.price * buyAssetDto.quantity*buyAssetDto.currencyRate;
 
     portfolio.totalValue += totalPrice;
 
@@ -106,9 +107,13 @@ export class PortfoliosService {
 
     if (!portfolioAccount) return false;
 
-    if (!buyAssetDto.paymentAdded) portfolioAccount.cash -= totalPrice;
+    if (!buyAssetDto.paymentAdded) {
+      portfolioAccount.cash -= totalPrice;
 
-    if (portfolioAccount.cash < 0) return false;
+      if (portfolioAccount.cash < 0) return false;
+    } else {
+      portfolio.ownContributionValue += totalPrice
+    }
 
     portfolio.assets.push({
       accountId: buyAssetDto.accountId,
@@ -144,7 +149,10 @@ export class PortfoliosService {
     portfolio.accounts[selectedIndex2] = portfolioAccount;
     //
 
-    return portfolio.save();
+    return this.portfolioModel.findByIdAndUpdate(buyAssetDto.portfolioId, portfolio); 
+
+
+
   }
 
   async sellAsset(username: string, sellAssetDto: SellAssetDto) {
@@ -220,6 +228,8 @@ export class PortfoliosService {
 
     portfolio.accounts[accountIndex].cash += addOperationDto.amount;
 
+    portfolio.ownContributionValue += addOperationDto.amount;
+
     portfolio.operationHistory.push({
       id: crypto.randomUUID(),
       accountName: portfolio.accounts[accountIndex].title,
@@ -293,7 +303,6 @@ export class PortfoliosService {
     //todo bondsPolishTreasuryIke = ...
     const bondsPolishTreasury = assets.filter((item) => item.type === 'bond_pltr') as AssetWithDay[];
     bondsPolishTreasury.forEach((item) => {
-      console.log('DACISKO', item.date);
       item.day = new Date(item.date).getDate();
     });
 

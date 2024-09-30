@@ -197,6 +197,18 @@ export class BackendConnectorSingleton {
     }
     return false;
   }
+
+
+  // async deleteCategory(portfolioId: string, categoryName: string) {
+  //   const res = await this.httpRequest("/portfolios/category", "DELETE", {
+  //     body: { portfolioId, categoryName },
+  //   });
+
+  //   if (res?.ok) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
 }
 
 export const server = new BackendConnectorSingleton("http://localhost:2137");
