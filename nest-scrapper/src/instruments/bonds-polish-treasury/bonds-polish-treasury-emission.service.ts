@@ -21,7 +21,11 @@ export class BondsPolishTreasuryEmissionService {
 
   async updatePLtr() {
     const articleText = (await this.polishTreasuryArticleModel.findOne()).text || '';
+
+    try {
     const scrappedData = await this.polishTreasuryScrapper.getData(articleText);
+      
+
 
     if (!scrappedData) {
       this.logger.log('no new data availabe for PLtr');
@@ -40,7 +44,9 @@ export class BondsPolishTreasuryEmissionService {
       return;
     }
 
-    try {
+
+    
+
       const edo = scrappedData.data.find((item) => item.symbol.startsWith('EDO'));
       const coi = scrappedData.data.find((item) => item.symbol.startsWith('COI'));
       const ros = scrappedData.data.find((item) => item.symbol.startsWith('ROS'));

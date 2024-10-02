@@ -14,8 +14,7 @@ export type OperationHistoryType = {
   buyDate?: Date;
 };
 
-
-export type AssetType = 'bond_pltr' | 'ticker';
+export type AssetType = "bond_pltr" | "ticker";
 
 export type Asset = {
   accountId: string;
@@ -34,7 +33,6 @@ export type Asset = {
   quantity: number;
 };
 
-
 export interface Portfolio {
   title: string;
   currency: CurrencyType;
@@ -42,10 +40,10 @@ export interface Portfolio {
   freeCash: number;
   categories: { category: string; value: number }[];
   operationHistory: OperationHistoryType[];
-  accounts: { id: string; title: string; cash: number;  }[];
-  assets: Asset[]
-  createdAt:Date,
-  timeseriesValueLastUpdate:Date
+  accounts: { id: string; title: string; cash: number }[];
+  assets: Asset[];
+  createdAt: Date;
+  timeseriesValueLastUpdate: Date;
 }
 
 interface State {
@@ -77,7 +75,7 @@ const portfolioSlice = createSlice({
   reducers: {
     setAvailablePortfolios: (
       state,
-      action: PayloadAction<{ _id: string; title: string }[]>,
+      action: PayloadAction<{ _id: string; title: string }[]>
     ) => {
       state.availablePortfolios = action.payload;
     },
@@ -93,7 +91,7 @@ const portfolioSlice = createSlice({
         id: string;
         title: string;
         cash: number;
-      }>,
+      }>
     ) => {
       state.currentAccount = action.payload;
     },

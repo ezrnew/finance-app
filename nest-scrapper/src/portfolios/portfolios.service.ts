@@ -38,13 +38,13 @@ export class PortfoliosService {
       title: createPortfolioDto.name,
       currency: createPortfolioDto.currency,
       totalValue: 0,
-      ownContributionValue:0,
+      ownContributionValue: 0,
       operationHistory: [],
       categories: [],
       accounts: [],
       assets: [],
       createdAt: new Date(Date.now()),
-      timeseriesValueLastUpdate: new Date(Date.now()-(24*60*60*1000)) //? 24h
+      timeseriesValueLastUpdate: new Date(Date.now() - 24 * 60 * 60 * 1000), //? 24h
     });
 
     user.portfolios.push(newPortfolio.id);
@@ -95,7 +95,7 @@ export class PortfoliosService {
 
     const portfolio = await this.portfolioModel.findById(buyAssetDto.portfolioId);
 
-    const totalPrice = buyAssetDto.price * buyAssetDto.quantity*buyAssetDto.currencyRate;
+    const totalPrice = buyAssetDto.price * buyAssetDto.quantity * buyAssetDto.currencyRate;
 
     portfolio.totalValue += totalPrice;
 
@@ -118,7 +118,7 @@ export class PortfoliosService {
 
       if (portfolioAccount.cash < 0) return false;
     } else {
-      portfolio.ownContributionValue += totalPrice
+      portfolio.ownContributionValue += totalPrice;
     }
 
     portfolio.assets.push({
@@ -155,10 +155,7 @@ export class PortfoliosService {
     portfolio.accounts[selectedIndex2] = portfolioAccount;
     //
 
-    return this.portfolioModel.findByIdAndUpdate(buyAssetDto.portfolioId, portfolio); 
-
-
-
+    return this.portfolioModel.findByIdAndUpdate(buyAssetDto.portfolioId, portfolio);
   }
 
   async sellAsset(username: string, sellAssetDto: SellAssetDto) {
@@ -290,7 +287,7 @@ export class PortfoliosService {
 
   //! update
 
-  async reevaluateAssets(username:string, portfolioId: string) {
+  async reevaluateAssets(username: string, portfolioId: string) {
     const userOwnsPortfolio = await this.userModel.findOne({ username, portfolios: portfolioId });
     if (!userOwnsPortfolio) throw new UnauthorizedException();
 
@@ -300,14 +297,15 @@ export class PortfoliosService {
 
     const reevaluatedPortfolio = this.reeavluateCategoriesAndTotalValue(portfolio);
 
-    if(isDateOlderThanXHours(reevaluatedPortfolio.timeseriesValueLastUpdate,8)){
+    if (isDateOlderThanXHours(reevaluatedPortfolio.timeseriesValueLastUpdate, 8)) {
+      this.portfolioTimeseriesService.addRecord(
+        portfolio.id,
+        portfolio.totalValue,
+        portfolio.ownContributionValue,
+      );
 
-      this.portfolioTimeseriesService.addRecord(portfolio.id,portfolio.totalValue,portfolio.ownContributionValue)
-
-      portfolio.timeseriesValueLastUpdate = new Date(Date.now())
-
+      portfolio.timeseriesValueLastUpdate = new Date(Date.now());
     }
-
 
     await this.portfolioModel.findByIdAndUpdate(portfolioId, reevaluatedPortfolio);
 

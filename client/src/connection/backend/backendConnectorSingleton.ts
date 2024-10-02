@@ -200,6 +200,7 @@ export class BackendConnectorSingleton {
 
 
   async getPortfolioTimeseries(portfolioId: string, from: Date,to:Date) {
+    
 
 
     const queryString = new URLSearchParams({

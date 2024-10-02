@@ -39,8 +39,6 @@ function App() {
             }
           />
 
-
-          
           <Route path="/" element={<Navigate to="/login" />} />
 
           <Route
@@ -64,11 +62,10 @@ function App() {
               element={<PortfolioOperationsModal />}
             />
 
-<Route
+            <Route
               path="/portfolio/history"
               element={<PortfolioHistoryModal />}
             />
-
 
             <Route
               path="/portfolio/deleteAccount"

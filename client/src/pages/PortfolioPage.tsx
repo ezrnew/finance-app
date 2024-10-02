@@ -99,7 +99,6 @@ export const PortfolioPage = () => {
             <div className="flex justify-between p-6 ">
               <span className="flex space-x-2">{currentPortfolio?.title} </span>
 
-
               <div className="flex space-x-2 md:space-x-4">
                 <Button asChild>
                   <Link to="buy" state={{ background: location }}>
@@ -131,7 +130,6 @@ export const PortfolioPage = () => {
                     History
                   </Link>
                 </Button>
-
               </div>
             </div>
             <div className="w-11/12 mx-auto h-[1px] bg-gray-200" />
@@ -174,11 +172,7 @@ export const PortfolioPage = () => {
                       sellAssetHandler
                     )}
                   />
-
-
                 </div>
-
-                
               )}
             </div>
           </div>

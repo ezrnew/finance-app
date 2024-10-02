@@ -1,4 +1,3 @@
-// cpi.service.ts
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -19,8 +18,6 @@ export class CPIService {
   constructor(@InjectModel(CpiPolishYY.name) private cpiModel: Model<CpiPolishYY>) {}
 
   async updateCPI_Polish(): Promise<void> {
-
-    
     const currentDate = new Date();
     const month = currentDate.getMonth() as monthNumber; // -1 by default
     const monthName = getPolishMonthNameByNumber(month);
@@ -59,16 +56,6 @@ export class CPIService {
     }
   }
 
-
-  
-
   // todo take country as arg if there are more cpis than polish
-  async getCpiSinceDate(){
-
-
-
-  }
-
-
-
+  async getCpiSinceDate() {}
 }

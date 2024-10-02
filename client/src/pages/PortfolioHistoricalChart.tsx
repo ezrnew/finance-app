@@ -1,21 +1,20 @@
 import { Button } from "@/components/ui/button";
-import { DropdownMenu } from "@/components/ui/dropdown-menu";
 import { InputDropdown } from "@/components/ui/input-dropdown";
 import { server } from "@/connection/backend/backendConnectorSingleton";
 import { useTypedSelector } from "@/hooks/use-redux";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  Legend,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
+    Legend,
+    Line,
+    LineChart,
+    ResponsiveContainer,
+    Tooltip,
+    XAxis,
+    YAxis,
 } from "recharts";
 
 interface PortfolioTimeseries {
-  timestamp: string;
+  timestamp: number;
   value: number;
   ownContribution: number;
 }
@@ -31,45 +30,38 @@ const intialLines: RechartsLines[] = [
 ];
 
 // todo fetch available benchmarks from db
-const benchmarkData: {value:string,name:string}[] = [
-    { value: "cpi-polish", name: "Polish Inflation" },
-  ];
+const benchmarkData: { value: string; name: string }[] = [
+  { value: "cpi-polish", name: "Polish Inflation" },
+];
 
-  const modifiersData: {value:string,name:string}[] = [
-    { value: "-3", name: "- 3 percentage points" },
-    { value: "-2", name: "- 2 percentage points" },
-    { value: "-1", name: "- 1 percentage point" },
-    { value: "1", name: "+ 1 percentage point" },
-    { value: "2", name: "+ 2 percentage points" },
-    { value: "3", name: "+ 3 percentage points" },
-    { value: "4", name: "+ 4 percentage points" },
-    { value: "5", name: "+ 5 percentage points" },
-  ];
-
-
+const modifiersData: { value: string; name: string }[] = [
+  { value: "-3", name: "- 3 percentage points" },
+  { value: "-2", name: "- 2 percentage points" },
+  { value: "-1", name: "- 1 percentage point" },
+  { value: "1", name: "+ 1 percentage point" },
+  { value: "2", name: "+ 2 percentage points" },
+  { value: "3", name: "+ 3 percentage points" },
+  { value: "4", name: "+ 4 percentage points" },
+  { value: "5", name: "+ 5 percentage points" },
+];
 
 export const PortfolioHistoricalChart = () => {
   const [data, setData] = useState<PortfolioTimeseries[]>([]);
   const [lines, setLines] = useState<RechartsLines[]>(intialLines);
-  const [newBenchmark, setNewBenchmark] = useState<{value:string,name:string}|null>(null);
-  const [newModifier, setNewModifier] = useState<{value:string,name:string}|null>(null);
+  const [newBenchmark, setNewBenchmark] = useState<{
+    value: string;
+    name: string;
+  } | null>(null);
+  const [newModifier, setNewModifier] = useState<{
+    value: string;
+    name: string;
+  } | null>(null);
 
+  const { currentPortfolioId, currentPortfolio } = useTypedSelector(
+    (state) => state.portfolio
+  );
 
-  const { currentPortfolioId } = useTypedSelector((state) => state.portfolio);
-
-  const formatXAxis = (item: string) => {
-    const utcDate = new Date(item);
-
-    const day = utcDate.getUTCDate().toString().padStart(2, "0");
-    const month = (utcDate.getUTCMonth() + 1).toString().padStart(2, "0");
-    const year = utcDate.getUTCFullYear().toString();
-
-    const hours = utcDate.getUTCHours().toString().padStart(2, "0");
-    const minutes = utcDate.getUTCMinutes().toString().padStart(2, "0");
-
-    return `${day}-${month}-${year} ${hours}:${minutes}`;
-  };
-
+  //todo memo lines
   const renderLines = () => {
     return lines.map((line) => (
       <Line
@@ -86,78 +78,91 @@ export const PortfolioHistoricalChart = () => {
     const fetchData = async () => {
       const data = await server.getPortfolioTimeseries(
         currentPortfolioId,
-        new Date(Date.now() - 24 * 60 * 60 * 1000) || new Date(Date.now()),
+        currentPortfolio?.createdAt || new Date(),
         new Date(Date.now())
       );
 
-      console.log("dane", data);
-      const formattedData: PortfolioTimeseries[] = [];
-      data.forEach((item: any) => {
-        formattedData.push({
-          timestamp: item.timestamp,
-          value: item.value,
-          ownContribution: item.ownContribution,
-        });
-      });
-
-      setData(formattedData);
+      setData(data);
     };
 
     fetchData();
   }, []);
 
-
   return (
     <div className="w-full h-full flex flex-col space-y-6 ">
       <div className=" flex border rounded-md p-4 justify-between mx-auto space-x-4">
+        <div className="flex ">
+          <InputDropdown
+            label="New Benchmark"
+            data={benchmarkData}
+            value={newBenchmark}
+            setValue={setNewBenchmark}
+          />
 
-<div className="flex ">
+          <div className="w-4"></div>
 
-
-
-        <InputDropdown
-        label="New Benchmark"
-        data={benchmarkData}
-        value={newBenchmark}
-        setValue={setNewBenchmark}
-        
-        
-        />
-
-<div className="w-4"></div>
-
-<InputDropdown
-        label="Modifier"
-        data={modifiersData}
-        value={newModifier}
-        setValue={setNewModifier}
-        
-        
-        />
-
-       
-
-
-
+          <InputDropdown
+            label="Modifier"
+            data={modifiersData}
+            value={newModifier}
+            setValue={setNewModifier}
+          />
         </div>
-        <Button disabled={!newBenchmark} className=""> Add </Button>
-        
+        <Button disabled={!newBenchmark} className="">
+          {" "}
+          Add{" "}
+        </Button>
       </div>
 
-      <ResponsiveContainer 
-        className={"p-6"}
-        width="100%"
-        height="95%"
-      >
-        <LineChart data={data}>
+      <ResponsiveContainer className={"p-6"} width="100%" height="95%">
+        <LineChart data={[...data]}>
           {renderLines()}
-          <XAxis dataKey="timestamp" tickFormatter={formatXAxis} />
+          <XAxis
+            dataKey="timestamp"
+            type="number"
+            domain={["dataMin", "dataMax"]}
+            tickFormatter={(value) => new Date(value).toLocaleDateString()}
+            interval={"equidistantPreserveStart"}
+            tickCount={10}
+          />
           <YAxis />
 
-          <Tooltip />
+          <Tooltip content={<CustomTooltip />} />
+
           <Legend />
         </LineChart>
       </ResponsiveContainer>
     </div>
   );
+};
+//@ts-ignore
+const CustomTooltip = ({ active, payload, label }: any) => {
+  console.log("payoload", payload);
+  console.log("label", label);
+
+  if (active && payload && payload.length) {
+    const difference = (payload[0].value / payload[1].value) * 100 - 100;
+
+    console.log("difference", difference);
+
+    const differenceColorClass =
+      difference > 0 ? "text-green-500" : "text-red-500";
+
+    return (
+      <div className="px-3 w-60 bg-white rounded-md border border-stone-400 flex flex-col">
+        <p className="mx-auto text-xs my-2">{`${new Date(
+          label
+        ).toLocaleDateString()} `}</p>
+
+        <p className="xd">{`Total Value: ${payload[0].value}`}</p>
+        <p className="xd">{`Base: ${payload[1].value}`}</p>
+
+        <p className={differenceColorClass}>{`Difference: ${difference.toFixed(
+          2
+        )} %`}</p>
+      </div>
+    );
+  }
+
+  return null;
 };

@@ -19,6 +19,7 @@ export class PortfoliosTimeseriesController {
   @Get()
   async getValuesForPortfolio(@Query() dto:getPortfolioTimeseriesDto) {
 
+
     return this.portfoliosTimeseriesService.getValuesForPortfolio(dto);
   }
 

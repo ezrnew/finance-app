@@ -4,8 +4,8 @@ import { HydratedDocument } from 'mongoose';
 export type CpiDocument = HydratedDocument<CpiPolishYY>;
 
 // year/year
-@Schema({collection:'cpi-polish-yy'})
-export class CpiPolishYY { 
+@Schema({ collection: 'cpi-polish-yy' })
+export class CpiPolishYY {
   @Prop()
   year: number;
 

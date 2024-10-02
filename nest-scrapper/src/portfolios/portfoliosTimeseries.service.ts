@@ -17,18 +17,30 @@ export class PortfoliosTimeseriesService {
       portfolioId,
       value: totalValue.toFixed(2),
       ownContribution: ownContributionValue.toFixed(2),
-      timestamp: new Date(Date.now()),
+      timestamp: new Date(),
     });
     return newRecord.save();
   }
 
   async getValuesForPortfolio(dto: getPortfolioTimeseriesDto) {
-    return this.portfolioTimeseriesModel.find({
-      portfolioId: dto.portfolioId,
-      timestamp: {
-        $gte: dto.from,
-        $lte: dto.to,
+    return this.portfolioTimeseriesModel.aggregate([
+      {
+        $match: {
+          portfolioId: dto.portfolioId,
+          timestamp: {
+            $gte: new Date(dto.from),
+            $lte: new Date(dto.to),
+          },
+        },
       },
-    });
+      {
+        $project: {
+          timestamp: { $toLong: '$timestamp' },
+          portfolioId: 1,
+          ownContribution: 1,
+          value: 1,
+        },
+      },
+    ]);
   }
 }
