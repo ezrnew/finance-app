@@ -20,7 +20,7 @@ type assetType = {
 
 export const BuyAssetModal = () => {
   const { currentPortfolio, currentPortfolioId } = useTypedSelector(
-    (state) => state.portfolio
+    (state) => state.portfolio,
   );
 
   const navigate = useNavigate();
@@ -29,7 +29,9 @@ export const BuyAssetModal = () => {
 
   const [asset, setAsset] = useState<assetType | null>(null);
   const [category, setCategory] = useState<string | null>(null);
-  const [account, setAccount] = useState<{name:string,id:string} | null>(null);
+  const [account, setAccount] = useState<{ name: string; id: string } | null>(
+    null,
+  );
 
   const [date, setDate] = useState<Date | undefined>(new Date());
 
@@ -60,9 +62,11 @@ export const BuyAssetModal = () => {
   }, [asset]);
 
   const categoryNames = currentPortfolio?.categories.map(
-    (item) => item.category
+    (item) => item.category,
   );
-  const accounts = currentPortfolio?.accounts.map((item) => {return {name:item.title,id:item.id}});
+  const accounts = currentPortfolio?.accounts.map((item) => {
+    return { name: item.title, id: item.id };
+  });
 
   const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -73,8 +77,8 @@ export const BuyAssetModal = () => {
 
     const result = await server.buyAsset(
       currentPortfolioId,
-      category ||"",
-      account?.id ||"",
+      category || "",
+      account?.id || "",
       //@ts-ignore
       asset,
       date,
@@ -82,7 +86,7 @@ export const BuyAssetModal = () => {
       currencyRate,
       price,
       quantity,
-      paymentAdded
+      paymentAdded,
     );
     if (result) {
       toast.operationSuccessful();
@@ -108,7 +112,7 @@ export const BuyAssetModal = () => {
     }
 
     const acc = currentPortfolio?.accounts.find(
-      (item) => item.id === account?.id
+      (item) => item.id === account?.id,
     );
     if (!acc) {
       setError("account doesnt exist!");
@@ -118,7 +122,7 @@ export const BuyAssetModal = () => {
     const canAfford = price * quantity <= acc.cash;
     if (!canAfford && !paymentAdded) {
       setError(
-        "You dont have enought cash on selected account. Did you mean to include 'Add Payment to account' option?"
+        "You dont have enought cash on selected account. Did you mean to include 'Add Payment to account' option?",
       );
       return false;
     }

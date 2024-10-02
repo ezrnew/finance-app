@@ -6,23 +6,20 @@ export const calculateCummulatedRate = (amount, yearsLeft, cpiArr) => {
   if (yearsLeft === 1) return (amount += amount * (cpiArr[cpiArr.length - 1] / 100));
   else
     return calculateCummulatedRate(
-  
       (amount += amount * (cpiArr[cpiArr.length - yearsLeft] / 100)),
       yearsLeft - 1,
       cpiArr,
     );
 };
 
-export const calculateConstantRate = (amount, cpiArr,tax) => {
-
+export const calculateConstantRate = (amount, cpiArr, tax) => {
   let newAmount = amount;
   cpiArr.forEach((value) => {
-    newAmount += value - value*tax;
+    newAmount += value - value * tax;
   });
 
   return newAmount;
 };
-
 
 export const calculateYearRateByDaysPassed = (value: number, rate: number, lastYearStartDate: Date) => {
   const currentDate = new Date();

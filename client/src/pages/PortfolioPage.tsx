@@ -23,7 +23,7 @@ export const PortfolioPage = () => {
 
   const { currentPortfolio } = useTypedSelector((state) => state.portfolio);
   const { currentPortfolioId, updatePortfolioData } = useTypedSelector(
-    (state) => state.portfolio
+    (state) => state.portfolio,
   );
   const { showPortfolioSidebar } = useTypedSelector((state) => state.misc);
   const { setAvailablePortfolios, setCurrentPortfolio } = useActions();
@@ -38,8 +38,8 @@ export const PortfolioPage = () => {
         (asset) =>
           // @ts-ignore
           (asset.account = currentPortfolio?.accounts.find(
-            (item) => item.id === asset.accountId
-          )?.title)
+            (item) => item.id === asset.accountId,
+          )?.title),
       );
     }
 
@@ -65,9 +65,8 @@ export const PortfolioPage = () => {
 
       setCurrentPortfolio(portfolio);
 
-      const portfolioWithReevaluatedValues = await server.reevaluateAssets(
-        currentPortfolioId
-      );
+      const portfolioWithReevaluatedValues =
+        await server.reevaluateAssets(currentPortfolioId);
 
       setCurrentPortfolio(portfolioWithReevaluatedValues);
     };
@@ -78,7 +77,7 @@ export const PortfolioPage = () => {
   useEffect(() => {
     const reevaluateAssets = async () => {
       const portfolioWithReevaluatedValues = await toast.updatingPortfolioData(
-        server.reevaluateAssets(currentPortfolioId)
+        server.reevaluateAssets(currentPortfolioId),
       );
       setCurrentPortfolio(portfolioWithReevaluatedValues);
     };
@@ -145,7 +144,7 @@ export const PortfolioPage = () => {
                         currentPortfolio?.currency as CurrencyType
                       ],
                       currentPortfolio?.totalValue || 0,
-                      currentPortfolio?.currency || "PLN"
+                      currentPortfolio?.currency || "PLN",
                     )}
                     data={
                       currentPortfolio
@@ -169,7 +168,7 @@ export const PortfolioPage = () => {
                     data={assets || []}
                     portfolioColumns={getPortfolioColumns(
                       currentPortfolio?.currency || "PLN",
-                      sellAssetHandler
+                      sellAssetHandler,
                     )}
                   />
                 </div>

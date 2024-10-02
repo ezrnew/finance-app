@@ -107,7 +107,7 @@ export class PortfoliosController {
     await this.portfoliosService.deleteCategory(req.user.username, deleteCategoryDto);
   }
 
-//todo nowe
+  //todo nowe
 
   // @UseGuards(AuthGuard)
   // @Delete('cpi')

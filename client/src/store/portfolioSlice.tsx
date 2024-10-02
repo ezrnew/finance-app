@@ -75,7 +75,7 @@ const portfolioSlice = createSlice({
   reducers: {
     setAvailablePortfolios: (
       state,
-      action: PayloadAction<{ _id: string; title: string }[]>
+      action: PayloadAction<{ _id: string; title: string }[]>,
     ) => {
       state.availablePortfolios = action.payload;
     },
@@ -91,7 +91,7 @@ const portfolioSlice = createSlice({
         id: string;
         title: string;
         cash: number;
-      }>
+      }>,
     ) => {
       state.currentAccount = action.payload;
     },

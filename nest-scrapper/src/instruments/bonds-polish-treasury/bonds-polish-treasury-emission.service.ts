@@ -8,7 +8,8 @@ import { Coi, Edo, Ots, Rod, Ros, Tos } from './schemas/bonds.polishTreasury';
 @Injectable()
 export class BondsPolishTreasuryEmissionService {
   constructor(
-    @InjectModel(BondsPolishTreassuryEmission.name) private polishTreasuryArticleModel: Model<BondsPolishTreassuryEmission>,
+    @InjectModel(BondsPolishTreassuryEmission.name)
+    private polishTreasuryArticleModel: Model<BondsPolishTreassuryEmission>,
     private readonly polishTreasuryScrapper: BondsPolishTreasuryScrapper,
     @InjectModel(Edo.name) private edoModel: Model<Edo>,
     @InjectModel(Coi.name) private coiModel: Model<Coi>,
@@ -23,29 +24,24 @@ export class BondsPolishTreasuryEmissionService {
     const articleText = (await this.polishTreasuryArticleModel.findOne()).text || '';
 
     try {
-    const scrappedData = await this.polishTreasuryScrapper.getData(articleText);
-      
+      const scrappedData = await this.polishTreasuryScrapper.getData(articleText);
 
+      if (!scrappedData) {
+        this.logger.log('no new data availabe for PLtr');
+        return;
+      }
 
-    if (!scrappedData) {
-      this.logger.log('no new data availabe for PLtr');
-      return;
-    }
+      await this.polishTreasuryArticleModel.findOneAndUpdate(
+        {},
+        { text: scrappedData.text },
+        { new: true, upsert: true },
+      );
 
-    await this.polishTreasuryArticleModel.findOneAndUpdate(
-      {},
-      { text: scrappedData.text },
-      { new: true, upsert: true },
-    );
+      if (!scrappedData.data) {
+        this.logger.log('new article available but no new emission, updating article only');
 
-    if (!scrappedData.data) {
-      this.logger.log('new article available but no new emission, updating article only');
-
-      return;
-    }
-
-
-    
+        return;
+      }
 
       const edo = scrappedData.data.find((item) => item.symbol.startsWith('EDO'));
       const coi = scrappedData.data.find((item) => item.symbol.startsWith('COI'));
@@ -90,6 +86,4 @@ export class BondsPolishTreasuryEmissionService {
       this.logger.error('cannot update PLtr:', error);
     }
   }
-
-  
 }

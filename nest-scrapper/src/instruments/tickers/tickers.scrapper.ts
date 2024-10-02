@@ -1,6 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import puppeteer, { Page } from 'puppeteer';
-import { getById, getByIdAndText, getByText, getText, setPageCookies } from '../../common/utils/puppeteer.utils';
+import {
+  getById,
+  getByIdAndText,
+  getByText,
+  getText,
+  setPageCookies,
+} from '../../common/utils/puppeteer.utils';
 import { parseStringDate } from '../../common/utils/date.utils';
 import { ScrapperCurrencyAdapter, StooqCurrencyAdapter } from './tickers.currencyAdapter';
 import { CurrencyType } from '../../general/currencies/schema/currencyRate.schema';

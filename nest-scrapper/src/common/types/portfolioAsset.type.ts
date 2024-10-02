@@ -19,7 +19,6 @@ export type Asset = {
   quantity: number;
 };
 
-export type AssetWithDay  = Asset & {
-day:number
-
+export type AssetWithDay = Asset & {
+  day: number;
 };

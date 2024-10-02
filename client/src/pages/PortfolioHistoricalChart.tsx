@@ -4,13 +4,13 @@ import { server } from "@/connection/backend/backendConnectorSingleton";
 import { useTypedSelector } from "@/hooks/use-redux";
 import { useEffect, useState } from "react";
 import {
-    Legend,
-    Line,
-    LineChart,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
 } from "recharts";
 
 interface PortfolioTimeseries {
@@ -58,7 +58,7 @@ export const PortfolioHistoricalChart = () => {
   } | null>(null);
 
   const { currentPortfolioId, currentPortfolio } = useTypedSelector(
-    (state) => state.portfolio
+    (state) => state.portfolio,
   );
 
   //todo memo lines
@@ -79,7 +79,7 @@ export const PortfolioHistoricalChart = () => {
       const data = await server.getPortfolioTimeseries(
         currentPortfolioId,
         currentPortfolio?.createdAt || new Date(),
-        new Date(Date.now())
+        new Date(Date.now()),
       );
 
       setData(data);
@@ -151,14 +151,14 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     return (
       <div className="px-3 w-60 bg-white rounded-md border border-stone-400 flex flex-col">
         <p className="mx-auto text-xs my-2">{`${new Date(
-          label
+          label,
         ).toLocaleDateString()} `}</p>
 
         <p className="xd">{`Total Value: ${payload[0].value}`}</p>
         <p className="xd">{`Base: ${payload[1].value}`}</p>
 
         <p className={differenceColorClass}>{`Difference: ${difference.toFixed(
-          2
+          2,
         )} %`}</p>
       </div>
     );

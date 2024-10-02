@@ -61,7 +61,7 @@ export const NewPortfolioModal = () => {
             <span className="w-28">Name</span>
 
             <Input
-            className="w-fit"
+              className="w-fit"
               value={name}
               onChange={(e) => {
                 setName(e.target.value);

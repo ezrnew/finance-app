@@ -65,7 +65,7 @@ export const PortfolioPieChart = ({
                   }
                 />
               );
-            }
+            },
           )}
         </Pie>
 
@@ -170,7 +170,7 @@ const CustomTooltip = ({ currency, assets, active, payload }: TooltipProps) => {
         {formatCurrency(
           currencyToIntlZone[currency],
           payload[0].value,
-          currency
+          currency,
         )}
       </p>
 
@@ -186,7 +186,7 @@ const CustomTooltip = ({ currency, assets, active, payload }: TooltipProps) => {
                   {formatCurrency(
                     currencyToIntlZone[currency],
                     item.price * item.quantity,
-                    currency
+                    currency,
                   )}
                 </li>
               ))}

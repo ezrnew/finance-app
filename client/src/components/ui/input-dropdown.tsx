@@ -23,7 +23,7 @@ interface InputDropdownProps<T> {
   label?: string;
 }
 export function InputDropdown<
-  T extends string | { name: string; id?: string }
+  T extends string | { name: string; id?: string },
 >({ data, value, setValue, label, placeholder }: InputDropdownProps<T>) {
   const [open, setOpen] = React.useState(false);
 
@@ -66,7 +66,7 @@ export function InputDropdown<
                   value={getItemId(item)}
                   onSelect={(currentValue) => {
                     const selectedItem = data.find(
-                      (i) => getItemId(i) === currentValue
+                      (i) => getItemId(i) === currentValue,
                     );
                     setValue(selectedItem || null);
                     setOpen(false);
