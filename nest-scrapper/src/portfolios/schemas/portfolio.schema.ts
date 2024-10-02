@@ -7,7 +7,6 @@ export type PortfolioDocument = HydratedDocument<Portfolio>;
 
 export type OperationType = 'sell' | 'buy' | 'withdraw' | 'deposit';
 
-
 @Schema()
 export class Portfolio {
   @Prop()
@@ -16,10 +15,12 @@ export class Portfolio {
   currency: CurrencyType;
   @Prop()
   totalValue: number;
+
   @Prop()
   freeCash: number;
   @Prop()
   categories: { category: string; value: number }[];
+
   @Prop()
   operationHistory: {
     id: string;
@@ -34,9 +35,17 @@ export class Portfolio {
   @Prop()
   accounts: { id: string; title: string; cash: number }[];
 
+  @Prop()
+  assets: Asset[];
 
   @Prop()
-  assets: Asset[]
+  ownContributionValue: number;
+
+  @Prop()
+  createdAt: Date;
+
+  @Prop()
+  timeseriesValueLastUpdate: Date;
 }
 
 export const PortfolioSchema = SchemaFactory.createForClass(Portfolio);

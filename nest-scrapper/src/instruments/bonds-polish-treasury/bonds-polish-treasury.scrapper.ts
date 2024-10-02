@@ -5,62 +5,74 @@ import { getText } from '../../common/utils/puppeteer.utils';
 export class BondsPolishTreasuryScrapper {
   async getData(currentText: string) {
     const url = 'https://www.obligacjeskarbowe.pl/komunikaty/';
-    const newEmissionText = 'rozpoczyna się sprzedaż nowych emisji';
-
+    const newEmissionText = 'rozpoczyna się sprzedaż';
     const browser = await puppeteer.launch({ headless: false });
-    const page = await browser.newPage();
-    await page.goto(url);
 
-    const newsItems = await page.$$('div.news__item');
-    const articleElement = newsItems[1];
+    try {
+      const page = await browser.newPage();
+      await page.goto(url);
 
-    const titleElement = await articleElement.waitForSelector('h3');
-    const text = await getText(titleElement);
+      await page.waitForFunction(() => document.querySelectorAll('div.news__item').length > 0, {
+        timeout: 30000,
+      });
 
-    if (currentText === text) {
-      await browser.close();
-      return false;
-    }
+      const newsItems = await page.$$('div.news__item');
+      const articleElement = newsItems[1];
 
-    if (!text.includes(newEmissionText)) {
-      await browser.close();
-      return { text };
-    }
+      console.log('JEDEN', newsItems);
 
-    const cookieButton = await page.waitForSelector('a.cookie__accept');
-    await cookieButton.click();
+      const titleElement = await articleElement.waitForSelector('h3');
+      const text = await getText(titleElement);
 
-    const element = await articleElement.waitForSelector('a.link');
-    await element.click();
+      if (currentText === text) {
+        await browser.close();
+        return false;
+      }
 
-    const articleContent = await page.waitForSelector('.article-box__content');
-    const aLinksInLiItems = await articleContent.$$eval('li', (lis) => {
-      const returnedData = [];
-      lis.forEach((li) => {
-        const aElement = li.querySelector('a');
-        if (aElement) {
-          const text = li.textContent || '';
-          const symbolMatch = text.match(/\(([^)]+)\)/);
-          const percentageMatches = text.match(/(?:\b|[^,\s%]+)(.{10}\d+(?:\.\d+)?%)/g);
-          if (symbolMatch && percentageMatches) {
-            const firstValue = symbolMatch[1];
-            const cleanedPercentages = percentageMatches.map((match) => {
-              const cleanedMatch = match.replace(/[, ]/g, '').match(/\d+(?:\.\d+)?/)[0];
-              return parseFloat(cleanedMatch) / 100;
-            });
-            const foundIndex = returnedData.findIndex((item) => item.firstValue === firstValue);
-            if (foundIndex !== -1) {
-              returnedData[foundIndex].percentage.push(...cleanedPercentages);
-            } else {
-              returnedData.push({ symbol: firstValue, percentage: cleanedPercentages });
+      if (!text.includes(newEmissionText)) {
+        await browser.close();
+        return { text };
+      }
+
+      console.log('dwa');
+      const cookieButton = await page.waitForSelector('a.cookie__accept');
+      await cookieButton.click();
+
+      const element = await articleElement.waitForSelector('a.link');
+      await element.click();
+
+      const articleContent = await page.waitForSelector('.article-box__content');
+      const aLinksInLiItems = await articleContent.$$eval('li', (lis) => {
+        const returnedData = [];
+        lis.forEach((li) => {
+          const aElement = li.querySelector('a');
+          if (aElement) {
+            const text = li.textContent || '';
+            const symbolMatch = text.match(/\(([^)]+)\)/);
+            const percentageMatches = text.match(/(?:\b|[^,\s%]+)(.{10}\d+(?:\.\d+)?%)/g);
+            if (symbolMatch && percentageMatches) {
+              const firstValue = symbolMatch[1];
+              const cleanedPercentages = percentageMatches.map((match) => {
+                const cleanedMatch = match.replace(/[, ]/g, '').match(/\d+(?:\.\d+)?/)[0];
+                return parseFloat(cleanedMatch) / 100;
+              });
+              const foundIndex = returnedData.findIndex((item) => item.firstValue === firstValue);
+              if (foundIndex !== -1) {
+                returnedData[foundIndex].percentage.push(...cleanedPercentages);
+              } else {
+                returnedData.push({ symbol: firstValue, percentage: cleanedPercentages });
+              }
             }
           }
-        }
+        });
+        return returnedData;
       });
-      return returnedData;
-    });
 
-    await browser.close();
-    return { text, data: aLinksInLiItems };
+      await browser.close();
+      return { text, data: aLinksInLiItems };
+    } catch (error) {
+      console.log('error when scraping pltr article: ', error);
+      await browser.close();
+    }
   }
 }

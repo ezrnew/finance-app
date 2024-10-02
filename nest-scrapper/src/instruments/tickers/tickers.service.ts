@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { createTickerDto } from './dto/create-ticker.dto';
 import { Ticker } from './schemas/ticker.schema';
 import { TickersScrapper } from './tickers.scrapper';
-import { IsDateOlderThanXHours, isToday } from '../../common/utils/date.utils';
+import { isDateOlderThanXHours, isToday } from '../../common/utils/date.utils';
 import { removeMongoProperties } from '../../common/utils/mongoose.utils';
 import { ScrapperCurrencyAdapter, StooqCurrencyAdapter } from './tickers.currencyAdapter';
 import { CurrencyType } from '../../general/currencies/schema/currencyRate.schema';
@@ -58,7 +58,7 @@ export class TickersService {
     let tickers = await this.tickerModel.find({ name: { $in: tickerNames } });
 
     const promises = tickers.map(async (item) => {
-      if (IsDateOlderThanXHours(item.updatedAt, 24)) {
+      if (isDateOlderThanXHours(item.updatedAt, 24)) {
         const updatedData = await this.tickerScrapper.updateTickerData(item.name, item.currency);
         const currencyRate = await this.currenciesService.getCurrencyRate(
           item.currency as CurrencyType,

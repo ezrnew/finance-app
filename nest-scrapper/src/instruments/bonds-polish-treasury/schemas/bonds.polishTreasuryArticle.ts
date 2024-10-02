@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
- type PolishTreasuryEmission = HydratedDocument<BondsPolishTreassuryEmission>;
+type PolishTreasuryEmission = HydratedDocument<BondsPolishTreassuryEmission>;
 
 @Schema({ collection: 'general_PLtr_article' })
 export class BondsPolishTreassuryEmission {

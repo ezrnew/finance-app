@@ -9,14 +9,10 @@ export function getCookie(name: string) {
   return null;
 }
 
-export function setCookie(name:string,value:string){
-
-
-  document.cookie = name+"="+value
-
+export function setCookie(name: string, value: string) {
+  document.cookie = name + "=" + value;
 }
 
 export const cookies = {
-  auth:"authorized"
-
-} as const
+  auth: "authorized",
+} as const;

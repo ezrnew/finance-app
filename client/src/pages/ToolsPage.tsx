@@ -65,7 +65,7 @@ export const ToolsPage = () => {
         <div
           className={cn(
             "flex flex-col h-52 p-6 border rounded-lg my-10",
-            !tickerData && " invisible"
+            !tickerData && " invisible",
           )}
         >
           {tickerData ? (
@@ -76,7 +76,7 @@ export const ToolsPage = () => {
               <p className="text-xl pb-4 mx-auto">
                 {formatDateFull(
                   currencyToIntlZone[tickerData?.currency],
-                  new Date(tickerData?.date)
+                  new Date(tickerData?.date),
                 )}
               </p>
               <p className="text-xl">
@@ -84,7 +84,7 @@ export const ToolsPage = () => {
                 {formatCurrency(
                   currencyToIntlZone[tickerData.currency],
                   tickerData.price,
-                  tickerData?.currency
+                  tickerData?.currency,
                 )}
               </p>
               <p className="text-xl">Currency: {tickerData?.currency}</p>

@@ -14,6 +14,7 @@ import {
 import { toast } from "@/utils/toasts";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { PortfolioHistoricalChart } from "./PortfolioHistoricalChart";
 
 let initialRender = true;
 export const PortfolioPage = () => {
@@ -22,14 +23,14 @@ export const PortfolioPage = () => {
 
   const { currentPortfolio } = useTypedSelector((state) => state.portfolio);
   const { currentPortfolioId, updatePortfolioData } = useTypedSelector(
-    (state) => state.portfolio
+    (state) => state.portfolio,
   );
   const { showPortfolioSidebar } = useTypedSelector((state) => state.misc);
   const { setAvailablePortfolios, setCurrentPortfolio } = useActions();
   const [isManageView, setIsManageView] = useState(false);
   //todo
   const assets = useMemo(() => {
-    console.log("PORTFOLIO",currentPortfolio)
+    console.log("PORTFOLIO", currentPortfolio);
     const updatedAssets = structuredClone(currentPortfolio?.assets);
 
     if (updatedAssets) {
@@ -37,8 +38,8 @@ export const PortfolioPage = () => {
         (asset) =>
           // @ts-ignore
           (asset.account = currentPortfolio?.accounts.find(
-            (item) => item.id === asset.accountId
-          )?.title)
+            (item) => item.id === asset.accountId,
+          )?.title),
       );
     }
 
@@ -64,9 +65,8 @@ export const PortfolioPage = () => {
 
       setCurrentPortfolio(portfolio);
 
-      const portfolioWithReevaluatedValues = await server.reevaluateAssets(
-        currentPortfolioId
-      );
+      const portfolioWithReevaluatedValues =
+        await server.reevaluateAssets(currentPortfolioId);
 
       setCurrentPortfolio(portfolioWithReevaluatedValues);
     };
@@ -77,7 +77,7 @@ export const PortfolioPage = () => {
   useEffect(() => {
     const reevaluateAssets = async () => {
       const portfolioWithReevaluatedValues = await toast.updatingPortfolioData(
-        server.reevaluateAssets(currentPortfolioId)
+        server.reevaluateAssets(currentPortfolioId),
       );
       setCurrentPortfolio(portfolioWithReevaluatedValues);
     };
@@ -97,6 +97,7 @@ export const PortfolioPage = () => {
           <div className=" text-2xl font-semibold flex flex-col flex-grow   max-w-screen-xl mx-auto ">
             <div className="flex justify-between p-6 ">
               <span className="flex space-x-2">{currentPortfolio?.title} </span>
+
               <div className="flex space-x-2 md:space-x-4">
                 <Button asChild>
                   <Link to="buy" state={{ background: location }}>
@@ -119,6 +120,12 @@ export const PortfolioPage = () => {
                 </Button>
                 <Button asChild>
                   <Link to="operations" state={{ background: location }}>
+                    Operations
+                  </Link>
+                </Button>
+
+                <Button asChild>
+                  <Link to="history" state={{ background: location }}>
                     History
                   </Link>
                 </Button>
@@ -137,7 +144,7 @@ export const PortfolioPage = () => {
                         currentPortfolio?.currency as CurrencyType
                       ],
                       currentPortfolio?.totalValue || 0,
-                      currentPortfolio?.currency || "PLN"
+                      currentPortfolio?.currency || "PLN",
                     )}
                     data={
                       currentPortfolio
@@ -161,7 +168,7 @@ export const PortfolioPage = () => {
                     data={assets || []}
                     portfolioColumns={getPortfolioColumns(
                       currentPortfolio?.currency || "PLN",
-                      sellAssetHandler
+                      sellAssetHandler,
                     )}
                   />
                 </div>

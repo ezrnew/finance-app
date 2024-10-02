@@ -9,7 +9,7 @@ export class TickersController {
 
   @Get('/add/:name')
   async addNew(@Param('name') name: string) {
-     return this.tickerService.addNew(name);
+    return this.tickerService.addNew(name);
   }
 
   @Get('/get/:name')
@@ -21,5 +21,4 @@ export class TickersController {
   async findAll(): Promise<Ticker[]> {
     return this.tickerService.findAll();
   }
-
 }

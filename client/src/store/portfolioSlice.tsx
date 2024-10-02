@@ -14,8 +14,7 @@ export type OperationHistoryType = {
   buyDate?: Date;
 };
 
-
-export type AssetType = 'bond_pltr' | 'ticker';
+export type AssetType = "bond_pltr" | "ticker";
 
 export type Asset = {
   accountId: string;
@@ -34,7 +33,6 @@ export type Asset = {
   quantity: number;
 };
 
-
 export interface Portfolio {
   title: string;
   currency: CurrencyType;
@@ -42,8 +40,10 @@ export interface Portfolio {
   freeCash: number;
   categories: { category: string; value: number }[];
   operationHistory: OperationHistoryType[];
-  accounts: { id: string; title: string; cash: number;  }[];
-  assets: Asset[]
+  accounts: { id: string; title: string; cash: number }[];
+  assets: Asset[];
+  createdAt: Date;
+  timeseriesValueLastUpdate: Date;
 }
 
 interface State {

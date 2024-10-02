@@ -12,9 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { portfolioActions } from "@/store/portfolioSlice";
 import { store } from "@/store/store";
-import {
-  formatCurrency
-} from "@/utils/formatters";
+import { formatCurrency } from "@/utils/formatters";
 import { AccountsTableItem } from "./AccountsTable";
 
 interface Props {
@@ -41,7 +39,7 @@ export const accountColumns = ({
         </div>
       ),
     },
- //todo
+    //todo
     // {
     //   accessorKey: "assets",
     //   header: "Assets",

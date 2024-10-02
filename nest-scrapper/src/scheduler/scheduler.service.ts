@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { CPIService } from '../general/cpi/cpi.service';
+import { CPIService } from '../general/cpi/cpi.polish.service';
 import { BondsPolishTreasuryEmissionService } from '../instruments/bonds-polish-treasury/bonds-polish-treasury-emission.service';
 
 @Injectable()

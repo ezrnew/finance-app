@@ -197,6 +197,21 @@ export class BackendConnectorSingleton {
     }
     return false;
   }
+
+  async getPortfolioTimeseries(portfolioId: string, from: Date, to: Date) {
+    const queryString = new URLSearchParams({
+      portfolioId: portfolioId,
+      from: from.toISOString(),
+      to: to.toISOString(),
+    }).toString();
+
+    const res = await this.httpRequest(`/portfolios-timeseries?${queryString}`);
+
+    if (res?.ok) {
+      return res.json();
+    }
+    return false;
+  }
 }
 
 export const server = new BackendConnectorSingleton("http://localhost:2137");

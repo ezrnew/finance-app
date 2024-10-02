@@ -22,11 +22,8 @@ import { Asset } from "@/store/portfolioSlice";
 
 export const getPortfolioColumns = (
   currency: CurrencyType,
-  sellAssetHandler: (id: string) => void
-
+  sellAssetHandler: (id: string) => void,
 ): ColumnDef<Asset>[] => {
-
-
   return [
     {
       accessorKey: "name",
@@ -157,14 +154,23 @@ export const getPortfolioColumns = (
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem>
-              <button className="cursor-pointer w-full text-left">History</button>
+                <button className="cursor-pointer w-full text-left">
+                  History
+                </button>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
-              <button className="cursor-pointer w-full text-left">Buy</button>
+                <button className="cursor-pointer w-full text-left">Buy</button>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <button onClick={()=>{sellAssetHandler(item.id)}} className="cursor-pointer w-full text-left">Sell</button>
+                <button
+                  onClick={() => {
+                    sellAssetHandler(item.id);
+                  }}
+                  className="cursor-pointer w-full text-left"
+                >
+                  Sell
+                </button>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

@@ -133,13 +133,12 @@ export function isValidDayOfMonth(year: number, month: number, day: number): boo
   return day >= 1 && day <= 31;
 }
 
-export function IsDateOlderThanXHours(dateString: string, hours: number) {
-  const dateObject = new Date(dateString);
+export function isDateOlderThanXHours(date: string | Date, hours: number) {
+  const dateObject = new Date(date);
   const differenceInHours = Math.abs(Date.now() - dateObject.getTime()) / (1000 * 60 * 60);
 
   return differenceInHours > hours;
 }
-
 
 export function getDifferenceInYears(startDate, endDate) {
   let startYear = startDate.getFullYear();
@@ -153,18 +152,18 @@ export function getDifferenceInYears(startDate, endDate) {
   let monthDifference = endMonth - startMonth;
 
   if (endDay < startDay) {
-      monthDifference -= 1;
+    monthDifference -= 1;
   }
 
   let totalMonths = yearDifference * 12 + monthDifference;
 
   if (endDay < startDay) {
-      let prevMonth = new Date(endDate);
-      prevMonth.setMonth(endMonth - 1);
-      let daysInPrevMonth = new Date(prevMonth.getFullYear(), prevMonth.getMonth() + 1, 0).getDate();
-      totalMonths += (endDay + daysInPrevMonth - startDay) / daysInPrevMonth;
+    let prevMonth = new Date(endDate);
+    prevMonth.setMonth(endMonth - 1);
+    let daysInPrevMonth = new Date(prevMonth.getFullYear(), prevMonth.getMonth() + 1, 0).getDate();
+    totalMonths += (endDay + daysInPrevMonth - startDay) / daysInPrevMonth;
   } else {
-      totalMonths += (endDay - startDay) / new Date(endYear, endMonth + 1, 0).getDate();
+    totalMonths += (endDay - startDay) / new Date(endYear, endMonth + 1, 0).getDate();
   }
 
   let years = totalMonths / 12;

@@ -13,9 +13,9 @@ import { TickersModule } from './tickers/tickers.module';
   imports: [
     MongooseModule.forFeature([{ name: Edo.name, schema: EdoSchema }]),
     MongooseModule.forFeature([{ name: Ticker.name, schema: TickerSchema }]),
-    
+
     BondsPolishTreasuryModule,
-    TickersModule
+    TickersModule,
   ],
 })
 export class InstrumentsModule {}

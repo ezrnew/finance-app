@@ -14,6 +14,9 @@ import { DeleteAccountDto } from './dto/delete-account.dto';
 import { CurrencyType } from 'src/general/currencies/schema/currencyRate.schema';
 import { DeleteCategoryDto } from './dto/delete-category.dto';
 import { Asset, AssetType, AssetWithDay } from 'src/common/types/portfolioAsset.type';
+import { PortfolioValueTimeseries } from './schemas/portfolioValueTimeseries.schema';
+import { PortfoliosTimeseriesService } from './portfoliosTimeseries.service';
+import { isDateOlderThanXHours } from '../common/utils/date.utils';
 
 @Injectable()
 export class PortfoliosService {
@@ -25,6 +28,7 @@ export class PortfoliosService {
     private bonds_pltrService: BondsPolishTreasuryService,
     private tickerService: TickersService,
     private currenciesService: CurrenciesService,
+    private portfolioTimeseriesService: PortfoliosTimeseriesService,
   ) {}
 
   async create(username: string, createPortfolioDto: CreatePortfolioDto) {
@@ -34,10 +38,13 @@ export class PortfoliosService {
       title: createPortfolioDto.name,
       currency: createPortfolioDto.currency,
       totalValue: 0,
+      ownContributionValue: 0,
       operationHistory: [],
       categories: [],
       accounts: [],
       assets: [],
+      createdAt: new Date(Date.now()),
+      timeseriesValueLastUpdate: new Date(Date.now() - 24 * 60 * 60 * 1000), //? 24h
     });
 
     user.portfolios.push(newPortfolio.id);
@@ -88,7 +95,7 @@ export class PortfoliosService {
 
     const portfolio = await this.portfolioModel.findById(buyAssetDto.portfolioId);
 
-    const totalPrice = buyAssetDto.price * buyAssetDto.quantity;
+    const totalPrice = buyAssetDto.price * buyAssetDto.quantity * buyAssetDto.currencyRate;
 
     portfolio.totalValue += totalPrice;
 
@@ -106,9 +113,13 @@ export class PortfoliosService {
 
     if (!portfolioAccount) return false;
 
-    if (!buyAssetDto.paymentAdded) portfolioAccount.cash -= totalPrice;
+    if (!buyAssetDto.paymentAdded) {
+      portfolioAccount.cash -= totalPrice;
 
-    if (portfolioAccount.cash < 0) return false;
+      if (portfolioAccount.cash < 0) return false;
+    } else {
+      portfolio.ownContributionValue += totalPrice;
+    }
 
     portfolio.assets.push({
       accountId: buyAssetDto.accountId,
@@ -144,7 +155,7 @@ export class PortfoliosService {
     portfolio.accounts[selectedIndex2] = portfolioAccount;
     //
 
-    return portfolio.save();
+    return this.portfolioModel.findByIdAndUpdate(buyAssetDto.portfolioId, portfolio);
   }
 
   async sellAsset(username: string, sellAssetDto: SellAssetDto) {
@@ -220,6 +231,8 @@ export class PortfoliosService {
 
     portfolio.accounts[accountIndex].cash += addOperationDto.amount;
 
+    portfolio.ownContributionValue += addOperationDto.amount;
+
     portfolio.operationHistory.push({
       id: crypto.randomUUID(),
       accountName: portfolio.accounts[accountIndex].title,
@@ -274,7 +287,7 @@ export class PortfoliosService {
 
   //! update
 
-  async reevaluateAssets(username, portfolioId: string) {
+  async reevaluateAssets(username: string, portfolioId: string) {
     const userOwnsPortfolio = await this.userModel.findOne({ username, portfolios: portfolioId });
     if (!userOwnsPortfolio) throw new UnauthorizedException();
 
@@ -283,6 +296,16 @@ export class PortfoliosService {
     await this.handleAssetsUpdate(portfolio.assets, portfolio.currency);
 
     const reevaluatedPortfolio = this.reeavluateCategoriesAndTotalValue(portfolio);
+
+    if (isDateOlderThanXHours(reevaluatedPortfolio.timeseriesValueLastUpdate, 8)) {
+      this.portfolioTimeseriesService.addRecord(
+        portfolio.id,
+        portfolio.totalValue,
+        portfolio.ownContributionValue,
+      );
+
+      portfolio.timeseriesValueLastUpdate = new Date(Date.now());
+    }
 
     await this.portfolioModel.findByIdAndUpdate(portfolioId, reevaluatedPortfolio);
 
@@ -293,7 +316,6 @@ export class PortfoliosService {
     //todo bondsPolishTreasuryIke = ...
     const bondsPolishTreasury = assets.filter((item) => item.type === 'bond_pltr') as AssetWithDay[];
     bondsPolishTreasury.forEach((item) => {
-      console.log('DACISKO', item.date);
       item.day = new Date(item.date).getDate();
     });
 

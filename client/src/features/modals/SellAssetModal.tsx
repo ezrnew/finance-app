@@ -17,14 +17,16 @@ export const SellAssetModal = () => {
   const id = new URLSearchParams(location.search).get("id");
   const navigate = useNavigate();
 
-  const { currentPortfolioId,currentPortfolio } = useTypedSelector((state) => state.portfolio);
+  const { currentPortfolioId, currentPortfolio } = useTypedSelector(
+    (state) => state.portfolio,
+  );
   const { refetchPortfolioData: updatePortfolioData } = useActions();
 
   //todo
-  const assets = currentPortfolio?.assets ||[];
+  const assets = currentPortfolio?.assets || [];
 
-  const [asset, setAsset] = useState<Asset|null>(
-  /*  id ? assets.find((asset: Asset) => asset.id === id) : */null
+  const [asset, setAsset] = useState<Asset | null>(
+    /*  id ? assets.find((asset: Asset) => asset.id === id) : */ null,
   );
 
   const [quantity, setQuantity] = useState(0);
@@ -40,7 +42,7 @@ export const SellAssetModal = () => {
       asset.id,
       asset.category,
       asset.accountId,
-      quantity
+      quantity,
     );
     if (result) {
       toast.operationSuccessful();
@@ -86,9 +88,9 @@ export const SellAssetModal = () => {
               disabled={!asset}
               onChange={(e) => {
                 setQuantity(
-                  Number(e.target.value) > (asset?.quantity ||0)
-                    ? (asset?.quantity ||0)
-                    : Number(e.target.value)
+                  Number(e.target.value) > (asset?.quantity || 0)
+                    ? asset?.quantity || 0
+                    : Number(e.target.value),
                 );
               }}
               type="number"
