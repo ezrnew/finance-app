@@ -91,15 +91,6 @@ export function isDifferenceLessThanAYear(date1: Date, date2: Date): boolean {
   return difference < oneYearInMilliseconds;
 }
 
-export function isDateBeforeOtherDateIgnoringYear(date1: Date, date2: Date): boolean {
-  const adjustedDate1 = new Date(date1);
-  adjustedDate1.setFullYear(2000);
-  const adjustedDate2 = new Date(date2);
-  adjustedDate2.setFullYear(2000);
-
-  return adjustedDate1 < adjustedDate2;
-}
-
 export const differenceInDays = (date1: Date, date2: Date) => {
   const differenceMs = date1.getTime() - date2.getTime();
   const differenceDays = Math.floor(differenceMs / (1000 * 60 * 60 * 24));

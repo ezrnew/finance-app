@@ -9,6 +9,7 @@ import {
 import { CpiScrapper } from './cpi.scrapper';
 import { yearlyCpiDto } from './dto/add-cpi.dto';
 import { CpiPolishYY } from './schemas/cpi-polish-yy.schema';
+import { logger } from 'src/common/Logger';
 
 //todo rename cpi model to polish cpi y/y
 @Injectable()

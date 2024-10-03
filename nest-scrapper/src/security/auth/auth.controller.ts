@@ -5,6 +5,7 @@ import { SignInDto } from './dto/signInDto';
 import { RegisterDto } from './dto/registerDto';
 import { Response } from 'express';
 import { JWT_EXP_TIME_IN_MILIS } from '../../common/constants/jwtExpirationTime';
+import { logger } from '../../common/Logger';
 
 @Controller('auth')
 export class AuthController {
@@ -29,7 +30,7 @@ export class AuthController {
         expires: new Date(Date.now() + JWT_EXP_TIME_IN_MILIS),
       });
 
-      return 123;
+      return true;
     }
   }
 
@@ -38,9 +39,18 @@ export class AuthController {
     return this.authService.register(registerDto.email, registerDto.username, registerDto.password);
   }
 
-  @UseGuards(AuthGuard)
-  @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
+  @Get('test')
+  testowy(@Request() req) {
+    logger.writeToFile("testowy mesedz")
   }
+
+
+
+
+
+
+
+
+
+
 }

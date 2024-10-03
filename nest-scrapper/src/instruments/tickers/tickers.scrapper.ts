@@ -10,6 +10,7 @@ import {
 import { parseStringDate } from '../../common/utils/date.utils';
 import { ScrapperCurrencyAdapter, StooqCurrencyAdapter } from './tickers.currencyAdapter';
 import { CurrencyType } from '../../general/currencies/schema/currencyRate.schema';
+import { logger } from '../../common/Logger';
 
 type TickerType = {
   name: string;
@@ -33,7 +34,7 @@ export class TickersScrapper {
   }
 
   async getTickerData(ticker: string): Promise<TickerType> {
-    this._logger.debug('started full ticker scrapping');
+    logger.writeToFile('started full ticker scrapping: https://stooq.pl/q/?s=');
 
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
@@ -111,7 +112,7 @@ export class TickersScrapper {
       stockMarket: stockMarketText,
     };
 
-    this._logger.debug('returning data: ', returnedData);
+    logger.writeToFile('returning full ticker data');
 
     return returnedData;
   }
@@ -123,7 +124,7 @@ export class TickersScrapper {
     newPrice: number;
     newDate: Date;
   }> {
-    this._logger.debug('started partial ticker scrapping');
+    logger.writeToFile('started partial ticker scrapping: https://stooq.pl/q/?s=');
     const url = this._baseUrl + ticker;
 
     //////////////////////////
@@ -174,7 +175,7 @@ export class TickersScrapper {
         newDate: parseStringDate(dateSpans),
       };
 
-      this._logger.debug('returning scrapped data: ', returnedData);
+      logger.writeToFile('returning updated ticker data');
 
       return returnedData;
     }

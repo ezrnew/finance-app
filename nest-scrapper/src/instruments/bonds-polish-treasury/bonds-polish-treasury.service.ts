@@ -1,16 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CpiPolishYY } from '../../general/cpi/schemas/cpi-polish-yy.schema';
+import { AssetWithDay } from 'src/common/types/portfolioAsset.type';
 import {
   differenceInDays,
-  getDifferenceInYears,
   getMonthNumberBefore,
   getMonthShortNameByNumber,
-  isDateBeforeOtherDateIgnoringYear,
   isDifferenceLessThanAYear,
-  isValidDayOfMonth,
-  monthNumber,
+  monthNumber
 } from '../../common/utils/date.utils';
 import {
   addPercentageRate,
@@ -18,9 +15,9 @@ import {
   calculateCummulatedRate,
   calculateYearRateByDaysPassed,
 } from '../../common/utils/math.utils';
+import { CpiPolishYY } from '../../general/cpi/schemas/cpi-polish-yy.schema';
 import { BondFactory } from './bonds-polish-treasury.factory';
 import { Coi, Edo, Ots, Rod, Ros, Tos } from './schemas/bonds.polishTreasury';
-import { Asset, AssetWithDay } from 'src/common/types/portfolioAsset.type';
 
 //todo will originalCurrencyPrice work if portfolio currency is different than PLN?
 
